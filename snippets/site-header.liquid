@@ -1,21 +1,23 @@
-{%- liquid
-  assign main_menu = section.settings.menu
-  if main_menu == blank and settings.menu != blank
-    assign main_menu = linklists[settings.menu]
-  endif
+{%- comment -%}
+  Global site header (snippet — not a section, so it always loads).
+  Configurable via Theme settings → Header.
+{%- endcomment -%}
 
+{%- liquid
+  assign main_menu = linklists[settings.menu]
   assign logo_width = settings.logo_width | default: 140
+
   assign is_transparent = false
   if settings.header_transparent and template.name == 'index'
     assign is_transparent = true
   endif
 
-  assign book_label = section.settings.book_cta_label
+  assign book_label = settings.book_cta_label
   if book_label == blank
     assign book_label = 'header.book_training' | t
   endif
 
-  assign book_link = section.settings.book_cta_link
+  assign book_link = settings.book_cta_link
   if book_link == blank
     assign book_link = settings.booking_form_url
   endif
@@ -35,7 +37,7 @@
       class="site-header__icon-btn site-header__menu-toggle"
       data-mobile-nav-open
       aria-expanded="false"
-      aria-controls="MobileNav-{{ section.id }}"
+      aria-controls="MobileNav"
       aria-label="{{ 'general.accessibility.menu' | t }}"
     >
       {% render 'icon', icon: 'menu' %}
@@ -100,7 +102,7 @@
     {%- endif -%}
 
     <div class="site-header__actions">
-      {%- if section.settings.show_book_cta -%}
+      {%- if settings.show_book_cta -%}
         <a href="{{ book_link }}" class="btn btn--primary btn--sm site-header__cta hide-mobile">
           {{ book_label | escape }}
         </a>
@@ -148,7 +150,7 @@
     </div>
   </div>
 
-  <div class="mobile-nav" id="MobileNav-{{ section.id }}" data-mobile-nav hidden>
+  <div class="mobile-nav" id="MobileNav" data-mobile-nav hidden>
     <div class="mobile-nav__overlay" data-mobile-nav-close tabindex="-1"></div>
     <div
       class="mobile-nav__panel"
@@ -197,7 +199,7 @@
       {%- endif -%}
 
       <div class="mobile-nav__footer">
-        {%- if section.settings.show_book_cta -%}
+        {%- if settings.show_book_cta -%}
           <a href="{{ book_link }}" class="btn btn--primary btn--full">{{ book_label | escape }}</a>
         {%- endif -%}
         <div class="mobile-nav__footer-links">
@@ -232,35 +234,3 @@
     onScroll();
   })();
 </script>
-
-{% schema %}
-{
-  "name": "Site header",
-  "class": "shopify-section-site-header",
-  "settings": [
-    {
-      "type": "link_list",
-      "id": "menu",
-      "label": "Menu",
-      "default": "main-menu"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_book_cta",
-      "label": "Show book training button",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "book_cta_label",
-      "label": "Button label",
-      "default": "Book Training"
-    },
-    {
-      "type": "url",
-      "id": "book_cta_link",
-      "label": "Button link"
-    }
-  ]
-}
-{% endschema %}

@@ -27,6 +27,8 @@
     "header_transparent": true,
     "menu": "main-menu",
     "enable_mega_menu": true,
+    "show_book_cta": true,
+    "book_cta_label": "Book Training",
     "cart_type": "drawer",
     "show_free_shipping_bar": true,
     "free_shipping_threshold": "150",
@@ -50,14 +52,6 @@
           "text": "Free shipping on orders over $150 · Book your first session today",
           "link": "",
           "show_social": false
-        }
-      },
-      "site-header": {
-        "type": "site-header",
-        "settings": {
-          "menu": "main-menu",
-          "show_book_cta": true,
-          "book_cta_label": "Book Training"
         }
       },
       "footer": {

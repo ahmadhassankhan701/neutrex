@@ -242,6 +242,23 @@
         "id": "enable_mega_menu",
         "label": "t:settings_schema.header.mega_menu",
         "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_book_cta",
+        "label": "Show book training button",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "book_cta_label",
+        "label": "Book training label",
+        "default": "Book Training"
+      },
+      {
+        "type": "url",
+        "id": "book_cta_link",
+        "label": "Book training link"
       }
     ]
   },

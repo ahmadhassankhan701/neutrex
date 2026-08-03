@@ -105,8 +105,7 @@
 }
 
 /* Offset for announcement bar when header is fixed over the hero */
-.announcement-bar + .shopify-section .site-header--transparent,
-.shopify-section-announcement-bar + .shopify-section .site-header--transparent {
+.shopify-section + .site-header--transparent {
   inset-block-start: 2.25rem;
 }
 
