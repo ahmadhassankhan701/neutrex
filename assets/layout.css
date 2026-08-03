@@ -96,20 +96,30 @@
 }
 
 .site-header--transparent {
-  position: absolute;
+  position: fixed;
   inset-inline: 0;
+  inset-block-start: 0;
+  width: 100%;
   background: transparent;
   color: #fff;
 }
 
+/* Offset for announcement bar when header is fixed over the hero */
+.announcement-bar + .shopify-section .site-header--transparent,
+.shopify-section-announcement-bar + .shopify-section .site-header--transparent {
+  inset-block-start: 2.25rem;
+}
+
 .site-header--transparent .site-header__logo,
-.site-header--transparent .site-nav__link {
+.site-header--transparent .site-nav__link,
+.site-header--transparent .site-header__icon-btn {
   color: #fff;
 }
 
 .site-header.is-scrolled,
 .site-header--solid {
   position: sticky;
+  inset-block-start: 0;
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
@@ -118,8 +128,16 @@
   color: var(--color-text);
 }
 
+.site-header.is-scrolled.site-header--transparent {
+  position: fixed;
+  inset-block-start: 0;
+  background: var(--glass-bg);
+  color: var(--color-text);
+}
+
 .site-header.is-scrolled .site-header__logo,
-.site-header.is-scrolled .site-nav__link {
+.site-header.is-scrolled .site-nav__link,
+.site-header.is-scrolled .site-header__icon-btn {
   color: var(--color-text);
 }
 

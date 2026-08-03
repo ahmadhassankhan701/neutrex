@@ -341,19 +341,6 @@
         "post_6": { "type": "post", "settings": { "likes": "2.2k", "comments": "93" } }
       },
       "block_order": ["post_1", "post_2", "post_3", "post_4", "post_5", "post_6"]
-    },
-    "newsletter": {
-      "type": "newsletter",
-      "settings": {
-        "eyebrow": "Inner circle",
-        "heading": "Join the elite",
-        "text": "Training tips, product drops, and exclusive member offers — delivered to your inbox.",
-        "placeholder": "Email address",
-        "button_label": "Subscribe",
-        "success_message": "Thanks for joining Neutrex.",
-        "disclaimer": "<p>By subscribing you agree to receive marketing emails. Unsubscribe anytime.</p>",
-        "layout": "default"
-      }
     }
   },
   "order": [
@@ -366,7 +353,6 @@
     "appointment_cta",
     "transformation_gallery",
     "testimonials",
-    "instagram_feed",
-    "newsletter"
+    "instagram_feed"
   ]
 }

@@ -114,15 +114,17 @@
       {{ 'general.accessibility.skip_to_content' | t }}
     </a>
 
-    {% sections 'header-group' %}
+    {%- section 'announcement-bar' -%}
+    {%- section 'header' -%}
 
     <main id="MainContent" class="main-content" role="main" tabindex="-1">
       {{ content_for_layout }}
     </main>
 
-    {% sections 'footer-group' %}
+    {%- section 'footer' -%}
     {%- section 'cart-drawer' -%}
     {%- section 'predictive-search' -%}
+    {%- section 'whatsapp-float' -%}
 
     <script src="{{ 'theme.js' | asset_url }}" defer></script>
     <script src="{{ 'animations.js' | asset_url }}" defer></script>

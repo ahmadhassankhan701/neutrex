@@ -28,7 +28,11 @@
           {% endif %}
         >
           {%- render 'icon', icon: 'instagram' -%}
-          {{ section.settings.handle | default: 'sections.instagram.handle' | t }}
+          {%- if section.settings.handle != blank -%}
+            {{ section.settings.handle | escape }}
+          {%- else -%}
+            {{ 'sections.instagram.handle' | t }}
+          {%- endif -%}
         </a>
       {%- endif -%}
 

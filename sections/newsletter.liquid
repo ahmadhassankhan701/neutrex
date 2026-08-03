@@ -38,12 +38,26 @@
           {%- if form.posted_successfully? -%}
             <div class="newsletter-band__success" role="status">
               {%- render 'icon', icon: 'check' -%}
-              {{ section.settings.success_message | default: 'newsletter.success' | t }}
+              {%- if section.settings.success_message != blank -%}
+                {{ section.settings.success_message | escape }}
+              {%- else -%}
+                {{ 'newsletter.success' | t }}
+              {%- endif -%}
             </div>
           {%- else -%}
+            {%- liquid
+              assign email_placeholder = section.settings.placeholder
+              if email_placeholder == blank
+                assign email_placeholder = 'footer.newsletter_placeholder' | t
+              endif
+              assign button_label = section.settings.button_label
+              if button_label == blank
+                assign button_label = 'footer.newsletter_button' | t
+              endif
+            -%}
             <div class="newsletter-band__input-wrap">
               <label class="visually-hidden" for="NewsletterEmail-{{ section.id }}">
-                {{ section.settings.placeholder | default: 'footer.newsletter_placeholder' | t }}
+                {{ email_placeholder | escape }}
               </label>
               <input
                 id="NewsletterEmail-{{ section.id }}"
@@ -51,7 +65,7 @@
                 name="contact[email]"
                 class="newsletter-band__input"
                 value="{{ form.email }}"
-                placeholder="{{ section.settings.placeholder | default: 'footer.newsletter_placeholder' | t }}"
+                placeholder="{{ email_placeholder | escape }}"
                 autocomplete="email"
                 autocorrect="off"
                 autocapitalize="off"
@@ -65,7 +79,7 @@
             </div>
             <div class="newsletter-band__submit">
               {%- render 'button',
-                label: section.settings.button_label | default: 'footer.newsletter_button' | t,
+                label: button_label,
                 type: 'submit',
                 style: 'gold',
                 class: 'btn-ripple'
