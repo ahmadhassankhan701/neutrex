@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "current": {
     "brand_name": "Neutrex",
@@ -49,9 +58,14 @@
         "type": "announcement-bar",
         "settings": {
           "enable": true,
-          "text": "Free shipping on orders over $150 · Book your first session today",
+          "text": "Free shipping on orders over 1000 QAR · Book your first session today",
           "link": "",
-          "show_social": false
+          "use_gradient": false,
+          "background_color": "",
+          "text_color": "",
+          "dismissible": true,
+          "show_countdown": false,
+          "countdown_end": ""
         }
       },
       "footer": {
@@ -86,7 +100,12 @@
             }
           }
         },
-        "block_order": ["newsletter", "quick_links", "categories", "contact"],
+        "block_order": [
+          "newsletter",
+          "quick_links",
+          "categories",
+          "contact"
+        ],
         "settings": {
           "brand_text": "Luxury performance fitness. Engineered for athletes who demand excellence.",
           "show_payment_icons": true,
@@ -95,16 +114,29 @@
       },
       "cart-drawer": {
         "type": "cart-drawer",
-        "settings": {}
+        "settings": {
+          "show_note": true
+        }
       },
       "predictive-search": {
         "type": "predictive-search",
-        "settings": {}
+        "settings": {
+          "placeholder": "Search Neutrex…",
+          "trending_searches": "Protein\nPre-workout\nCompression wear\nCreatine\nTraining",
+          "debounce_ms": 280,
+          "min_characters": 2
+        }
       },
       "whatsapp-float": {
         "type": "whatsapp-float",
-        "settings": {}
+        "settings": {
+          "enable": true,
+          "show_label": true,
+          "label": "Chat with us",
+          "message": "Hi Neutrex, I'd like to know more about your products."
+        }
       }
-    }
+    },
+    "content_for_index": []
   }
 }
