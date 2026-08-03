@@ -181,18 +181,27 @@
   transform-origin: inset-inline-end;
   transition: transform var(--duration-slow) var(--ease-in-out);
   z-index: 1;
+  pointer-events: none;
 }
 
-.image-reveal.is-revealed::after {
+.image-reveal.is-revealed::after,
+.image-reveal.is-visible::after,
+[data-animate].is-visible.image-reveal::after {
   transform: scaleX(0);
 }
 
 .image-reveal img {
-  transform: scale(1.15);
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.08);
   transition: transform var(--duration-slow) var(--ease-out);
 }
 
-.image-reveal.is-revealed img {
+.image-reveal.is-revealed img,
+.image-reveal.is-visible img,
+[data-animate].is-visible.image-reveal img {
   transform: scale(1);
 }
 
@@ -201,7 +210,8 @@
   transform-origin: bottom;
 }
 
-.image-reveal--vertical.is-revealed::after {
+.image-reveal--vertical.is-revealed::after,
+.image-reveal--vertical.is-visible::after {
   transform: scaleY(0);
 }
 

@@ -93,16 +93,19 @@
 
     <div class="hero-premium__visual">
       {%- if section.settings.athlete_image != blank -%}
-        <div
-          class="hero-premium__float image-reveal parallax"
-          data-animate
-          data-parallax="0.12"
-        >
+        {%- liquid
+          assign athlete_alt = section.settings.athlete_image.alt
+          if athlete_alt == blank
+            assign athlete_alt = section.settings.heading | strip_html
+          endif
+        -%}
+        <div class="hero-premium__float" data-animate>
           {%- render 'media',
             image: section.settings.athlete_image,
-            alt: section.settings.athlete_image.alt | default: section.settings.heading | strip_html,
+            alt: athlete_alt,
             class: 'hero-premium__athlete',
             loading: 'eager',
+            width: 1200,
             widths: '400,600,800,1000,1200',
             sizes: '(min-width: 990px) 45vw, 80vw'
           -%}
@@ -177,10 +180,11 @@
     margin-inline: auto;
   }
   .hero-premium__athlete {
+    display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
     border-radius: var(--radius-2xl);
-    box-shadow: 0 32px 64px rgba(0, 0, 0, 0.35);
   }
 </style>
 

@@ -127,8 +127,21 @@
 
 .hero-premium__float {
   position: relative;
-  width: min(100%, 22rem);
-  aspect-ratio: 1;
+  width: min(100%, 26rem);
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  box-shadow: 0 32px 64px rgba(0, 0, 0, 0.35);
+  background: transparent;
+}
+
+.hero-premium__float img,
+.hero-premium__athlete {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-2xl);
 }
 
 .hero-premium__float-item {
