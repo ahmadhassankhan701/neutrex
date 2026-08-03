@@ -45,6 +45,7 @@
         "cta_primary_url": "shopify://collections/all",
         "cta_secondary_label": "Book Training",
         "cta_secondary_url": "shopify://collections/all",
+        "background_image": "shopify://shop_images/gym.jpg",
         "video_url": "",
         "full_viewport": true,
         "text_alignment": "start",
