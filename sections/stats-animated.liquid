@@ -1,0 +1,174 @@
+{%- liquid
+  assign section_class = 'stats-animated section--flush'
+  if section.settings.use_surface
+    assign section_class = section_class | append: ' section--surface'
+  endif
+  if section.settings.use_glass
+    assign section_class = section_class | append: ' stats-animated--glass'
+  endif
+-%}
+
+<section
+  class="{{ section_class }}"
+  aria-label="{{ section.settings.aria_label | default: 'Statistics' | escape }}"
+  {{ section.shopify_attributes }}
+>
+  <div class="page-width">
+    <div
+      class="stats-animated__grid animate-stagger"
+      data-animate
+    >
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'stat' -%}
+          <div class="stats-animated__item" {{ block.shopify_attributes }}>
+            <p class="stats-animated__value">
+              <span
+                class="animate-counter"
+                data-counter="{{ block.settings.number }}"
+                data-counter-suffix="{{ block.settings.suffix | escape }}"
+                data-counter-decimals="{{ block.settings.decimals | default: 0 }}"
+                data-counter-duration="{{ section.settings.counter_duration }}"
+              >
+                0{{ block.settings.suffix }}
+              </span>
+            </p>
+            <p class="stats-animated__label">
+              {{ block.settings.label | escape }}
+            </p>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  .stats-animated--glass .stats-animated__item {
+    padding: var(--space-5);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-radius: var(--radius-xl);
+  }
+  .stats-animated--glass .stats-animated__grid {
+    gap: var(--space-4);
+  }
+  @media (min-width: 750px) {
+    .stats-animated--glass .stats-animated__item {
+      border-inline-end: none;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Stats animated",
+  "tag": "section",
+  "class": "section-stats-animated",
+  "settings": [
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Accessibility label",
+      "default": "Neutrex statistics"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_surface",
+      "label": "Surface background",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "use_glass",
+      "label": "Glass card style",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "counter_duration",
+      "label": "Counter animation duration (ms)",
+      "min": 1000,
+      "max": 4000,
+      "step": 250,
+      "default": 2000
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Number",
+          "default": "1000"
+        },
+        {
+          "type": "text",
+          "id": "suffix",
+          "label": "Suffix",
+          "default": "+"
+        },
+        {
+          "type": "range",
+          "id": "decimals",
+          "label": "Decimal places",
+          "min": 0,
+          "max": 2,
+          "step": 1,
+          "default": 0
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Athletes trained"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Stats animated",
+      "blocks": [
+        {
+          "type": "stat",
+          "settings": {
+            "number": "12000",
+            "suffix": "+",
+            "label": "Athletes trained"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "number": "48000",
+            "suffix": "+",
+            "label": "Sessions booked"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "number": "85000",
+            "suffix": "+",
+            "label": "Products sold"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "number": "4.9",
+            "suffix": "★",
+            "decimals": 1,
+            "label": "Average rating"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

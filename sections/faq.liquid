@@ -1,0 +1,179 @@
+{%- liquid
+  assign section_class = 'section faq'
+  if section.settings.background_style == 'surface'
+    assign section_class = section_class | append: ' section--surface'
+  endif
+  if section.settings.narrow
+    assign section_class = section_class | append: ' faq--narrow'
+  endif
+-%}
+
+<section
+  class="{{ section_class }}"
+  aria-labelledby="Faq-{{ section.id }}"
+  {{ section.shopify_attributes }}
+>
+  <div class="page-width">
+    {%- if section.settings.heading != blank or section.settings.subtitle != blank -%}
+      <header class="section__header animate-fade-up" data-animate id="Faq-{{ section.id }}">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="section__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="section__title">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subtitle != blank -%}
+          <p class="section__subtitle">{{ section.settings.subtitle | escape }}</p>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    <div class="faq__list animate-fade-up" data-animate>
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'question' -%}
+          <details
+            class="faq__item accordion__item"
+            {% if section.settings.first_open and forloop.first %}open{% endif %}
+            {{ block.shopify_attributes }}
+          >
+            <summary class="faq__question accordion__trigger">
+              <span>{{ block.settings.question | escape }}</span>
+              {%- render 'icon', icon: 'plus', class: 'accordion__icon' -%}
+            </summary>
+            <div class="faq__answer accordion__panel rte">
+              {{ block.settings.answer }}
+            </div>
+          </details>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq--narrow .faq__list {
+    max-width: 40rem;
+    margin-inline: auto;
+  }
+  .faq__item {
+    border-bottom: 1px solid var(--color-border);
+  }
+  .faq__item[open] .accordion__icon {
+    transform: rotate(45deg);
+  }
+  .faq__question {
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq__question::-webkit-details-marker {
+    display: none;
+  }
+  .faq__answer {
+    padding-top: 0;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "FAQ",
+  "tag": "section",
+  "class": "section-faq",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Support"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Frequently asked questions"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Everything you need to know about Neutrex products and coaching."
+    },
+    {
+      "type": "checkbox",
+      "id": "first_open",
+      "label": "Open first item by default",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "narrow",
+      "label": "Narrow width",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "background_style",
+      "label": "Background",
+      "options": [
+        { "value": "default", "label": "Default" },
+        { "value": "surface", "label": "Surface" }
+      ],
+      "default": "default"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "How do I book a training session?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Visit our Book page, select your coach and preferred time slot, and confirm your session. You can also book directly via WhatsApp for faster scheduling.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ",
+      "blocks": [
+        {
+          "type": "question",
+          "settings": {
+            "question": "How do I book a training session?",
+            "answer": "<p>Visit our Book page, select your coach and preferred time slot, and confirm your session. You can also book directly via WhatsApp for faster scheduling.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "What is your return policy on supplements?",
+            "answer": "<p>Unopened products may be returned within 30 days. Opened supplements cannot be returned for safety reasons. Contact our support team for assistance.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "Do you ship internationally?",
+            "answer": "<p>Yes — we ship to most countries worldwide. Shipping rates and delivery times are calculated at checkout based on your location.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "Are Neutrex products third-party tested?",
+            "answer": "<p>Every batch of Neutrex supplements is third-party tested for purity, potency, and banned substances. Certificates of analysis are available on request.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

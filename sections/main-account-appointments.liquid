@@ -1,0 +1,134 @@
+{%- liquid
+  assign whatsapp = settings.whatsapp_number
+  assign whatsapp_link = blank
+  if whatsapp != blank
+    assign whatsapp_clean = whatsapp | remove: '+' | remove: ' ' | remove: '-' | remove: '(' | remove: ')'
+    assign whatsapp_link = 'https://wa.me/' | append: whatsapp_clean
+  endif
+-%}
+
+<div class="account page-width" {{ section.shopify_attributes }}>
+  <div class="account__layout">
+    <aside class="account__sidebar" aria-label="{{ 'account.appointments' | t }}">
+      <p class="account__nav-title">{{ 'account.dashboard' | t }}</p>
+      <nav class="account__nav-list">
+        <a href="{{ routes.account_url }}" class="account__nav-link">{%- render 'icon', icon: 'account', size: 18 -%}{{ 'account.dashboard' | t }}</a>
+        <a href="{{ section.settings.appointments_page | default: routes.account_url }}" class="account__nav-link is-active" aria-current="page">{%- render 'icon', icon: 'clock', size: 18 -%}{{ 'account.appointments' | t }}</a>
+        <a href="{{ routes.account_logout_url }}" class="account__nav-link">{{ 'account.logout' | t }}</a>
+      </nav>
+    </aside>
+
+    <div class="account__content">
+      <header class="account__header">
+        <h1 class="account__greeting">{{ 'account.appointments' | t }}</h1>
+        <p class="account__subtitle">{{ section.settings.subtitle | default: 'View booking info and manage sessions with our team.' | escape }}</p>
+      </header>
+
+      <article class="dashboard-card" style="margin-bottom: var(--space-6);">
+        <span class="dashboard-card__icon" aria-hidden="true">{%- render 'icon', icon: 'clock', size: 22 -%}</span>
+        <span class="dashboard-card__label">{{ section.settings.upcoming_label | default: 'Upcoming sessions' | escape }}</span>
+        <p class="dashboard-card__value" style="font-size: var(--fs-md); font-weight: 600;">
+          {{ section.settings.upcoming_text | default: 'No upcoming appointments on file. Book a session to get started.' | escape }}
+        </p>
+      </article>
+
+      <section style="margin-bottom: var(--space-8);">
+        <h2 class="coach-profile__section-title">{{ section.settings.manage_heading | default: 'How to manage bookings' | escape }}</h2>
+        <div class="rte">{{ section.settings.manage_content }}</div>
+      </section>
+
+      <div class="appointment-cta__actions">
+        {%- if whatsapp_link != blank -%}
+          <a href="{{ whatsapp_link }}" class="btn btn--primary btn--lg" target="_blank" rel="noopener noreferrer">
+            {%- render 'icon', icon: 'whatsapp', size: 18 -%}
+            {{ 'appointments.whatsapp_cta' | t }}
+          </a>
+        {%- endif -%}
+        {%- if section.settings.booking_page != blank -%}
+          {%- liquid
+            assign book_label = 'appointments.book_session' | t
+          -%}
+          {%- render 'button', label: book_label, url: section.settings.booking_page, style: 'gold', size: 'lg' -%}
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.hours != blank or settings.business_hours != blank or section.settings.location != blank or settings.business_location != blank -%}
+        <div class="auth__row auth__row--2" style="margin-top: var(--space-8);">
+          {%- if section.settings.hours != blank or settings.business_hours != blank -%}
+            <article class="address-card">
+              <h3 class="address-card__name">{%- render 'icon', icon: 'clock', size: 18 -%} Hours</h3>
+              <div class="address-card__lines"><p>{{ section.settings.hours | default: settings.business_hours | escape }}</p></div>
+            </article>
+          {%- endif -%}
+          {%- if section.settings.location != blank or settings.business_location != blank -%}
+            <article class="address-card">
+              <h3 class="address-card__name">{%- render 'icon', icon: 'map-pin', size: 18 -%} Location</h3>
+              <div class="address-card__lines"><p>{{ section.settings.location | default: settings.business_location | escape }}</p></div>
+            </article>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Account appointments",
+  "tag": "section",
+  "class": "section-main-account-appointments",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "View booking info and manage sessions with our team."
+    },
+    {
+      "type": "text",
+      "id": "upcoming_label",
+      "label": "Upcoming label",
+      "default": "Upcoming sessions"
+    },
+    {
+      "type": "textarea",
+      "id": "upcoming_text",
+      "label": "Upcoming placeholder text",
+      "default": "No upcoming appointments on file. Book a session to get started."
+    },
+    {
+      "type": "text",
+      "id": "manage_heading",
+      "label": "Manage heading",
+      "default": "How to manage bookings"
+    },
+    {
+      "type": "richtext",
+      "id": "manage_content",
+      "label": "Manage content",
+      "default": "<p>Bookings are confirmed via WhatsApp. To reschedule or cancel, message us at least 24 hours before your session. Include your name, coach, and original date/time.</p>"
+    },
+    {
+      "type": "url",
+      "id": "booking_page",
+      "label": "Book session page"
+    },
+    {
+      "type": "url",
+      "id": "appointments_page",
+      "label": "Appointments page URL (nav)"
+    },
+    {
+      "type": "textarea",
+      "id": "hours",
+      "label": "Business hours override",
+      "info": "Leave blank to use theme settings"
+    },
+    {
+      "type": "textarea",
+      "id": "location",
+      "label": "Location override"
+    }
+  ]
+}
+{% endschema %}

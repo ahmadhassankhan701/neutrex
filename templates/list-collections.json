@@ -1,0 +1,14 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-list-collections",
+      "settings": {
+        "show_breadcrumb": true,
+        "collections_per_page": 12,
+        "columns": 3,
+        "sort_by": "alphabetical"
+      }
+    }
+  },
+  "order": ["main"]
+}

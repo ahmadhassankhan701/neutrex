@@ -1,0 +1,99 @@
+{
+  "current": {
+    "brand_name": "Neutrex",
+    "logo_width": 140,
+    "color_primary": "#7A1F3D",
+    "color_gold": "#D4AF37",
+    "color_charcoal": "#1E1E1E",
+    "color_bg": "#FFFFFF",
+    "color_surface": "#F7F5F6",
+    "color_text": "#1E1E1E",
+    "color_text_muted": "#6B6568",
+    "color_border": "#E8E2E4",
+    "color_primary_dark": "#A83256",
+    "color_gold_dark": "#E0C15A",
+    "color_bg_dark": "#0F0D0E",
+    "color_surface_dark": "#1A1618",
+    "color_text_dark": "#F5F2F3",
+    "color_text_muted_dark": "#A39A9E",
+    "color_border_dark": "#2E282B",
+    "color_scheme_default": "system",
+    "font_scale": 100,
+    "heading_weight": 700,
+    "page_width": 1400,
+    "section_spacing": 80,
+    "border_radius": 16,
+    "header_sticky": true,
+    "header_transparent": true,
+    "menu": "main-menu",
+    "enable_mega_menu": true,
+    "cart_type": "drawer",
+    "show_free_shipping_bar": true,
+    "free_shipping_threshold": "150",
+    "appointments_enabled": true,
+    "whatsapp_number": "+971500000000",
+    "business_hours": "Sun–Thu · 6:00 AM – 10:00 PM",
+    "business_location": "Dubai, UAE",
+    "enable_wishlist": true,
+    "enable_quick_add": true,
+    "enable_quick_view": true,
+    "show_vendor": false,
+    "product_image_ratio": "4 / 5",
+    "enable_animations": true,
+    "lazy_load_images": true,
+    "seo_organization_name": "Neutrex",
+    "sections": {
+      "announcement-bar": {
+        "type": "announcement-bar",
+        "settings": {
+          "enable": true,
+          "text": "Free shipping on orders over $150 · Book your first session today",
+          "link": "",
+          "show_social": false
+        }
+      },
+      "header": {
+        "type": "header",
+        "settings": {}
+      },
+      "footer": {
+        "type": "footer",
+        "blocks": {
+          "quick_links": {
+            "type": "link_list",
+            "settings": {
+              "heading": "Explore",
+              "menu": "footer"
+            }
+          },
+          "categories": {
+            "type": "link_list",
+            "settings": {
+              "heading": "Shop",
+              "menu": "main-menu"
+            }
+          },
+          "policies": {
+            "type": "link_list",
+            "settings": {
+              "heading": "Support",
+              "menu": "footer"
+            }
+          }
+        },
+        "block_order": ["quick_links", "categories", "policies"],
+        "settings": {
+          "show_newsletter": true,
+          "newsletter_heading": "Join the elite",
+          "newsletter_text": "Training tips, drops, and exclusive member offers.",
+          "show_whatsapp": true,
+          "show_location": true
+        }
+      },
+      "cart-drawer": {
+        "type": "cart-drawer",
+        "settings": {}
+      }
+    }
+  }
+}

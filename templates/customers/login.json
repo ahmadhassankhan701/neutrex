@@ -1,0 +1,12 @@
+{
+  "layout": "theme",
+  "sections": {
+    "main": {
+      "type": "main-login",
+      "settings": {
+        "subtitle": "Welcome back to Neutrex."
+      }
+    }
+  },
+  "order": ["main"]
+}

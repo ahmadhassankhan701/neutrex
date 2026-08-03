@@ -1,0 +1,185 @@
+{%- liquid
+  assign heading = section.settings.heading | default: 'products.recently_viewed' | t
+  assign limit = section.settings.products_to_show | default: 5
+  assign columns = section.settings.columns | default: 5
+-%}
+
+<section
+  class="pdp-recently-viewed page-width"
+  data-recently-viewed
+  data-limit="{{ limit }}"
+  data-columns="{{ columns }}"
+  data-money-format="{{ shop.money_format | escape }}"
+  data-empty-hidden="{% if section.settings.hide_when_empty %}true{% else %}false{% endif %}"
+  {{ section.shopify_attributes }}
+>
+  <div class="pdp-recently-viewed__header">
+    <h2 class="pdp-recently-viewed__title">{{ heading | escape }}</h2>
+  </div>
+
+  {%- comment -%}
+    Populated client-side by theme.js RecentlyViewed + fetch /products/HANDLE.js
+    data-recently-viewed-grid: target grid container
+    data-recently-viewed-item: each rendered product card shell
+  {%- endcomment -%}
+  <div
+    class="pdp-recently-viewed__grid collection-grid"
+    data-recently-viewed-grid
+    role="list"
+    aria-live="polite"
+    aria-busy="true"
+  ></div>
+
+  <template data-recently-viewed-template>
+    <article class="pdp-recently-viewed__item" data-recently-viewed-item role="listitem">
+      <a class="pdp-recently-viewed__image" data-recently-viewed-link href="#">
+        <img data-recently-viewed-img src="" alt="" loading="lazy" width="400" height="400">
+      </a>
+      <a class="pdp-recently-viewed__name" data-recently-viewed-title href="#"></a>
+      <span class="price price--sm" data-recently-viewed-price hidden></span>
+    </article>
+  </template>
+</section>
+
+<script>
+  (function () {
+    'use strict';
+
+    const root = document.querySelector('[data-recently-viewed]');
+    if (!root || root.dataset.bound) return;
+    root.dataset.bound = 'true';
+
+    const grid = root.querySelector('[data-recently-viewed-grid]');
+    const template = root.querySelector('[data-recently-viewed-template]');
+    const limit = parseInt(root.dataset.limit || '5', 10);
+    const hideWhenEmpty = root.dataset.emptyHidden === 'true';
+    const routes = window.Shopify?.routes?.root || '/';
+    const currentHandle = {{ product.handle | default: '' | json }};
+
+    function formatMoney(cents) {
+      if (window.Shopify?.formatMoney) {
+        return window.Shopify.formatMoney(cents, root.dataset.moneyFormat);
+      }
+      return (cents / 100).toFixed(2);
+    }
+
+    async function fetchProduct(handle) {
+      const response = await fetch(`${routes}products/${handle}.js`);
+      if (!response.ok) throw new Error('Product fetch failed');
+      return response.json();
+    }
+
+    function renderItem(product, stored) {
+      const node = template.content.cloneNode(true);
+      const link = node.querySelector('[data-recently-viewed-link]');
+      const titleLink = node.querySelector('[data-recently-viewed-title]');
+      const img = node.querySelector('[data-recently-viewed-img]');
+      const priceEl = node.querySelector('[data-recently-viewed-price]');
+
+      const url = stored.url || `${routes}products/${product.handle}`;
+      const image = product.featured_image || stored.image;
+      const title = product.title || stored.title;
+
+      link.href = url;
+      titleLink.href = url;
+      titleLink.textContent = title;
+
+      if (image) {
+        img.src = image;
+        img.alt = title;
+      }
+
+      if (product.price) {
+        priceEl.textContent = formatMoney(product.price);
+        priceEl.hidden = false;
+      }
+
+      return node;
+    }
+
+    async function populate() {
+      const items = (window.NeutrexTheme?.RecentlyViewed?.getItems?.() || []).filter(
+        (item) => item.handle && item.handle !== currentHandle
+      ).slice(0, limit);
+
+      grid.innerHTML = '';
+      grid.removeAttribute('aria-busy');
+
+      if (!items.length) {
+        if (hideWhenEmpty) root.hidden = true;
+        return;
+      }
+
+      root.hidden = false;
+
+      const results = await Promise.allSettled(
+        items.map(async (stored) => {
+          try {
+            const product = await fetchProduct(stored.handle);
+            return renderItem(product, stored);
+          } catch {
+            return null;
+          }
+        })
+      );
+
+      results.forEach((result) => {
+        if (result.status === 'fulfilled' && result.value) {
+          grid.appendChild(result.value);
+        }
+      });
+
+      if (!grid.children.length && hideWhenEmpty) {
+        root.hidden = true;
+      }
+    }
+
+    populate();
+    document.addEventListener('neutrex:recently-viewed:updated', populate);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Recently viewed",
+  "tag": "section",
+  "class": "section-recently-viewed",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Recently viewed"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns on desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_when_empty",
+      "label": "Hide section when empty",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Recently viewed"
+    }
+  ]
+}
+{% endschema %}

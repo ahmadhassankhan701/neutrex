@@ -1,0 +1,271 @@
+{%- liquid
+  assign threshold = settings.free_shipping_threshold | default: '150' | plus: 0
+  assign threshold_cents = threshold | times: 100
+  assign show_shipping = settings.show_free_shipping_bar
+  assign cart_empty = false
+  if cart.item_count == 0
+    assign cart_empty = true
+  endif
+  assign shipping_qualified = false
+  if cart.total_price >= threshold_cents
+    assign shipping_qualified = true
+  endif
+  assign shipping_remaining = threshold_cents | minus: cart.total_price
+  assign shipping_progress = cart.total_price | times: 100 | divided_by: threshold_cents
+  if shipping_progress > 100
+    assign shipping_progress = 100
+  endif
+-%}
+
+<cart-drawer
+  class="drawer cart-drawer"
+  aria-hidden="true"
+  data-free-shipping-threshold="{{ threshold }}"
+  {{ section.shopify_attributes }}
+>
+  <div class="drawer__overlay" data-cart-drawer-overlay data-cart-close tabindex="-1" aria-hidden="true"></div>
+
+  <div class="drawer__panel" data-cart-drawer-panel role="dialog" aria-modal="true" aria-label="{{ 'cart.title' | t }}">
+    <div class="drawer__header">
+      <h2 class="drawer__title">
+        {{ 'cart.title' | t }}
+        (<span data-cart-drawer-count>{{ cart.item_count }}</span>)
+      </h2>
+      <button type="button" class="modal__close" data-cart-close aria-label="{{ 'general.accessibility.close' | t }}">
+        {% render 'icon', icon: 'close', size: 20 %}
+      </button>
+    </div>
+
+    <div class="drawer__body">
+      {%- if show_shipping -%}
+        <div
+          class="shipping-bar{% if shipping_qualified %} is-complete is-qualified{% endif %}"
+          data-free-shipping-bar
+          data-qualified-message="{{ 'cart.free_shipping_complete' | t | escape }}"
+          data-remaining-message="{{ 'cart.free_shipping_remaining' | t | escape }}"
+          role="progressbar"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="{{ shipping_progress }}"
+        >
+          <p class="shipping-bar__text">
+            <span data-shipping-message>
+              {%- if shipping_qualified -%}
+                {{ 'cart.free_shipping_complete' | t }}
+              {%- else -%}
+                {{ 'cart.free_shipping_remaining' | t: amount: shipping_remaining | money }}
+              {%- endif -%}
+            </span>
+          </p>
+          <div class="shipping-bar__track">
+            <div class="shipping-bar__fill" data-shipping-progress style="width: {{ shipping_progress }}%;"></div>
+          </div>
+        </div>
+      {%- endif -%}
+
+      <div class="cart-drawer__empty" data-cart-empty{% unless cart_empty %} hidden{% endunless %}>
+        <p>{{ 'cart.empty' | t }}</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">
+          {{ 'cart.continue' | t }}
+        </a>
+      </div>
+
+      <div class="cart-drawer__items" data-cart-items{% if cart_empty %} hidden{% endif %}>
+        {%- for item in cart.items -%}
+          <div class="cart-item" data-cart-item data-line="{{ forloop.index }}" data-key="{{ item.key }}">
+            <a href="{{ item.url }}" class="cart-item__media">
+              {%- if item.image -%}
+                {{
+                  item.image
+                  | image_url: width: 120
+                  | image_tag: width: 72, height: 72, loading: 'lazy', alt: item.product.title
+                }}
+              {%- endif -%}
+            </a>
+            <div class="cart-item__details">
+              <a href="{{ item.url }}" class="cart-item__title">{{ item.product.title | escape }}</a>
+              {%- unless item.variant.title == 'Default Title' -%}
+                <p class="cart-item__variant">{{ item.variant.title | escape }}</p>
+              {%- endunless -%}
+              {%- for option in item.options_with_values -%}
+                {%- unless option.value == 'Default Title' -%}
+                  <span class="cart-item__option">{{ option.name }}: {{ option.value }}</span>
+                {%- endunless -%}
+              {%- endfor -%}
+              <p class="cart-item__price">{{ item.final_line_price | money }}</p>
+              <div class="cart-item__qty" data-quantity-stepper>
+                <button
+                  type="button"
+                  class="cart-item__qty-btn"
+                  data-cart-qty-minus
+                  data-line="{{ forloop.index }}"
+                  aria-label="{{ 'products.quantity' | t }} −"
+                >−</button>
+                <input
+                  type="number"
+                  class="cart-item__qty-input"
+                  data-cart-qty-input
+                  data-line="{{ forloop.index }}"
+                  value="{{ item.quantity }}"
+                  min="0"
+                  readonly
+                  aria-label="{{ 'products.quantity' | t }}"
+                >
+                <button
+                  type="button"
+                  class="cart-item__qty-btn"
+                  data-cart-qty-plus
+                  data-line="{{ forloop.index }}"
+                  aria-label="{{ 'products.quantity' | t }} +"
+                >+</button>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="cart-item__remove"
+              data-cart-remove
+              data-line="{{ forloop.index }}"
+              aria-label="{{ 'cart.remove' | t }}: {{ item.product.title | escape }}"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- if section.settings.show_note -%}
+        <div class="cart-drawer__note-field{% if cart_empty %} visually-hidden{% endif %}" data-cart-note-wrap>
+          <label class="field__label" for="CartNote-{{ section.id }}">{{ 'cart.note' | t }}</label>
+          <textarea
+            id="CartNote-{{ section.id }}"
+            class="field__textarea"
+            data-cart-note
+            name="note"
+            placeholder="{{ 'cart.note_placeholder' | t }}"
+            rows="3"
+          >{{ cart.note }}</textarea>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="drawer__footer" data-cart-footer{% if cart_empty %} hidden{% endif %}>
+      <div class="cart-drawer__summary">
+        <div class="cart-drawer__row cart-drawer__row--total">
+          <span>{{ 'cart.subtotal' | t }}</span>
+          <span data-cart-subtotal>{{ cart.total_price | money }}</span>
+        </div>
+      </div>
+
+      <form action="{{ routes.cart_url }}" method="post">
+        <button type="submit" name="checkout" class="btn btn--primary btn--full">
+          {{ 'cart.checkout' | t }}
+        </button>
+      </form>
+
+      <a href="{{ routes.cart_url }}" class="btn btn--secondary btn--full cart-drawer__view-cart">
+        {{ 'cart.view_cart' | t }}
+      </a>
+
+      <p class="cart-drawer__note">{{ 'cart.taxes' | t }}</p>
+    </div>
+  </div>
+</cart-drawer>
+
+{% stylesheet %}
+  .cart-drawer__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-8) 0;
+    text-align: center;
+  }
+  .cart-item {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr auto;
+    gap: var(--space-4);
+    align-items: start;
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .cart-item__media {
+    aspect-ratio: 1;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+  .cart-item__media img { width: 100%; height: 100%; object-fit: cover; }
+  .cart-item__title {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    line-height: var(--lh-snug);
+  }
+  .cart-item__variant,
+  .cart-item__option {
+    font-size: var(--fs-xs);
+    color: var(--color-text-muted);
+  }
+  .cart-item__price {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+  }
+  .cart-item__qty {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    margin-top: var(--space-2);
+  }
+  .cart-item__qty-btn {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+  .cart-item__qty-input {
+    width: 2.5rem;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+  }
+  .cart-item__remove {
+    color: var(--color-text-muted);
+    font-size: 1.25rem;
+    line-height: 1;
+    padding: var(--space-1);
+  }
+  .cart-item__remove:hover { color: var(--color-error); }
+  .cart-drawer__note-field { margin-top: var(--space-5); }
+  .cart-drawer__view-cart { margin-top: var(--space-3); }
+  .shipping-bar { margin-bottom: var(--space-5); }
+  .shipping-bar.is-qualified .shipping-bar__fill {
+    background: var(--color-success);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Cart drawer",
+  "tag": "section",
+  "class": "section-cart-drawer",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_note",
+      "label": "Show order note field",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cart drawer"
+    }
+  ]
+}
+{% endschema %}

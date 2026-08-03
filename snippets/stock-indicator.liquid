@@ -1,0 +1,42 @@
+{%- comment -%}
+  Variant stock indicator.
+  @param {variant} variant - Shopify variant object
+  @param {number} [low_stock_threshold] - Low stock threshold (default 5)
+  @param {string} [class] - Additional CSS classes
+{%- endcomment -%}
+
+{%- liquid
+  assign threshold = low_stock_threshold | default: 5
+  assign stock_class = 'stock-indicator'
+  if class != blank
+    assign stock_class = stock_class | append: ' ' | append: class
+  endif
+
+  if variant == blank
+    assign stock_status = 'unknown'
+    assign stock_message = ''
+  elsif variant.available == false
+    assign stock_status = 'out'
+    assign stock_message = 'products.out_of_stock' | t
+  elsif variant.inventory_management == 'shopify' and variant.inventory_quantity <= threshold and variant.inventory_quantity > 0
+    assign stock_status = 'low'
+    assign stock_message = 'products.low_stock' | t: count: variant.inventory_quantity
+  elsif variant.available
+    assign stock_status = 'in'
+    assign stock_message = 'products.in_stock' | t
+  else
+    assign stock_status = 'out'
+    assign stock_message = 'products.out_of_stock' | t
+  endif
+-%}
+
+{%- if variant != blank -%}
+  <p
+    class="{{ stock_class }} stock-indicator--{{ stock_status }}"
+    data-stock-indicator
+    data-variant-id="{{ variant.id }}"
+  >
+    <span class="stock-indicator__dot" aria-hidden="true"></span>
+    <span class="stock-indicator__text">{{ stock_message }}</span>
+  </p>
+{%- endif -%}

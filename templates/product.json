@@ -1,0 +1,63 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "settings": {
+        "enable_zoom": true,
+        "show_vendor": true,
+        "show_short_description": true,
+        "show_buy_now": true,
+        "show_sticky_atc": true,
+        "show_trust_badges": true,
+        "show_description": true,
+        "show_benefits": true,
+        "show_ingredients": true,
+        "show_nutrition": true,
+        "show_size_guide": true,
+        "show_shipping": true
+      },
+      "blocks": {
+        "trust_1": {
+          "type": "trust_badge",
+          "settings": {
+            "icon": "shield",
+            "text": "Secure checkout"
+          }
+        },
+        "trust_2": {
+          "type": "trust_badge",
+          "settings": {
+            "icon": "truck",
+            "text": "Fast shipping"
+          }
+        },
+        "trust_3": {
+          "type": "trust_badge",
+          "settings": {
+            "icon": "refresh",
+            "text": "Easy returns"
+          }
+        }
+      },
+      "block_order": ["trust_1", "trust_2", "trust_3"]
+    },
+    "product-recommendations": {
+      "type": "product-recommendations",
+      "settings": {
+        "heading": "You may also like",
+        "products_to_show": 4,
+        "intent": "related"
+      }
+    },
+    "recently-viewed": {
+      "type": "recently-viewed",
+      "settings": {
+        "heading": "Recently viewed",
+        "products_to_show": 5,
+        "columns": 5,
+        "hide_when_empty": true
+      }
+    }
+  },
+  "order": ["main", "product-recommendations", "recently-viewed"]
+}

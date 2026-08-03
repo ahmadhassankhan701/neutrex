@@ -1,0 +1,206 @@
+{%- liquid
+  assign sort_by = section.settings.sort_by | default: 'alphabetical'
+  assign columns = section.settings.columns | default: 3
+-%}
+
+<div class="list-collections page-width" {{ section.shopify_attributes }}>
+  {%- if section.settings.show_breadcrumb -%}
+    {%- render 'breadcrumb' -%}
+  {%- endif -%}
+
+  <header class="list-collections__header">
+    <h1 class="list-collections__title">
+      {{ section.settings.heading | default: 'collections.all_collections' | t }}
+    </h1>
+    {%- if section.settings.description != blank -%}
+      <p class="list-collections__description">{{ section.settings.description | escape }}</p>
+    {%- endif -%}
+  </header>
+
+  {%- paginate collections by section.settings.collections_per_page -%}
+    <div class="list-collections__grid list-collections__grid--{{ columns }}">
+      {%- for collection in collections -%}
+        <article class="list-collections__card">
+          <a href="{{ collection.url }}" class="list-collections__media">
+            {%- if collection.featured_image -%}
+              {{
+                collection.featured_image
+                | image_url: width: 800
+                | image_tag:
+                  loading: 'lazy',
+                  alt: collection.title,
+                  widths: '360,540,720,800',
+                  sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw'
+              }}
+            {%- else -%}
+              {{ 'collection-1' | placeholder_svg_tag: 'placeholder' }}
+            {%- endif -%}
+            <div class="list-collections__overlay"></div>
+            <div class="list-collections__content">
+              <h2 class="list-collections__name">{{ collection.title | escape }}</h2>
+              <p class="list-collections__count">
+                {{ 'collections.products_count' | t: count: collection.products_count }}
+              </p>
+            </div>
+          </a>
+        </article>
+      {%- endfor -%}
+    </div>
+
+    {%- render 'pagination', paginate: paginate, class: 'list-collections__pagination' -%}
+  {%- endpaginate -%}
+</div>
+
+{% stylesheet %}
+  .list-collections {
+    padding-block: var(--space-section);
+  }
+  .list-collections__header {
+    margin-bottom: var(--space-8);
+    max-width: 36rem;
+  }
+  .list-collections__title {
+    font-size: clamp(var(--fs-2xl), 4vw, var(--fs-4xl));
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: var(--space-3);
+  }
+  .list-collections__description {
+    font-size: var(--fs-md);
+    color: var(--color-text-muted);
+    line-height: var(--lh-normal);
+  }
+  .list-collections__grid {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .list-collections__grid--3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (min-width: 750px) {
+    .list-collections__grid--3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .list-collections__grid--2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .list-collections__grid--4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .list-collections__card {
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    transition:
+      transform var(--duration) var(--ease-out),
+      border-color var(--duration) var(--ease-out);
+  }
+  .list-collections__card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-primary);
+  }
+  .list-collections__media {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+  }
+  .list-collections__media img,
+  .list-collections__media svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--duration-slow) var(--ease-out);
+  }
+  .list-collections__card:hover .list-collections__media img {
+    transform: scale(1.05);
+  }
+  .list-collections__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(15, 13, 14, 0.85) 0%, transparent 55%);
+  }
+  .list-collections__content {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    padding: var(--space-5);
+    color: #fff;
+  }
+  .list-collections__name {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    margin-bottom: var(--space-1);
+  }
+  .list-collections__count {
+    font-size: var(--fs-xs);
+    opacity: 0.8;
+  }
+  .list-collections__pagination {
+    margin-top: var(--space-8);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Collections list",
+  "tag": "section",
+  "class": "section-main-list-collections",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "Show breadcrumb",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "range",
+      "id": "collections_per_page",
+      "label": "Collections per page",
+      "min": 6,
+      "max": 24,
+      "step": 2,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns on desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "sort_by",
+      "label": "Sort collections by",
+      "options": [
+        { "value": "alphabetical", "label": "Alphabetically" },
+        { "value": "products_high", "label": "Product count, high to low" },
+        { "value": "products_low", "label": "Product count, low to high" },
+        { "value": "date", "label": "Date, new to old" }
+      ],
+      "default": "alphabetical"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collections list"
+    }
+  ]
+}
+{% endschema %}

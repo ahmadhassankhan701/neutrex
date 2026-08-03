@@ -1,0 +1,156 @@
+{%- liquid
+  assign section_class = 'section rich-text'
+  if section.settings.background_style == 'surface'
+    assign section_class = section_class | append: ' section--surface'
+  elsif section.settings.background_style == 'gradient'
+    assign section_class = section_class | append: ' section--gradient'
+  elsif section.settings.background_style == 'dark'
+    assign section_class = section_class | append: ' section--dark'
+  endif
+  if section.settings.narrow
+    assign section_class = section_class | append: ' rich-text--narrow'
+  endif
+-%}
+
+<section
+  class="{{ section_class }}"
+  aria-labelledby="RichText-{{ section.id }}"
+  {{ section.shopify_attributes }}
+>
+  <div class="page-width">
+    <div class="rich-text__inner animate-fade-up" data-animate style="text-align: {{ section.settings.text_alignment }};">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="section__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.heading != blank -%}
+        <h2 class="section__title" id="RichText-{{ section.id }}">
+          {{ section.settings.heading | escape }}
+        </h2>
+      {%- endif -%}
+
+      {%- if section.settings.text != blank -%}
+        <div class="rich-text__content rte">
+          {{ section.settings.text }}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.button_label != blank -%}
+        <div class="rich-text__cta" style="margin-top: var(--space-6);">
+          {%- render 'button',
+            label: section.settings.button_label,
+            url: section.settings.button_url,
+            style: section.settings.button_style,
+            class: 'btn-ripple'
+          -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  .rich-text--narrow .rich-text__inner {
+    max-width: 40rem;
+    margin-inline: auto;
+  }
+  .rich-text__content {
+    font-size: var(--fs-md);
+    line-height: var(--lh-normal);
+    color: var(--color-text-muted);
+  }
+  .section--dark .rich-text__content {
+    color: rgba(255, 255, 255, 0.8);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Rich text",
+  "tag": "section",
+  "class": "section-rich-text",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Engineered for excellence"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Neutrex was born from a simple belief: athletes deserve equipment, nutrition, and coaching that matches their ambition. Every product is formulated, tested, and refined to meet the standards of elite performance.</p>"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        { "value": "start", "label": "Start" },
+        { "value": "center", "label": "Center" },
+        { "value": "end", "label": "End" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "narrow",
+      "label": "Narrow width",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "background_style",
+      "label": "Background",
+      "options": [
+        { "value": "default", "label": "Default" },
+        { "value": "surface", "label": "Surface" },
+        { "value": "gradient", "label": "Gradient" },
+        { "value": "dark", "label": "Dark" }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "options": [
+        { "value": "primary", "label": "Primary" },
+        { "value": "secondary", "label": "Secondary" },
+        { "value": "gold", "label": "Gold" },
+        { "value": "ghost", "label": "Ghost" }
+      ],
+      "default": "primary"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Rich text",
+      "settings": {
+        "heading": "Engineered for excellence",
+        "text": "<p>Neutrex was born from a simple belief: athletes deserve equipment, nutrition, and coaching that matches their ambition. Every product is formulated, tested, and refined to meet the standards of elite performance.</p>"
+      }
+    }
+  ]
+}
+{% endschema %}

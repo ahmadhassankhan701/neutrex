@@ -1,0 +1,262 @@
+{%- liquid
+  assign wishlist_url = section.settings.wishlist_page | default: '/pages/wishlist'
+  assign appointments_url = section.settings.appointments_page | default: '/pages/account-appointments'
+  assign shop_now_label = 'header.shop_now' | t
+-%}
+
+<div class="account page-width" {{ section.shopify_attributes }}>
+  <div class="account__layout">
+    <aside class="account__sidebar" aria-label="{{ 'account.dashboard' | t }}">
+      <p class="account__nav-title">{{ 'account.dashboard' | t }}</p>
+      <nav class="account__nav-list">
+        <a href="{{ routes.account_url }}" class="account__nav-link is-active" aria-current="page">
+          {%- render 'icon', icon: 'account', size: 18 -%}
+          {{ 'account.dashboard' | t }}
+        </a>
+        <a href="{{ routes.account_url }}" class="account__nav-link">
+          {%- render 'icon', icon: 'bag', size: 18 -%}
+          {{ 'account.orders' | t }}
+        </a>
+        <a href="{{ routes.account_addresses_url }}" class="account__nav-link">
+          {%- render 'icon', icon: 'map-pin', size: 18 -%}
+          {{ 'account.addresses' | t }}
+        </a>
+        <a href="{{ wishlist_url }}" class="account__nav-link">
+          {%- render 'icon', icon: 'heart', size: 18 -%}
+          {{ 'account.wishlist' | t }}
+        </a>
+        <a href="{{ appointments_url }}" class="account__nav-link">
+          {%- render 'icon', icon: 'clock', size: 18 -%}
+          {{ 'account.appointments' | t }}
+        </a>
+        <a href="{{ routes.account_logout_url }}" class="account__nav-link">
+          {{ 'account.logout' | t }}
+        </a>
+      </nav>
+    </aside>
+
+    <div class="account__content">
+      <nav class="account__mobile-nav" aria-label="{{ 'account.dashboard' | t }}">
+        <a href="{{ routes.account_url }}" class="account__mobile-tab is-active">{{ 'account.dashboard' | t }}</a>
+        <a href="{{ routes.account_addresses_url }}" class="account__mobile-tab">{{ 'account.addresses' | t }}</a>
+        <a href="{{ wishlist_url }}" class="account__mobile-tab">{{ 'account.wishlist' | t }}</a>
+        <a href="{{ appointments_url }}" class="account__mobile-tab">{{ 'account.appointments' | t }}</a>
+      </nav>
+
+      <header class="account__header">
+        <h1 class="account__greeting">{{ 'account.welcome' | t: name: customer.first_name | escape }}</h1>
+        <p class="account__subtitle">{{ section.settings.subtitle | default: 'Manage your orders, addresses, and saved items.' | escape }}</p>
+      </header>
+
+      <div class="dashboard-cards">
+        <article class="dashboard-card">
+          <span class="dashboard-card__icon" aria-hidden="true">{%- render 'icon', icon: 'bag', size: 22 -%}</span>
+          <span class="dashboard-card__label">{{ 'account.orders' | t }}</span>
+          <span class="dashboard-card__value">{{ customer.orders_count }}</span>
+          <a href="#account-orders" class="dashboard-card__link">{{ 'account.view_order' | t }}</a>
+        </article>
+        <article class="dashboard-card">
+          <span class="dashboard-card__icon" aria-hidden="true">{%- render 'icon', icon: 'heart', size: 22 -%}</span>
+          <span class="dashboard-card__label">{{ 'account.wishlist' | t }}</span>
+          <span class="dashboard-card__value" data-wishlist-count>0</span>
+          <a href="{{ wishlist_url }}" class="dashboard-card__link">{{ 'header.wishlist' | t }}</a>
+        </article>
+        <article class="dashboard-card">
+          <span class="dashboard-card__icon" aria-hidden="true">{%- render 'icon', icon: 'clock', size: 22 -%}</span>
+          <span class="dashboard-card__label">{{ 'account.appointments' | t }}</span>
+          <span class="dashboard-card__value">{{ section.settings.appointments_count | default: '—' | escape }}</span>
+          <a href="{{ appointments_url }}" class="dashboard-card__link">{{ 'appointments.book_session' | t }}</a>
+        </article>
+      </div>
+
+      {%- if section.settings.show_rewards -%}
+        <article class="dashboard-card" style="margin-bottom: var(--space-7);">
+          <span class="dashboard-card__icon" aria-hidden="true">{%- render 'icon', icon: 'star', size: 22 -%}</span>
+          <span class="dashboard-card__label">{{ 'account.rewards' | t }}</span>
+          <p class="dashboard-card__value" style="font-size: var(--fs-md); font-weight: 600;">
+            {{ section.settings.rewards_text | default: 'Earn points on every order. Rewards program coming soon.' | escape }}
+          </p>
+        </article>
+      {%- endif -%}
+
+      <section id="account-orders" aria-labelledby="orders-heading">
+        <h2 id="orders-heading" class="coach-profile__section-title">{{ 'account.orders' | t }}</h2>
+
+        {%- if customer.orders.size > 0 -%}
+          <div class="order-list">
+            {%- for order in customer.orders limit: section.settings.orders_limit -%}
+              <article class="order-card">
+                <header class="order-card__header">
+                  <div>
+                    <p class="order-card__number">{{ 'account.order_number' | t: number: order.name }}</p>
+                    <p class="order-card__date">{{ order.created_at | date: format: 'date' }}</p>
+                  </div>
+                  {%- liquid
+                    assign status_class = 'order-card__status--pending'
+                    assign status_label = order.fulfillment_status_label
+                    if order.cancelled
+                      assign status_class = 'order-card__status--cancelled'
+                      assign status_label = 'Cancelled'
+                    elsif order.fulfillment_status == 'fulfilled'
+                      assign status_class = 'order-card__status--fulfilled'
+                    endif
+                  -%}
+                  <span class="order-card__status {{ status_class }}">{{ status_label }}</span>
+                </header>
+                <div class="order-card__body">
+                  <div class="order-card__items">
+                    {%- for line_item in order.line_items limit: 3 -%}
+                      <div class="order-card__item">
+                        <div class="order-card__item-image">
+                          {%- if line_item.image -%}
+                            {{ line_item.image | image_url: width: 160 | image_tag: loading: 'lazy', alt: line_item.title }}
+                          {%- endif -%}
+                        </div>
+                        <div>
+                          <p class="order-card__item-title">{{ line_item.title | escape }}</p>
+                          {%- unless line_item.variant.title == 'Default Title' -%}
+                            <p class="order-card__item-variant">{{ line_item.variant.title | escape }}</p>
+                          {%- endunless -%}
+                        </div>
+                        <p class="order-card__item-price">{{ line_item.final_line_price | money }}</p>
+                      </div>
+                    {%- endfor -%}
+                  </div>
+                </div>
+                <footer class="order-card__footer">
+                  <p class="order-card__total">
+                    Total:
+                    <strong>{{ order.total_price | money_with_currency }}</strong>
+                  </p>
+                  <div class="order-card__actions">
+                    <a href="{{ order.customer_url }}" class="btn btn--secondary btn--sm">{{ 'account.view_order' | t }}</a>
+                  </div>
+                </footer>
+              </article>
+            {%- endfor -%}
+          </div>
+        {%- else -%}
+          <p class="account__subtitle">{{ 'account.no_orders' | t }}</p>
+          {%- render 'button', label: shop_now_label, url: routes.all_products_collection_url, style: 'primary' -%}
+        {%- endif -%}
+      </section>
+
+      {%- if section.settings.show_recently_viewed -%}
+        <section style="margin-top: var(--space-8);" aria-labelledby="recent-heading">
+          <h2 id="recent-heading" class="coach-profile__section-title">{{ 'account.recently_viewed' | t }}</h2>
+          <div class="wishlist-grid" data-recently-viewed-grid data-recently-viewed-limit="{{ section.settings.recently_viewed_limit | default: 4 }}">
+            <p class="account__subtitle" data-recently-viewed-empty>{{ section.settings.recently_viewed_empty | default: 'Products you view will appear here.' | escape }}</p>
+          </div>
+        </section>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var grid = document.querySelector('[data-recently-viewed-grid]');
+    if (!grid || !window.NeutrexTheme?.RecentlyViewed) return;
+
+    var limit = parseInt(grid.dataset.recentlyViewedLimit || '4', 10);
+    var emptyEl = grid.querySelector('[data-recently-viewed-empty]');
+    var items = window.NeutrexTheme.RecentlyViewed.getItems().slice(0, limit);
+
+    if (!items.length) return;
+    if (emptyEl) emptyEl.remove();
+    grid.innerHTML = '';
+
+    items.forEach(function (item) {
+      var card = document.createElement('a');
+      card.href = item.url || ('/products/' + item.handle);
+      card.className = 'product-card';
+      card.innerHTML =
+        '<div class="product-card__media">' +
+        (item.image ? '<img src="' + item.image + '" alt="" loading="lazy" width="400" height="400">' : '') +
+        '</div><div class="product-card__body"><h3 class="product-card__title">' + (item.title || '') + '</h3></div>';
+      grid.appendChild(card);
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Account dashboard",
+  "tag": "section",
+  "class": "section-main-account",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Manage your orders, addresses, and saved items."
+    },
+    {
+      "type": "range",
+      "id": "orders_limit",
+      "label": "Recent orders to show",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "url",
+      "id": "wishlist_page",
+      "label": "Wishlist page"
+    },
+    {
+      "type": "url",
+      "id": "appointments_page",
+      "label": "Appointments page"
+    },
+    {
+      "type": "text",
+      "id": "appointments_count",
+      "label": "Appointments count display",
+      "default": "—",
+      "info": "Placeholder until booking integration"
+    },
+    {
+      "type": "header",
+      "content": "Rewards"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rewards",
+      "label": "Show rewards card",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "rewards_text",
+      "label": "Rewards text",
+      "default": "Earn points on every order. Rewards program coming soon."
+    },
+    {
+      "type": "header",
+      "content": "Recently viewed"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_recently_viewed",
+      "label": "Show recently viewed",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "recently_viewed_limit",
+      "label": "Recently viewed limit",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "text",
+      "id": "recently_viewed_empty",
+      "label": "Recently viewed empty message"
+    }
+  ]
+}
+{% endschema %}

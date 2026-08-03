@@ -1,0 +1,104 @@
+{%- comment -%}
+  BreadcrumbList JSON-LD schema.
+  @param {array} breadcrumb_list - Optional array of {title, url} objects
+{%- endcomment -%}
+
+{%- if breadcrumb_list != blank -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {%- for item in breadcrumb_list -%}
+          {
+            "@type": "ListItem",
+            "position": {{ forloop.index }},
+            "name": {{ item.title | json }}
+            {%- if item.url != blank -%}
+            ,"item": {{ shop.url | append: item.url | json }}
+            {%- endif -%}
+          }{%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+{%- else -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": {{ shop.name | json }},
+          "item": {{ shop.url | json }}
+        }
+        {%- case request.page_type -%}
+          {%- when 'product' -%}
+            {%- if collection -%}
+            ,{
+              "@type": "ListItem",
+              "position": 2,
+              "name": {{ collection.title | json }},
+              "item": {{ shop.url | append: collection.url | json }}
+            }
+            ,{
+              "@type": "ListItem",
+              "position": 3,
+              "name": {{ product.title | json }},
+              "item": {{ shop.url | append: product.url | json }}
+            }
+            {%- else -%}
+            ,{
+              "@type": "ListItem",
+              "position": 2,
+              "name": {{ product.title | json }},
+              "item": {{ shop.url | append: product.url | json }}
+            }
+            {%- endif -%}
+          {%- when 'collection' -%}
+            ,{
+              "@type": "ListItem",
+              "position": 2,
+              "name": {{ collection.title | json }},
+              "item": {{ shop.url | append: collection.url | json }}
+            }
+          {%- when 'blog' -%}
+            ,{
+              "@type": "ListItem",
+              "position": 2,
+              "name": {{ blog.title | json }},
+              "item": {{ shop.url | append: blog.url | json }}
+            }
+          {%- when 'article' -%}
+            ,{
+              "@type": "ListItem",
+              "position": 2,
+              "name": {{ blog.title | json }},
+              "item": {{ shop.url | append: blog.url | json }}
+            }
+            ,{
+              "@type": "ListItem",
+              "position": 3,
+              "name": {{ article.title | json }},
+              "item": {{ shop.url | append: article.url | json }}
+            }
+          {%- when 'page' -%}
+            ,{
+              "@type": "ListItem",
+              "position": 2,
+              "name": {{ page.title | json }},
+              "item": {{ shop.url | append: page.url | json }}
+            }
+          {%- when 'search' -%}
+            ,{
+              "@type": "ListItem",
+              "position": 2,
+              "name": {{ 'search.title' | t | json }}
+            }
+        {%- endcase -%}
+      ]
+    }
+  </script>
+{%- endif -%}

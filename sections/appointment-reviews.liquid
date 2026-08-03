@@ -1,0 +1,163 @@
+<section class="testimonials section" {{ section.shopify_attributes }}>
+  <div class="testimonials__bg" aria-hidden="true"></div>
+  <div class="page-width testimonials__inner">
+    <header class="section-header" style="text-align: center; margin-bottom: var(--space-8);">
+      <h2 class="section-header__title">{{ section.settings.title | default: 'appointments.reviews' | t | escape }}</h2>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="section-header__subtitle">{{ section.settings.subtitle | escape }}</p>
+      {%- endif -%}
+    </header>
+
+    <div class="testimonials__grid">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'review' -%}
+          <article
+            class="testimonial-card{% if block.settings.featured %} testimonial-card--featured{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.rating > 0 -%}
+              <div class="testimonial-card__rating" aria-label="{{ block.settings.rating }} out of 5 stars">
+                {%- for i in (1..5) -%}
+                  {%- if i <= block.settings.rating -%}
+                    {%- render 'icon', icon: 'star', size: 16 -%}
+                  {%- else -%}
+                    <span aria-hidden="true" style="opacity: 0.25;">★</span>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.quote != blank -%}
+              <blockquote class="testimonial-card__quote">
+                <p>“{{ block.settings.quote | escape }}”</p>
+              </blockquote>
+            {%- endif -%}
+
+            <footer class="testimonial-card__author">
+              {%- if block.settings.avatar != blank -%}
+                <div class="testimonial-card__avatar">
+                  {{
+                    block.settings.avatar
+                    | image_url: width: 80
+                    | image_tag: loading: 'lazy', widths: '40, 80', sizes: '2.75rem', alt: block.settings.author
+                  }}
+                </div>
+              {%- endif -%}
+              <div>
+                {%- if block.settings.author != blank -%}
+                  <cite class="testimonial-card__name">{{ block.settings.author | escape }}</cite>
+                {%- endif -%}
+                {%- if block.settings.meta != blank -%}
+                  <p class="testimonial-card__meta">{{ block.settings.meta | escape }}</p>
+                {%- endif -%}
+              </div>
+            </footer>
+          </article>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Appointment reviews",
+  "tag": "section",
+  "class": "section-appointment-reviews",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Client reviews"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Real results from athletes who train with Neutrex coaches."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "default": "The coaching transformed my training. Clear programming, accountability, and real progress."
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Author",
+          "default": "Jordan M."
+        },
+        {
+          "type": "text",
+          "id": "meta",
+          "label": "Meta",
+          "default": "Personal training client"
+        },
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Rating",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "Avatar"
+        },
+        {
+          "type": "checkbox",
+          "id": "featured",
+          "label": "Featured layout",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Appointment reviews",
+      "blocks": [
+        {
+          "type": "review",
+          "settings": {
+            "quote": "Best investment I've made in my fitness journey. Professional, motivating, and results-driven.",
+            "author": "Alex T.",
+            "meta": "12-week program",
+            "rating": 5,
+            "featured": true
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "quote": "Flexible scheduling and tailored workouts that fit my busy lifestyle.",
+            "author": "Maya K.",
+            "meta": "Online coaching",
+            "rating": 5
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "quote": "Expert guidance on form and nutrition. Saw measurable gains in 8 weeks.",
+            "author": "Chris L.",
+            "meta": "Bodybuilding coaching",
+            "rating": 5
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

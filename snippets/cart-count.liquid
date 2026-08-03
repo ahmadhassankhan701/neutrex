@@ -1,0 +1,24 @@
+{%- comment -%}
+  Cart item count badge for header / icon buttons.
+  @param {string} [class] - Additional CSS classes
+  @param {boolean} [hide_empty] - Hide when cart is empty
+{%- endcomment -%}
+
+{%- liquid
+  assign count_class = 'cart-count'
+  if class != blank
+    assign count_class = count_class | append: ' ' | append: class
+  endif
+  assign cart_count_label = 'header.cart' | t | append: ' ({{ count }})'
+-%}
+
+<span
+  class="{{ count_class }}{% if cart.item_count == 0 %} is-empty{% endif %}"
+  data-cart-count
+  data-label="{{ cart_count_label | escape }}"
+  {% if hide_empty and cart.item_count == 0 %}hidden{% endif %}
+  aria-live="polite"
+  aria-atomic="true"
+>
+  {{ cart.item_count }}
+</span>

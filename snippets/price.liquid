@@ -1,0 +1,53 @@
+{%- comment -%}
+  Product price display.
+  @param {product} [product] - Shopify product object
+  @param {variant} [variant] - Specific variant (defaults to selected/first available)
+  @param {number} [price] - Explicit price in cents
+  @param {number} [compare_at] - Compare-at price in cents
+  @param {string} [class] - Additional CSS classes
+  @param {boolean} [show_from] - Show "From" prefix for multi-variant products
+{%- endcomment -%}
+
+{%- liquid
+  assign price_class = 'price'
+  if class != blank
+    assign price_class = price_class | append: ' ' | append: class
+  endif
+
+  if product != blank
+    assign current_variant = variant | default: product.selected_or_first_available_variant
+    assign display_price = current_variant.price
+    assign display_compare = current_variant.compare_at_price
+    assign show_from_label = false
+    if product.price_varies and show_from != false
+      assign show_from_label = true
+      assign display_price = product.price_min
+    endif
+  else
+    assign display_price = price
+    assign display_compare = compare_at
+    assign show_from_label = false
+  endif
+
+  assign on_sale = false
+  if display_compare != blank and display_compare > display_price
+    assign on_sale = true
+  endif
+-%}
+
+<div class="{{ price_class }}{% if on_sale %} price--on-sale{% endif %}" data-price>
+  {%- if show_from_label -%}
+    <span class="price__from">{{ 'products.from' | t }}</span>
+  {%- endif -%}
+
+  {%- if on_sale -%}
+    <span class="visually-hidden">{{ 'products.sale' | t }}:</span>
+    <s class="price__compare" data-compare-price>
+      {{ display_compare | money }}
+    </s>
+  {%- endif -%}
+
+  <span class="price__current{% if on_sale %} price__current--sale{% endif %}" data-current-price>
+    {{ display_price | money }}
+  </span>
+</div>

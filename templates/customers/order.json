@@ -1,0 +1,10 @@
+{
+  "layout": "theme",
+  "sections": {
+    "main": {
+      "type": "main-order",
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}

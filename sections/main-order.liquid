@@ -1,0 +1,118 @@
+{%- liquid
+  assign order = order | default: customer.orders.first
+-%}
+
+<div class="account page-width" {{ section.shopify_attributes }}>
+  <div class="account__content" style="max-width: 48rem; margin-inline: auto;">
+    <header class="account__header">
+      <a href="{{ routes.account_url }}" class="account__subtitle" style="display: inline-block; margin-bottom: var(--space-3);">
+        ← {{ 'account.dashboard' | t }}
+      </a>
+      <h1 class="account__greeting">{{ 'account.order_number' | t: number: order.name }}</h1>
+      <p class="account__subtitle">{{ order.created_at | date: format: 'date' }}</p>
+    </header>
+
+    <article class="order-card">
+      <header class="order-card__header">
+        <div>
+          {%- liquid
+            assign status_class = 'order-card__status--pending'
+            if order.cancelled
+              assign status_class = 'order-card__status--cancelled'
+            elsif order.fulfillment_status == 'fulfilled'
+              assign status_class = 'order-card__status--fulfilled'
+            endif
+          -%}
+          <span class="order-card__status {{ status_class }}">{{ order.fulfillment_status_label }}</span>
+        </div>
+        <p class="order-card__date">Payment: {{ order.financial_status_label }}</p>
+      </header>
+
+      <div class="order-card__body">
+        <div class="order-card__items">
+          {%- for line_item in order.line_items -%}
+            <div class="order-card__item">
+              <div class="order-card__item-image">
+                {%- if line_item.image -%}
+                  {{ line_item.image | image_url: width: 160 | image_tag: loading: 'lazy', alt: line_item.title }}
+                {%- endif -%}
+              </div>
+              <div>
+                <p class="order-card__item-title">
+                  {%- if line_item.url != blank -%}
+                    <a href="{{ line_item.url }}">{{ line_item.title | escape }}</a>
+                  {%- else -%}
+                    {{ line_item.title | escape }}
+                  {%- endif -%}
+                </p>
+                {%- unless line_item.variant.title == 'Default Title' -%}
+                  <p class="order-card__item-variant">{{ line_item.variant.title | escape }}</p>
+                {%- endunless -%}
+                <p class="order-card__item-variant">Qty: {{ line_item.quantity }}</p>
+              </div>
+              <p class="order-card__item-price">{{ line_item.final_line_price | money }}</p>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      <footer class="order-card__footer" style="flex-direction: column; align-items: stretch;">
+        <div class="booking-summary__row">
+          <span class="booking-summary__row-label">Subtotal</span>
+          <span class="booking-summary__row-value">{{ order.line_items_subtotal_price | money }}</span>
+        </div>
+        {%- for discount in order.discounts -%}
+          <div class="booking-summary__row">
+            <span class="booking-summary__row-label">{{ discount.code }}</span>
+            <span class="booking-summary__row-value">−{{ discount.savings | money }}</span>
+          </div>
+        {%- endfor -%}
+        {%- for shipping_method in order.shipping_methods -%}
+          <div class="booking-summary__row">
+            <span class="booking-summary__row-label">Shipping ({{ shipping_method.title | escape }})</span>
+            <span class="booking-summary__row-value">{{ shipping_method.price | money }}</span>
+          </div>
+        {%- endfor -%}
+        <div class="booking-summary__total" style="margin-top: var(--space-4);">
+          <span>Total</span>
+          <span class="booking-summary__total-value">{{ order.total_price | money_with_currency }}</span>
+        </div>
+      </footer>
+    </article>
+
+    <div class="auth__row auth__row--2" style="margin-top: var(--space-8);">
+      {%- if order.shipping_address -%}
+        <section class="address-card">
+          <h2 class="address-card__name">Shipping address</h2>
+          <div class="address-card__lines">
+            <p>{{ order.shipping_address.name | escape }}</p>
+            <p>{{ order.shipping_address.address1 | escape }}</p>
+            {%- if order.shipping_address.address2 != blank -%}<p>{{ order.shipping_address.address2 | escape }}</p>{%- endif -%}
+            <p>{{ order.shipping_address.city | escape }}, {{ order.shipping_address.province | escape }} {{ order.shipping_address.zip | escape }}</p>
+            <p>{{ order.shipping_address.country | escape }}</p>
+          </div>
+        </section>
+      {%- endif -%}
+      {%- if order.billing_address -%}
+        <section class="address-card">
+          <h2 class="address-card__name">Billing address</h2>
+          <div class="address-card__lines">
+            <p>{{ order.billing_address.name | escape }}</p>
+            <p>{{ order.billing_address.address1 | escape }}</p>
+            {%- if order.billing_address.address2 != blank -%}<p>{{ order.billing_address.address2 | escape }}</p>{%- endif -%}
+            <p>{{ order.billing_address.city | escape }}, {{ order.billing_address.province | escape }} {{ order.billing_address.zip | escape }}</p>
+            <p>{{ order.billing_address.country | escape }}</p>
+          </div>
+        </section>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Order detail",
+  "tag": "section",
+  "class": "section-main-order"
+}
+{% endschema %}

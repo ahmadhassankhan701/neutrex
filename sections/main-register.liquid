@@ -1,0 +1,116 @@
+<div class="auth" {{ section.shopify_attributes }}>
+  <div class="auth__panel auth__panel--wide">
+    {%- if section.settings.show_logo -%}
+      <p class="auth__logo">{{ settings.brand_name | default: shop.name | escape }}</p>
+    {%- endif -%}
+
+    <h1 class="auth__title">{{ 'customer.register.title' | t }}</h1>
+    <p class="auth__subtitle">{{ section.settings.subtitle | default: 'Join Neutrex and track orders, wishlists, and bookings.' | escape }}</p>
+
+    {%- form 'create_customer', class: 'auth__form' -%}
+      {%- if form.errors -%}
+        <div class="auth__error" role="alert">{{ form.errors | default_errors }}</div>
+      {%- endif -%}
+
+      <div class="auth__row auth__row--2">
+        <div class="field">
+          <label class="field__label" for="RegisterFirstName">{{ 'customer.register.first_name' | t }}</label>
+          <input
+            type="text"
+            name="customer[first_name]"
+            id="RegisterFirstName"
+            class="field__input"
+            autocomplete="given-name"
+            {% if form.first_name %}value="{{ form.first_name | escape }}"{% endif %}
+          >
+        </div>
+        <div class="field">
+          <label class="field__label" for="RegisterLastName">{{ 'customer.register.last_name' | t }}</label>
+          <input
+            type="text"
+            name="customer[last_name]"
+            id="RegisterLastName"
+            class="field__input"
+            autocomplete="family-name"
+            {% if form.last_name %}value="{{ form.last_name | escape }}"{% endif %}
+          >
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="RegisterEmail">{{ 'customer.register.email' | t }}</label>
+        <input
+          type="email"
+          name="customer[email]"
+          id="RegisterEmail"
+          class="field__input"
+          autocomplete="email"
+          required
+          {% if form.email %}value="{{ form.email | escape }}"{% endif %}
+        >
+      </div>
+
+      <div class="field field--password">
+        <label class="field__label" for="RegisterPassword">{{ 'customer.register.password' | t }}</label>
+        <input
+          type="password"
+          name="customer[password]"
+          id="RegisterPassword"
+          class="field__input"
+          autocomplete="new-password"
+          required
+        >
+      </div>
+
+      {%- if section.settings.show_marketing -%}
+        <label class="auth__checkbox-row">
+          <input type="checkbox" name="customer[accepts_marketing]" value="true">
+          <span>{{ section.settings.marketing_text | default: 'Email me training tips and exclusive offers.' | escape }}</span>
+        </label>
+      {%- endif -%}
+
+      {%- liquid
+        assign submit_label = 'customer.register.submit' | t
+      -%}
+      {%- render 'button', label: submit_label, style: 'primary', full_width: true, type: 'submit' -%}
+    {%- endform -%}
+
+    <p class="auth__footer">
+      {{ 'customer.register.login' | t | split: '?' | first }}?
+      <a href="{{ routes.account_login_url }}">{{ 'account.login' | t }}</a>
+    </p>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Register",
+  "tag": "section",
+  "class": "section-main-register",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_logo",
+      "label": "Show brand name",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Join Neutrex and track orders, wishlists, and bookings."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_marketing",
+      "label": "Show marketing checkbox",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "marketing_text",
+      "label": "Marketing checkbox text"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,353 @@
+{%- liquid
+  assign book_url = section.settings.book_url
+  if book_url == blank
+    assign book_url = '/pages/personal-training#booking'
+  endif
+-%}
+
+<section class="coach-profile" {{ section.shopify_attributes }}>
+  <div class="coach-profile__cover">
+    {%- if section.settings.cover_image != blank -%}
+      {{
+        section.settings.cover_image
+        | image_url: width: 2000
+        | image_tag:
+          loading: 'eager',
+          sizes: '100vw',
+          widths: '750, 1100, 1500, 2000',
+          alt: ''
+      }}
+    {%- endif -%}
+  </div>
+
+  <header class="coach-profile__header">
+    <div class="coach-profile__avatar">
+      {%- if section.settings.avatar != blank -%}
+        {{
+          section.settings.avatar
+          | image_url: width: 320
+          | image_tag:
+            loading: 'eager',
+            widths: '160, 240, 320',
+            sizes: '8rem',
+            alt: section.settings.name
+        }}
+      {%- else -%}
+        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+    </div>
+
+    <div class="coach-profile__info">
+      <h1 class="coach-profile__name">{{ section.settings.name | default: page.title | escape }}</h1>
+      {%- if section.settings.role != blank -%}
+        <p class="coach-profile__role">{{ section.settings.role | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.bio != blank -%}
+        <p class="coach-profile__bio">{{ section.settings.bio | escape }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="coach-profile__actions">
+      {%- render 'button',
+        label: section.settings.book_label | default: 'coach.book_session' | t,
+        url: book_url,
+        style: 'primary',
+        size: 'lg'
+      -%}
+      {%- if section.settings.instagram_url != blank -%}
+        <a
+          href="{{ section.settings.instagram_url }}"
+          class="btn btn--ghost btn--lg"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {%- render 'icon', icon: 'instagram', size: 18 -%}
+          {{ 'coach.follow' | t }}
+        </a>
+      {%- endif -%}
+    </div>
+  </header>
+
+  {%- assign achievement_blocks = section.blocks | where: 'type', 'achievement' -%}
+  {%- if achievement_blocks.size > 0 or section.settings.show_stats -%}
+    <div class="page-width" style="margin-bottom: var(--space-8);">
+      <div class="coach-achievements">
+        {%- for block in achievement_blocks -%}
+          <div class="coach-achievement" {{ block.shopify_attributes }}>
+            <span class="coach-achievement__value">{{ block.settings.value | escape }}</span>
+            <span class="coach-achievement__label">{{ block.settings.label | escape }}</span>
+          </div>
+        {%- endfor -%}
+        {%- if section.settings.show_stats -%}
+          {%- if section.settings.stat_clients != blank -%}
+            <div class="coach-achievement">
+              <span class="coach-achievement__value">{{ section.settings.stat_clients | escape }}</span>
+              <span class="coach-achievement__label">{{ section.settings.stat_clients_label | default: 'Clients trained' | escape }}</span>
+            </div>
+          {%- endif -%}
+          {%- if section.settings.stat_years != blank -%}
+            <div class="coach-achievement">
+              <span class="coach-achievement__value">{{ section.settings.stat_years | escape }}</span>
+              <span class="coach-achievement__label">{{ 'coach.years' | t: count: section.settings.stat_years | escape }}</span>
+            </div>
+          {%- endif -%}
+          {%- if section.settings.stat_sessions != blank -%}
+            <div class="coach-achievement">
+              <span class="coach-achievement__value">{{ section.settings.stat_sessions | escape }}</span>
+              <span class="coach-achievement__label">{{ section.settings.stat_sessions_label | default: 'Sessions' | escape }}</span>
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="coach-profile__grid">
+    <div class="coach-profile__main">
+      {%- if section.settings.experience != blank -%}
+        <section style="margin-bottom: var(--space-8);">
+          <h2 class="coach-profile__section-title">{{ 'coach.experience' | t }}</h2>
+          <div class="rte">{{ section.settings.experience }}</div>
+        </section>
+      {%- endif -%}
+
+      {%- assign gallery_blocks = section.blocks | where: 'type', 'transformation' -%}
+      {%- if gallery_blocks.size > 0 -%}
+        <section>
+          <h2 class="coach-profile__section-title">{{ 'coach.transformations' | t }}</h2>
+          <div class="coach-gallery">
+            {%- for block in gallery_blocks -%}
+              <figure
+                class="coach-gallery__item{% if block.settings.wide %} coach-gallery__item--wide{% endif %}"
+                {{ block.shopify_attributes }}
+              >
+                {%- if block.settings.image != blank -%}
+                  {{
+                    block.settings.image
+                    | image_url: width: 800
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '300, 500, 800',
+                      sizes: '(min-width: 750px) 33vw, 50vw',
+                      alt: block.settings.caption
+                  }}
+                {%- endif -%}
+              </figure>
+            {%- endfor -%}
+          </div>
+        </section>
+      {%- endif -%}
+    </div>
+
+    <aside class="coach-profile__sidebar">
+      {%- assign cert_blocks = section.blocks | where: 'type', 'certification' -%}
+      {%- if cert_blocks.size > 0 -%}
+        <section>
+          <h2 class="coach-profile__section-title">{{ 'coach.certifications' | t }}</h2>
+          <div class="coach-certs">
+            {%- for block in cert_blocks -%}
+              <div class="coach-cert" {{ block.shopify_attributes }}>
+                <span class="coach-cert__icon" aria-hidden="true">
+                  {%- render 'icon', icon: 'shield', size: 20 -%}
+                </span>
+                <div>
+                  <p class="coach-cert__name">{{ block.settings.name | escape }}</p>
+                  {%- if block.settings.issuer != blank -%}
+                    <p class="coach-cert__issuer">{{ block.settings.issuer | escape }}</p>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+        </section>
+      {%- endif -%}
+    </aside>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Coach profile",
+  "tag": "section",
+  "class": "section-coach-profile",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "cover_image",
+      "label": "Cover image"
+    },
+    {
+      "type": "image_picker",
+      "id": "avatar",
+      "label": "Avatar"
+    },
+    {
+      "type": "text",
+      "id": "name",
+      "label": "Name",
+      "default": "Coach Name"
+    },
+    {
+      "type": "text",
+      "id": "role",
+      "label": "Role",
+      "default": "Head performance coach"
+    },
+    {
+      "type": "textarea",
+      "id": "bio",
+      "label": "Bio",
+      "default": "Elite coach focused on strength, conditioning, and sustainable transformation."
+    },
+    {
+      "type": "richtext",
+      "id": "experience",
+      "label": "Experience",
+      "default": "<p>Over a decade coaching athletes from beginners to competitive bodybuilders. Specialized in periodized strength programs and nutrition periodization.</p>"
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "url",
+      "id": "book_url",
+      "label": "Book session URL"
+    },
+    {
+      "type": "text",
+      "id": "book_label",
+      "label": "Book button label"
+    },
+    {
+      "type": "header",
+      "content": "Stats row"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stats",
+      "label": "Show stats row",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "stat_clients",
+      "label": "Clients stat",
+      "default": "500+"
+    },
+    {
+      "type": "text",
+      "id": "stat_clients_label",
+      "label": "Clients label",
+      "default": "Athletes trained"
+    },
+    {
+      "type": "text",
+      "id": "stat_years",
+      "label": "Years stat",
+      "default": "10"
+    },
+    {
+      "type": "text",
+      "id": "stat_sessions",
+      "label": "Sessions stat",
+      "default": "5000+"
+    },
+    {
+      "type": "text",
+      "id": "stat_sessions_label",
+      "label": "Sessions label",
+      "default": "Sessions delivered"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "achievement",
+      "name": "Achievement",
+      "settings": [
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "15"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Competition wins"
+        }
+      ]
+    },
+    {
+      "type": "certification",
+      "name": "Certification",
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "NASM Certified Personal Trainer"
+        },
+        {
+          "type": "text",
+          "id": "issuer",
+          "label": "Issuer",
+          "default": "National Academy of Sports Medicine"
+        }
+      ]
+    },
+    {
+      "type": "transformation",
+      "name": "Transformation",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Caption"
+        },
+        {
+          "type": "checkbox",
+          "id": "wide",
+          "label": "Wide layout",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Coach profile",
+      "blocks": [
+        {
+          "type": "achievement",
+          "settings": {
+            "value": "4.9",
+            "label": "Average rating"
+          }
+        },
+        {
+          "type": "certification",
+          "settings": {
+            "name": "CSCS",
+            "issuer": "NSCA"
+          }
+        },
+        {
+          "type": "certification",
+          "settings": {
+            "name": "Precision Nutrition L1",
+            "issuer": "Precision Nutrition"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

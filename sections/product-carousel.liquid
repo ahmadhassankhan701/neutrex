@@ -1,0 +1,221 @@
+{%- liquid
+  assign section_class = 'section section-carousel'
+  if section.settings.background_style == 'surface'
+    assign section_class = section_class | append: ' section--surface'
+  endif
+
+  assign collection = section.settings.collection
+  assign products_to_show = section.settings.products_to_show | default: 8
+  assign columns = section.settings.columns | default: 4
+
+  assign slide_class = 'carousel__slide'
+  if columns == 3
+    assign slide_class = slide_class | append: ' carousel__slide--3'
+  endif
+
+  assign carousel_id = 'product-carousel-' | append: section.id
+-%}
+
+<section
+  class="{{ section_class }}"
+  aria-labelledby="{{ carousel_id }}-heading"
+  {{ section.shopify_attributes }}
+>
+  <div class="page-width">
+    <div class="section-carousel__header animate-fade-up" data-animate>
+      <div class="section-carousel__title-group">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="section__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="section-carousel__title" id="{{ carousel_id }}-heading">
+            {{ section.settings.heading | escape }}
+          </h2>
+        {%- endif -%}
+        {%- if section.settings.subtitle != blank -%}
+          <p class="section-carousel__subtitle">{{ section.settings.subtitle | escape }}</p>
+        {%- endif -%}
+      </div>
+
+      <div class="section-carousel__controls">
+        <button
+          type="button"
+          class="carousel__nav-btn"
+          data-carousel-prev
+          aria-label="{{ 'general.accessibility.previous' | t }}"
+          aria-controls="{{ carousel_id }}-track"
+        >
+          {%- render 'icon', icon: 'chevron-left' -%}
+        </button>
+        <button
+          type="button"
+          class="carousel__nav-btn"
+          data-carousel-next
+          aria-label="{{ 'general.accessibility.next' | t }}"
+          aria-controls="{{ carousel_id }}-track"
+        >
+          {%- render 'icon', icon: 'chevron-right' -%}
+        </button>
+      </div>
+    </div>
+
+    <div class="section-carousel__track-wrap">
+      <div class="carousel" id="{{ carousel_id }}" data-carousel>
+        <div
+          class="carousel__track"
+          id="{{ carousel_id }}-track"
+          data-carousel-track
+          role="list"
+        >
+          {%- if collection != blank and collection.products_count > 0 -%}
+            {%- for product in collection.products limit: products_to_show -%}
+              <div class="{{ slide_class }}" role="listitem">
+                {%- render 'product-card', product: product, lazy_load: forloop.index > 4 -%}
+              </div>
+            {%- endfor -%}
+          {%- else -%}
+            {%- for i in (1..products_to_show) -%}
+              <div class="{{ slide_class }}" role="listitem">
+                {%- render 'product-card-placeholder' -%}
+              </div>
+            {%- endfor -%}
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+
+    {%- if section.settings.show_view_all and collection != blank -%}
+      <div class="section-carousel__footer animate-fade-up" data-animate style="margin-top: var(--space-6); text-align: center;">
+        {%- render 'button',
+          label: section.settings.view_all_label | default: 'View all',
+          url: collection.url,
+          style: 'secondary'
+        -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<script>
+  (function () {
+    var root = document.getElementById('{{ carousel_id }}');
+    if (!root) return;
+
+    var track = root.querySelector('[data-carousel-track]');
+    var prevBtn = root.closest('.section-carousel').querySelector('[data-carousel-prev]');
+    var nextBtn = root.closest('.section-carousel').querySelector('[data-carousel-next]');
+    if (!track || !prevBtn || !nextBtn) return;
+
+    function getScrollAmount() {
+      var slide = track.querySelector('.carousel__slide');
+      if (!slide) return track.clientWidth * 0.8;
+      var gap = parseFloat(getComputedStyle(track).gap) || 16;
+      return slide.offsetWidth + gap;
+    }
+
+    function updateButtons() {
+      var maxScroll = track.scrollWidth - track.clientWidth - 2;
+      prevBtn.disabled = track.scrollLeft <= 2;
+      nextBtn.disabled = track.scrollLeft >= maxScroll;
+    }
+
+    prevBtn.addEventListener('click', function () {
+      track.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+    });
+
+    nextBtn.addEventListener('click', function () {
+      track.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+    });
+
+    track.addEventListener('scroll', updateButtons, { passive: true });
+    updateButtons();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Product carousel",
+  "tag": "section",
+  "class": "section-product-carousel",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Best sellers"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "What the community is training with"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 4,
+      "max": 16,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns (desktop)",
+      "min": 3,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "background_style",
+      "label": "Background",
+      "options": [
+        { "value": "default", "label": "Default" },
+        { "value": "surface", "label": "Surface" }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show view all link",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "View all label",
+      "default": "View all"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Best sellers",
+      "settings": {
+        "heading": "Best sellers",
+        "subtitle": "What the community is training with"
+      }
+    },
+    {
+      "name": "Trending now",
+      "settings": {
+        "heading": "Trending now",
+        "subtitle": "Fresh drops. Peak performance."
+      }
+    }
+  ]
+}
+{% endschema %}

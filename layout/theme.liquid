@@ -1,0 +1,144 @@
+<!doctype html>
+{%- liquid
+  assign is_rtl = false
+  if request.locale.iso_code == 'ar' or request.locale.root_url contains '/ar' or request.locale.iso_code contains 'ar-'
+    assign is_rtl = true
+  endif
+
+  assign load_product_assets = false
+  assign load_collection_assets = false
+  assign load_appointments_assets = false
+  assign load_account_assets = false
+
+  case template.name
+    when 'product'
+      assign load_product_assets = true
+    when 'collection', 'search', 'list-collections'
+      assign load_collection_assets = true
+    when 'cart'
+      assign load_collection_assets = false
+  endcase
+
+  if template.name == 'page'
+    if template.suffix == 'appointment' or template.suffix == 'coach' or template.suffix == 'account-appointments'
+      assign load_appointments_assets = true
+    endif
+    if template.suffix == 'wishlist' or template.suffix == 'contact' or template.suffix == 'account-appointments'
+      assign load_account_assets = true
+    endif
+  endif
+
+  if template.directory == 'customers'
+    assign load_account_assets = true
+  endif
+-%}
+<html
+  lang="{{ request.locale.iso_code }}"
+  dir="{% if is_rtl %}rtl{% else %}ltr{% endif %}"
+  class="no-js"
+  data-color-scheme-default="{{ settings.color_scheme_default }}"
+  data-animations="{% if settings.enable_animations %}true{% else %}false{% endif %}"
+>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="{{ settings.color_primary }}">
+
+    <script>
+      (function () {
+        var stored = null;
+        try {
+          stored = localStorage.getItem('neutrex-theme');
+        } catch (e) {}
+        var def = document.documentElement.dataset.colorSchemeDefault || 'system';
+        var pref = stored || def;
+        var dark =
+          pref === 'dark' ||
+          (pref === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    {%- render 'meta-tags' -%}
+    {%- render 'css-variables' -%}
+
+    {%- if settings.favicon != blank -%}
+      <link
+        rel="icon"
+        type="image/png"
+        href="{{ settings.favicon | image_url: width: 32, height: 32 }}"
+      >
+      <link
+        rel="apple-touch-icon"
+        href="{{ settings.favicon | image_url: width: 180, height: 180 }}"
+      >
+    {%- endif -%}
+
+    {{ content_for_header }}
+
+    {{ 'base.css' | asset_url | stylesheet_tag: preload: true }}
+    {{ 'components.css' | asset_url | stylesheet_tag }}
+    {{ 'layout.css' | asset_url | stylesheet_tag }}
+    {{ 'animations.css' | asset_url | stylesheet_tag }}
+    {{ 'sections.css' | asset_url | stylesheet_tag }}
+
+    {%- if load_product_assets -%}
+      {{ 'product.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
+    {%- if load_collection_assets -%}
+      {{ 'collection.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
+    {%- if load_appointments_assets -%}
+      {{ 'appointments.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
+    {%- if load_account_assets -%}
+      {{ 'account.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
+
+    {%- render 'schema-organization' -%}
+
+    <script>
+      document.documentElement.classList.replace('no-js', 'js');
+    </script>
+  </head>
+
+  <body
+    class="template-{{ template.name | handle }} {% if template.suffix %}template-{{ template.name | handle }}-{{ template.suffix | handle }}{% endif %}"
+    {% if is_rtl %}data-locale-rtl="true"{% endif %}
+  >
+    <a class="skip-link" href="#MainContent">
+      {{ 'general.accessibility.skip_to_content' | t }}
+    </a>
+
+    {%- section 'announcement-bar' -%}
+    {%- section 'header' -%}
+
+    <main id="MainContent" class="main-content" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {%- section 'footer' -%}
+    {%- section 'cart-drawer' -%}
+    {%- section 'predictive-search' -%}
+    {%- section 'whatsapp-float' -%}
+
+    <script src="{{ 'theme.js' | asset_url }}" defer></script>
+    <script src="{{ 'animations.js' | asset_url }}" defer></script>
+    <script src="{{ 'predictive-search.js' | asset_url }}" defer></script>
+    <script src="{{ 'cart-drawer.js' | asset_url }}" defer></script>
+
+    {%- if load_product_assets -%}
+      <script src="{{ 'product.js' | asset_url }}" defer></script>
+    {%- endif -%}
+    {%- if load_collection_assets -%}
+      <script src="{{ 'collection.js' | asset_url }}" defer></script>
+    {%- endif -%}
+    {%- if load_appointments_assets -%}
+      <script src="{{ 'appointments.js' | asset_url }}" defer></script>
+    {%- endif -%}
+  </body>
+</html>

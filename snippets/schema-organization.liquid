@@ -1,0 +1,65 @@
+{%- comment -%}
+  Organization + LocalBusiness JSON-LD from theme settings.
+{%- endcomment -%}
+
+{%- liquid
+  assign org_name = settings.seo_organization_name | default: settings.brand_name | default: shop.name
+  assign org_phone = settings.seo_phone | default: settings.whatsapp_number
+  assign org_address = settings.seo_address | default: settings.business_location
+-%}
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": {{ request.origin | append: '/#organization' | json }},
+        "name": {{ org_name | json }},
+        "url": {{ shop.url | json }}
+        {%- if settings.logo != blank -%}
+        ,"logo": {
+          "@type": "ImageObject",
+          "url": {{ settings.logo | image_url: width: 512 | prepend: 'https:' | json }}
+        }
+        {%- endif -%}
+        {%- capture same_as_links -%}
+          {%- if settings.social_instagram != blank -%}{{ settings.social_instagram | json }},{%- endif -%}
+          {%- if settings.social_tiktok != blank -%}{{ settings.social_tiktok | json }},{%- endif -%}
+          {%- if settings.social_youtube != blank -%}{{ settings.social_youtube | json }},{%- endif -%}
+          {%- if settings.social_twitter != blank -%}{{ settings.social_twitter | json }},{%- endif -%}
+          {%- if settings.social_facebook != blank -%}{{ settings.social_facebook | json }}{%- endif -%}
+        {%- endcapture -%}
+        {%- assign same_as_trimmed = same_as_links | strip -%}
+        {%- if same_as_trimmed != blank -%}
+        ,"sameAs": [{{ same_as_trimmed }}]
+        {%- endif -%}
+      },
+      {
+        "@type": "LocalBusiness",
+        "@id": {{ request.origin | append: '/#localbusiness' | json }},
+        "name": {{ org_name | json }},
+        "url": {{ shop.url | json }},
+        "parentOrganization": {
+          "@id": {{ request.origin | append: '/#organization' | json }}
+        }
+        {%- if org_phone != blank -%}
+        ,"telephone": {{ org_phone | json }}
+        {%- endif -%}
+        {%- if org_address != blank -%}
+        ,"address": {
+          "@type": "PostalAddress",
+          "streetAddress": {{ org_address | json }}
+        }
+        {%- endif -%}
+        {%- if settings.business_hours != blank -%}
+        ,"openingHours": {{ settings.business_hours | json }}
+        {%- endif -%}
+        {%- if settings.business_location != blank -%}
+        ,"areaServed": {{ settings.business_location | json }}
+        {%- endif -%}
+        ,"priceRange": "$$"
+      }
+    ]
+  }
+</script>

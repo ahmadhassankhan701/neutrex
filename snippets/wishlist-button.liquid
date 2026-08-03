@@ -1,0 +1,34 @@
+{%- comment -%}
+  Wishlist toggle button (localStorage via theme.js).
+  @param {product} [product] - Product object
+  @param {string} [product_id] - Product id override
+  @param {string} [product_handle] - Product handle override
+  @param {string} [class] - Additional CSS classes
+{%- endcomment -%}
+
+{%- liquid
+  assign wl_id = product_id | default: product.id
+  assign wl_handle = product_handle | default: product.handle
+  assign wl_class = 'product-card__action-btn wishlist-btn'
+  if class != blank
+    assign wl_class = wl_class | append: ' ' | append: class
+  endif
+-%}
+
+<button
+  type="button"
+  class="{{ wl_class }}"
+  data-wishlist-toggle
+  data-product-id="{{ wl_id }}"
+  data-product-handle="{{ wl_handle | escape }}"
+  aria-pressed="false"
+  aria-label="{{ 'products.wishlist_add' | t }}"
+>
+  <span class="wishlist-btn__icon wishlist-btn__icon--add">
+    {%- render 'icon', icon: 'heart' -%}
+  </span>
+  <span class="wishlist-btn__icon wishlist-btn__icon--remove visually-hidden">
+    {%- render 'icon', icon: 'heart-filled' -%}
+  </span>
+  <span class="visually-hidden">{{ 'products.wishlist_add' | t }}</span>
+</button>

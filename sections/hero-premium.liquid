@@ -1,0 +1,371 @@
+{%- liquid
+  assign section_id = 'hero-premium-' | append: section.id
+  assign hero_class = 'hero-premium'
+  unless section.settings.full_viewport
+    assign hero_class = hero_class | append: ' hero-premium--compact'
+  endunless
+  if section.settings.text_alignment == 'center'
+    assign hero_class = hero_class | append: ' hero-premium--center'
+  endif
+-%}
+
+<section
+  id="{{ section_id }}"
+  class="{{ hero_class }}"
+  aria-label="{{ section.settings.heading | strip_html | escape }}"
+  {{ section.shopify_attributes }}
+>
+  <div class="hero-premium__bg" aria-hidden="true">
+    {%- if section.settings.video_url != blank -%}
+      <video
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        poster="{%- if section.settings.background_image != blank -%}{{ section.settings.background_image | image_url: width: 1920 }}{%- endif -%}"
+      >
+        <source src="{{ section.settings.video_url | escape }}" type="video/mp4">
+      </video>
+    {%- elsif section.settings.background_image != blank -%}
+      {%- render 'media',
+        image: section.settings.background_image,
+        alt: '',
+        class: 'hero-premium__bg-image',
+        loading: 'eager',
+        widths: '900,1200,1600,1920,2400',
+        sizes: '100vw'
+      -%}
+    {%- endif -%}
+    <div class="hero-premium__overlay"></div>
+  </div>
+
+  <div class="hero-premium__content">
+    <div
+      class="hero-premium__text animate-fade-up"
+      data-animate
+    >
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="hero-premium__eyebrow animate-fade-up animate-fade-up--delay-1" data-animate>
+          {{ section.settings.eyebrow | escape }}
+        </p>
+      {%- endif -%}
+
+      {%- if section.settings.heading != blank -%}
+        <h1 class="hero-premium__title animate-fade-up animate-fade-up--delay-2" data-animate>
+          {{ section.settings.heading }}
+        </h1>
+      {%- endif -%}
+
+      {%- if section.settings.subheading != blank -%}
+        <p class="hero-premium__subtitle animate-fade-up animate-fade-up--delay-3" data-animate>
+          {{ section.settings.subheading | escape }}
+        </p>
+      {%- endif -%}
+
+      <div class="hero-premium__ctas animate-fade-up animate-fade-up--delay-4" data-animate>
+        {%- liquid
+          assign cta_primary_label = section.settings.cta_primary_label | default: 'sections.hero.shop_now' | t
+          assign cta_secondary_label = section.settings.cta_secondary_label | default: 'sections.hero.book_training' | t
+        -%}
+        {%- render 'button',
+          label: cta_primary_label,
+          url: section.settings.cta_primary_url,
+          style: 'gold',
+          size: 'lg',
+          class: 'btn-ripple'
+        -%}
+        {%- render 'button',
+          label: cta_secondary_label,
+          url: section.settings.cta_secondary_url,
+          style: 'ghost',
+          size: 'lg',
+          class: 'btn-ripple'
+        -%}
+      </div>
+    </div>
+
+    <div class="hero-premium__visual">
+      {%- if section.settings.athlete_image != blank -%}
+        <div
+          class="hero-premium__float image-reveal parallax"
+          data-animate
+          data-parallax="0.12"
+        >
+          {%- render 'media',
+            image: section.settings.athlete_image,
+            alt: section.settings.athlete_image.alt | default: section.settings.heading | strip_html,
+            class: 'hero-premium__athlete',
+            loading: 'eager',
+            widths: '400,600,800,1000,1200',
+            sizes: '(min-width: 990px) 45vw, 80vw'
+          -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <div class="product-float" aria-hidden="true">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'floating_product' and block.settings.image != blank -%}
+              {%- liquid
+                assign float_class = 'hero-premium__float-item'
+                case block.settings.offset_style
+                  when 'accent'
+                    assign float_class = float_class | append: ' hero-premium__float-item--accent'
+                  when 'main'
+                    assign float_class = float_class | append: ' hero-premium__float-item--main'
+                endcase
+                assign float_speed = block.settings.float_speed | default: 'slow'
+              -%}
+              <div
+                class="{{ float_class }} float-3d float-3d--{{ float_speed }} parallax"
+                data-parallax="{{ block.settings.parallax_speed | default: 0.2 }}"
+                style="--float-y: {{ block.settings.float_offset | default: -12 }}px; --float-rotate: {{ block.settings.float_rotate | default: 4 }}deg;"
+                {{ block.shopify_attributes }}
+              >
+                {%- render 'media',
+                  image: block.settings.image,
+                  alt: block.settings.image.alt,
+                  loading: 'lazy',
+                  widths: '200,300,400,500',
+                  sizes: '200px'
+                -%}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+          <div class="product-float__glow"></div>
+          <div class="product-float__shadow"></div>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if section.settings.show_scroll_hint -%}
+    <div class="hero-premium__scroll" aria-hidden="true">
+      <span>{{ section.settings.scroll_hint | default: 'Scroll' | escape }}</span>
+      <span class="hero-premium__scroll-line"></span>
+    </div>
+  {%- endif -%}
+</section>
+
+<style>
+  .hero-premium--compact {
+    min-height: min(85svh, 42rem);
+  }
+  .hero-premium--compact .hero-premium__content {
+    min-height: auto;
+  }
+  .hero-premium--center .hero-premium__content {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .hero-premium--center .hero-premium__text {
+    max-width: none;
+    margin-inline: auto;
+  }
+  .hero-premium--center .hero-premium__ctas {
+    justify-content: center;
+  }
+  .hero-premium--center .hero-premium__subtitle {
+    margin-inline: auto;
+  }
+  .hero-premium__athlete {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-2xl);
+    box-shadow: 0 32px 64px rgba(0, 0, 0, 0.35);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Hero premium",
+  "tag": "section",
+  "class": "section-hero-premium section--flush",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Luxury Performance Fitness"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Train like an <em>elite</em> athlete"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Premium supplements, performance apparel, and world-class coaching — engineered for athletes who refuse to settle."
+    },
+    {
+      "type": "header",
+      "content": "Primary CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_primary_label",
+      "label": "Label",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "cta_primary_url",
+      "label": "URL"
+    },
+    {
+      "type": "header",
+      "content": "Secondary CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_secondary_label",
+      "label": "Label",
+      "default": "Book Training"
+    },
+    {
+      "type": "url",
+      "id": "cta_secondary_url",
+      "label": "URL"
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
+      "type": "text",
+      "id": "video_url",
+      "label": "Background video URL (MP4)",
+      "info": "Overrides background image when set"
+    },
+    {
+      "type": "image_picker",
+      "id": "athlete_image",
+      "label": "Athlete / hero image"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_viewport",
+      "label": "Full viewport height",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        { "value": "start", "label": "Start" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "start"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_hint",
+      "label": "Show scroll hint",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "scroll_hint",
+      "label": "Scroll hint text",
+      "default": "Scroll"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "floating_product",
+      "name": "Floating product",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "select",
+          "id": "offset_style",
+          "label": "Position style",
+          "options": [
+            { "value": "main", "label": "Main (center)" },
+            { "value": "accent", "label": "Accent (corner)" }
+          ],
+          "default": "accent"
+        },
+        {
+          "type": "select",
+          "id": "float_speed",
+          "label": "Float speed",
+          "options": [
+            { "value": "slow", "label": "Slow" },
+            { "value": "fast", "label": "Fast" }
+          ],
+          "default": "slow"
+        },
+        {
+          "type": "range",
+          "id": "parallax_speed",
+          "label": "Parallax speed",
+          "min": 0,
+          "max": 0.5,
+          "step": 0.05,
+          "default": 0.2
+        },
+        {
+          "type": "range",
+          "id": "float_offset",
+          "label": "Float offset (px)",
+          "min": -24,
+          "max": 24,
+          "step": 2,
+          "default": -12
+        },
+        {
+          "type": "range",
+          "id": "float_rotate",
+          "label": "Float rotation (deg)",
+          "min": 0,
+          "max": 12,
+          "step": 1,
+          "default": 4
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero premium",
+      "blocks": [
+        {
+          "type": "floating_product",
+          "settings": {
+            "offset_style": "main"
+          }
+        },
+        {
+          "type": "floating_product",
+          "settings": {
+            "offset_style": "accent"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

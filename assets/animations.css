@@ -1,0 +1,558 @@
+/* Neutrex — Animations & Motion
+   Tasteful, performance-conscious effects */
+
+/* -------------------------------------------------------------------------- */
+/* CSS Custom Properties for Motion                                            */
+/* -------------------------------------------------------------------------- */
+:root {
+  --ripple-x: 50%;
+  --ripple-y: 50%;
+  --parallax-offset: 0px;
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  --float-y: 0px;
+  --float-rotate: 0deg;
+  --counter-value: 0;
+  --page-transition-duration: 400ms;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Fade Up                                                                     */
+/* -------------------------------------------------------------------------- */
+.animate-fade-up {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity var(--duration-slow) var(--ease-out),
+    transform var(--duration-slow) var(--ease-out);
+}
+
+.animate-fade-up.is-visible,
+.animate-fade-up[data-animate].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.animate-fade-up--delay-1 { transition-delay: 100ms; }
+.animate-fade-up--delay-2 { transition-delay: 200ms; }
+.animate-fade-up--delay-3 { transition-delay: 300ms; }
+.animate-fade-up--delay-4 { transition-delay: 400ms; }
+.animate-fade-up--delay-5 { transition-delay: 500ms; }
+
+.animate-fade-up--sm {
+  transform: translateY(16px);
+}
+
+.animate-fade-up--lg {
+  transform: translateY(48px);
+}
+
+/* Stagger children */
+.animate-stagger > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity var(--duration-slow) var(--ease-out),
+    transform var(--duration-slow) var(--ease-out);
+}
+
+.animate-stagger.is-visible > *:nth-child(1) { transition-delay: 0ms; }
+.animate-stagger.is-visible > *:nth-child(2) { transition-delay: 80ms; }
+.animate-stagger.is-visible > *:nth-child(3) { transition-delay: 160ms; }
+.animate-stagger.is-visible > *:nth-child(4) { transition-delay: 240ms; }
+.animate-stagger.is-visible > *:nth-child(5) { transition-delay: 320ms; }
+.animate-stagger.is-visible > *:nth-child(6) { transition-delay: 400ms; }
+.animate-stagger.is-visible > *:nth-child(7) { transition-delay: 480ms; }
+.animate-stagger.is-visible > *:nth-child(8) { transition-delay: 560ms; }
+
+.animate-stagger.is-visible > * {
+  opacity: 1;
+  transform: none;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Counter Animation                                                          */
+/* -------------------------------------------------------------------------- */
+.animate-counter {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+}
+
+.animate-counter.is-counting {
+  animation: counter-pulse 0.3s var(--ease-out);
+}
+
+@keyframes counter-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); color: var(--color-primary); }
+  100% { transform: scale(1); }
+}
+
+.animate-counter__suffix {
+  font-size: 0.65em;
+  margin-inline-start: 0.1em;
+  opacity: 0.8;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Parallax Helpers                                                            */
+/* -------------------------------------------------------------------------- */
+.parallax {
+  --parallax-speed: 0.3;
+  transform: translateY(calc(var(--parallax-offset) * var(--parallax-speed)));
+  will-change: transform;
+}
+
+.parallax--slow {
+  --parallax-speed: 0.15;
+}
+
+.parallax--fast {
+  --parallax-speed: 0.5;
+}
+
+.parallax-container {
+  overflow: hidden;
+  position: relative;
+}
+
+.parallax-layer {
+  position: absolute;
+  inset: -10% 0;
+  will-change: transform;
+}
+
+.parallax-layer--back {
+  transform: translateY(calc(var(--parallax-offset) * 0.2));
+}
+
+.parallax-layer--front {
+  transform: translateY(calc(var(--parallax-offset) * -0.15));
+}
+
+/* -------------------------------------------------------------------------- */
+/* Card Tilt                                                                   */
+/* -------------------------------------------------------------------------- */
+.card-tilt {
+  transform-style: preserve-3d;
+  transform: perspective(800px) rotateX(var(--tilt-y)) rotateY(var(--tilt-x));
+  transition: transform 0.1s linear;
+  will-change: transform;
+}
+
+.card-tilt__shine {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at var(--ripple-x) var(--ripple-y),
+    rgba(255, 255, 255, 0.18) 0%,
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity var(--duration) var(--ease-out);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.card-tilt:hover .card-tilt__shine {
+  opacity: 1;
+}
+
+.card-tilt__content {
+  transform: translateZ(20px);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Image Reveal                                                                */
+/* -------------------------------------------------------------------------- */
+.image-reveal {
+  position: relative;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.image-reveal::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-primary);
+  transform: scaleX(1);
+  transform-origin: inset-inline-end;
+  transition: transform var(--duration-slow) var(--ease-in-out);
+  z-index: 1;
+}
+
+.image-reveal.is-revealed::after {
+  transform: scaleX(0);
+}
+
+.image-reveal img {
+  transform: scale(1.15);
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.image-reveal.is-revealed img {
+  transform: scale(1);
+}
+
+.image-reveal--vertical::after {
+  transform: scaleY(1);
+  transform-origin: bottom;
+}
+
+.image-reveal--vertical.is-revealed::after {
+  transform: scaleY(0);
+}
+
+.image-reveal--gold::after {
+  background: var(--gradient-gold);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Button Ripple Variables                                                     */
+/* -------------------------------------------------------------------------- */
+.btn-ripple {
+  --ripple-x: 50%;
+  --ripple-y: 50%;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-ripple::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--ripple-x) var(--ripple-y),
+    rgba(255, 255, 255, 0.4) 0%,
+    transparent 55%
+  );
+  opacity: 0;
+  transform: scale(0);
+  transition:
+    opacity var(--duration-slow) var(--ease-out),
+    transform var(--duration-slow) var(--ease-out);
+  pointer-events: none;
+}
+
+.btn-ripple:active::before {
+  opacity: 1;
+  transform: scale(2.5);
+  transition: none;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Page Transition                                                             */
+/* -------------------------------------------------------------------------- */
+.page-transition {
+  animation: page-enter var(--page-transition-duration) var(--ease-out) forwards;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.page-transition-exit {
+  animation: page-exit calc(var(--page-transition-duration) * 0.75) var(--ease-in-out) forwards;
+}
+
+@keyframes page-exit {
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+/* View Transitions API support */
+@supports (view-transition-name: none) {
+  ::view-transition-old(root) {
+    animation: page-exit var(--page-transition-duration) var(--ease-in-out);
+  }
+
+  ::view-transition-new(root) {
+    animation: page-enter var(--page-transition-duration) var(--ease-out);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Floating 3D Product Helpers                                                 */
+/* -------------------------------------------------------------------------- */
+.float-3d {
+  transform-style: preserve-3d;
+  animation: float-3d 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+.float-3d--slow {
+  animation-duration: 8s;
+}
+
+.float-3d--fast {
+  animation-duration: 4s;
+}
+
+@keyframes float-3d {
+  0%, 100% {
+    transform:
+      translateY(0)
+      rotateX(var(--float-rotate))
+      rotateY(calc(var(--float-rotate) * 0.5));
+  }
+  50% {
+    transform:
+      translateY(calc(var(--float-y, -12px)))
+      rotateX(calc(var(--float-rotate) * -1))
+      rotateY(calc(var(--float-rotate) * -0.5));
+  }
+}
+
+.product-float {
+  position: relative;
+  perspective: 1000px;
+}
+
+.product-float__item {
+  transform-style: preserve-3d;
+  animation: product-orbit 12s linear infinite;
+  filter: drop-shadow(0 24px 48px rgba(30, 30, 30, 0.2));
+}
+
+[data-theme="dark"] .product-float__item {
+  filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.5));
+}
+
+@keyframes product-orbit {
+  0% { transform: rotateY(0deg) translateZ(0); }
+  25% { transform: rotateY(90deg) translateY(-8px); }
+  50% { transform: rotateY(180deg) translateZ(0); }
+  75% { transform: rotateY(270deg) translateY(-8px); }
+  100% { transform: rotateY(360deg) translateZ(0); }
+}
+
+.product-float__shadow {
+  position: absolute;
+  inset-block-end: -1rem;
+  inset-inline: 15%;
+  height: 1rem;
+  background: radial-gradient(ellipse, rgba(30, 30, 30, 0.25) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: shadow-pulse 6s ease-in-out infinite;
+}
+
+@keyframes shadow-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(0.85); opacity: 0.35; }
+}
+
+.product-float__glow {
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(circle, var(--color-primary-soft) 0%, transparent 65%);
+  pointer-events: none;
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.1); }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Additional Utility Animations                                               */
+/* -------------------------------------------------------------------------- */
+.animate-scale-in {
+  opacity: 0;
+  transform: scale(0.92);
+  transition:
+    opacity var(--duration-slow) var(--ease-out),
+    transform var(--duration-slow) var(--ease-out);
+}
+
+.animate-scale-in.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.animate-slide-in-start {
+  opacity: 0;
+  transform: translateX(-24px);
+  transition:
+    opacity var(--duration-slow) var(--ease-out),
+    transform var(--duration-slow) var(--ease-out);
+}
+
+[dir="rtl"] .animate-slide-in-start {
+  transform: translateX(24px);
+}
+
+.animate-slide-in-start.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.animate-slide-in-end {
+  opacity: 0;
+  transform: translateX(24px);
+  transition:
+    opacity var(--duration-slow) var(--ease-out),
+    transform var(--duration-slow) var(--ease-out);
+}
+
+[dir="rtl"] .animate-slide-in-end {
+  transform: translateX(-24px);
+}
+
+.animate-slide-in-end.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.animate-blur-in {
+  opacity: 0;
+  filter: blur(8px);
+  transition:
+    opacity var(--duration-slow) var(--ease-out),
+    filter var(--duration-slow) var(--ease-out);
+}
+
+.animate-blur-in.is-visible {
+  opacity: 1;
+  filter: none;
+}
+
+.animate-line-draw {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  transition: stroke-dashoffset 1.2s var(--ease-out);
+}
+
+.animate-line-draw.is-visible {
+  stroke-dashoffset: 0;
+}
+
+/* Marquee (subtle, for announcement or logos) */
+.animate-marquee {
+  display: flex;
+  overflow: hidden;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 10%,
+    #000 90%,
+    transparent
+  );
+}
+
+[dir="rtl"] .animate-marquee {
+  mask-image: linear-gradient(
+    to left,
+    transparent,
+    #000 10%,
+    #000 90%,
+    transparent
+  );
+}
+
+.animate-marquee__track {
+  display: flex;
+  gap: var(--space-8);
+  animation: marquee 30s linear infinite;
+  white-space: nowrap;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+[dir="rtl"] .animate-marquee__track {
+  animation-direction: reverse;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Prefers Reduced Motion Overrides                                            */
+/* -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-fade-up--sm,
+  .animate-fade-up--lg,
+  .animate-stagger > *,
+  [data-animate] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .animate-counter.is-counting {
+    animation: none;
+  }
+
+  .parallax,
+  .parallax-layer,
+  .parallax-layer--back,
+  .parallax-layer--front {
+    transform: none !important;
+  }
+
+  .card-tilt {
+    transform: none !important;
+  }
+
+  .card-tilt__shine {
+    display: none;
+  }
+
+  .image-reveal::after {
+    display: none;
+  }
+
+  .image-reveal img {
+    transform: none !important;
+  }
+
+  .btn-ripple::before {
+    display: none;
+  }
+
+  .page-transition,
+  .page-transition-exit {
+    animation: none !important;
+  }
+
+  .float-3d,
+  .product-float__item {
+    animation: none !important;
+  }
+
+  .product-float__shadow,
+  .product-float__glow {
+    animation: none !important;
+  }
+
+  .animate-scale-in,
+  .animate-slide-in-start,
+  .animate-slide-in-end,
+  .animate-blur-in {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+
+  .animate-line-draw {
+    stroke-dashoffset: 0 !important;
+    transition: none !important;
+  }
+
+  .animate-marquee__track {
+    animation: none !important;
+  }
+}

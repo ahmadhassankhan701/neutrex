@@ -1,0 +1,53 @@
+<div class="auth" {{ section.shopify_attributes }}>
+  <div class="auth__panel">
+    <h1 class="auth__title">Activate account</h1>
+    <p class="auth__subtitle">{{ section.settings.subtitle | default: 'Create a password to activate your account.' | escape }}</p>
+
+    {%- form 'activate_customer_password', class: 'auth__form' -%}
+      {%- if form.errors -%}
+        <div class="auth__error" role="alert">{{ form.errors | default_errors }}</div>
+      {%- endif -%}
+
+      <div class="field field--password">
+        <label class="field__label" for="ActivatePassword">{{ 'customer.register.password' | t }}</label>
+        <input type="password" name="customer[password]" id="ActivatePassword" class="field__input" autocomplete="new-password" required>
+      </div>
+
+      <div class="field field--password">
+        <label class="field__label" for="ActivatePasswordConfirm">Confirm password</label>
+        <input type="password" name="customer[password_confirmation]" id="ActivatePasswordConfirm" class="field__input" autocomplete="new-password" required>
+      </div>
+
+      {%- liquid
+        assign activate_label = section.settings.submit_label | default: 'Activate account'
+      -%}
+      {%- render 'button', label: activate_label, style: 'primary', full_width: true, type: 'submit' -%}
+    {%- endform -%}
+
+    <p class="auth__footer">
+      <a href="{{ routes.account_login_url }}">{{ 'account.login' | t }}</a>
+    </p>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Activate account",
+  "tag": "section",
+  "class": "section-main-activate-account",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Create a password to activate your account."
+    },
+    {
+      "type": "text",
+      "id": "submit_label",
+      "label": "Submit button label",
+      "default": "Activate account"
+    }
+  ]
+}
+{% endschema %}

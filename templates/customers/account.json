@@ -1,0 +1,16 @@
+{
+  "layout": "theme",
+  "sections": {
+    "main": {
+      "type": "main-account",
+      "settings": {
+        "subtitle": "Manage your orders, addresses, and saved items.",
+        "wishlist_page": "/pages/wishlist",
+        "appointments_page": "/pages/account-appointments",
+        "show_rewards": true,
+        "show_recently_viewed": true
+      }
+    }
+  },
+  "order": ["main"]
+}

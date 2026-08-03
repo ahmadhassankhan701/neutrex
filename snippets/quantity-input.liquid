@@ -1,0 +1,55 @@
+{%- comment -%}
+  Quantity stepper input.
+  @param {string} [name] - Input name (default quantity)
+  @param {number} [value] - Initial value (default 1)
+  @param {number} [min] - Minimum (default 1)
+  @param {number} [max] - Maximum (default 999)
+  @param {string} [id] - Input id
+  @param {string} [class] - Additional wrapper classes
+{%- endcomment -%}
+
+{%- liquid
+  assign qty_name = name | default: 'quantity'
+  assign qty_value = value | default: 1
+  assign qty_min = min | default: 1
+  assign qty_max = max | default: 999
+  assign qty_id = id | default: qty_name
+  assign wrapper_class = 'qty-selector'
+  if class != blank
+    assign wrapper_class = wrapper_class | append: ' ' | append: class
+  endif
+-%}
+
+<div class="{{ wrapper_class }}" data-quantity-stepper>
+  <button
+    type="button"
+    class="qty-selector__btn"
+    data-quantity-minus
+    aria-label="{{ 'products.quantity' | t }} −"
+  >
+    {%- render 'icon', icon: 'minus', size: 'sm' -%}
+  </button>
+
+  <input
+    type="number"
+    class="qty-selector__input"
+    name="{{ qty_name | escape }}"
+    id="{{ qty_id | escape }}"
+    value="{{ qty_value }}"
+    min="{{ qty_min }}"
+    max="{{ qty_max }}"
+    data-quantity-input
+    inputmode="numeric"
+    pattern="[0-9]*"
+    aria-label="{{ 'products.quantity' | t }}"
+  >
+
+  <button
+    type="button"
+    class="qty-selector__btn"
+    data-quantity-plus
+    aria-label="{{ 'products.quantity' | t }} +"
+  >
+    {%- render 'icon', icon: 'plus', size: 'sm' -%}
+  </button>
+</div>

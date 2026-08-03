@@ -1,0 +1,175 @@
+{%- liquid
+  assign limit = section.settings.products_to_show | default: 4
+  assign heading = section.settings.heading | default: 'products.related' | t
+  assign fallback_collection = section.settings.fallback_collection
+  assign intent = section.settings.intent | default: 'related'
+-%}
+
+<product-recommendations
+  class="pdp-related page-width"
+  data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ limit }}&intent={{ intent }}"
+  data-fallback-collection="{{ fallback_collection.handle | default: '' }}"
+  data-limit="{{ limit }}"
+  {{ section.shopify_attributes }}
+>
+  {%- if recommendations.performed and recommendations.products_count > 0 -%}
+    <div class="pdp-related__header">
+      <h2 class="pdp-related__title">{{ heading | escape }}</h2>
+    </div>
+    <div class="collection-grid collection-grid--4" data-product-grid>
+      {%- for rec_product in recommendations.products limit: limit -%}
+        {%- render 'product-card', product: rec_product -%}
+      {%- endfor -%}
+    </div>
+  {%- elsif fallback_collection != blank and fallback_collection.products_count > 0 -%}
+    <div class="pdp-related__header">
+      <h2 class="pdp-related__title">{{ heading | escape }}</h2>
+      <a href="{{ fallback_collection.url }}" class="pdp-related__link">
+        {{ 'search.view_all' | t }}
+      </a>
+    </div>
+    <div class="collection-grid collection-grid--4" data-product-grid>
+      {%- for rec_product in fallback_collection.products limit: limit -%}
+        {%- unless rec_product.id == product.id -%}
+          {%- render 'product-card', product: rec_product -%}
+        {%- endunless -%}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  {%- if fallback_collection != blank and fallback_collection.products_count > 0 -%}
+    <template data-recommendations-fallback hidden>
+      <div class="pdp-related__header">
+        <h2 class="pdp-related__title">{{ heading | escape }}</h2>
+        <a href="{{ fallback_collection.url }}" class="pdp-related__link">
+          {{ 'search.view_all' | t }}
+        </a>
+      </div>
+      <div class="collection-grid collection-grid--4" data-product-grid>
+        {%- for rec_product in fallback_collection.products limit: limit -%}
+          {%- unless rec_product.id == product.id -%}
+            {%- render 'product-card', product: rec_product -%}
+          {%- endunless -%}
+        {%- endfor -%}
+      </div>
+    </template>
+  {%- endif -%}
+</product-recommendations>
+
+<script>
+  (function () {
+    'use strict';
+
+    class ProductRecommendations extends HTMLElement {
+      constructor() {
+        super();
+        this.observer = null;
+      }
+
+      connectedCallback() {
+        if ('IntersectionObserver' in window) {
+          this.observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  this.load();
+                  this.observer.unobserve(this);
+                }
+              });
+            },
+            { rootMargin: '200px' }
+          );
+          this.observer.observe(this);
+        } else {
+          this.load();
+        }
+      }
+
+      disconnectedCallback() {
+        this.observer?.disconnect();
+      }
+
+      async load() {
+        if (this.dataset.loaded === 'true') return;
+        const url = this.dataset.url;
+        if (!url) return;
+
+        try {
+          const response = await fetch(url);
+          if (!response.ok) throw new Error('Recommendations fetch failed');
+          const html = await response.text();
+          const doc = new DOMParser().parseFromString(html, 'text/html');
+          const content = doc.querySelector('product-recommendations');
+          if (content && content.innerHTML.trim()) {
+            this.innerHTML = content.innerHTML;
+            this.dataset.loaded = 'true';
+            window.NeutrexTheme?.Collection?.init(this);
+            return;
+          }
+          await this.loadFallback();
+        } catch (error) {
+          console.error('[Neutrex] Product recommendations failed', error);
+          await this.loadFallback();
+        }
+      }
+
+      async loadFallback() {
+        const fallback = this.querySelector('[data-recommendations-fallback]');
+        if (!fallback || this.dataset.loaded === 'true') return;
+        this.innerHTML = fallback.innerHTML;
+        this.dataset.loaded = 'true';
+        window.NeutrexTheme?.Collection?.init(this);
+      }
+    }
+
+    if (!customElements.get('product-recommendations')) {
+      customElements.define('product-recommendations', ProductRecommendations);
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Product recommendations",
+  "tag": "section",
+  "class": "section-product-recommendations",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "You may also like"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "intent",
+      "label": "Recommendation intent",
+      "options": [
+        { "value": "related", "label": "Related" },
+        { "value": "complementary", "label": "Complementary" }
+      ],
+      "default": "related"
+    },
+    {
+      "type": "collection",
+      "id": "fallback_collection",
+      "label": "Fallback collection",
+      "info": "Shown when Shopify recommendations are empty"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product recommendations"
+    }
+  ]
+}
+{% endschema %}

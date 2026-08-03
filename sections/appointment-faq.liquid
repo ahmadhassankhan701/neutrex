@@ -1,0 +1,117 @@
+<section class="section" {{ section.shopify_attributes }}>
+  <div class="page-width" style="max-width: 48rem;">
+    <header class="section-header" style="text-align: center; margin-bottom: var(--space-7);">
+      <h2 class="section-header__title">{{ section.settings.title | default: 'appointments.faq' | t | escape }}</h2>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="section-header__subtitle">{{ section.settings.subtitle | escape }}</p>
+      {%- endif -%}
+    </header>
+
+
+    <div class="accordion" data-accordion="single">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'question' -%}
+          {%- assign panel_id = 'faq-panel-' | append: section.id | append: '-' | append: block.id -%}
+          <div class="accordion__item" {{ block.shopify_attributes }}>
+            <button
+              type="button"
+              class="accordion__trigger"
+              data-accordion-trigger
+              id="faq-trigger-{{ block.id }}"
+              aria-controls="{{ panel_id }}"
+              aria-expanded="{% if forloop.first and section.settings.open_first %}true{% else %}false{% endif %}"
+            >
+              <span>{{ block.settings.question | escape }}</span>
+              {%- render 'icon', icon: 'plus', class: 'accordion__icon' -%}
+            </button>
+            <div
+              class="accordion__panel{% if forloop.first and section.settings.open_first %} is-open{% endif %}"
+              id="{{ panel_id }}"
+              role="region"
+              aria-labelledby="faq-trigger-{{ block.id }}"
+              {% unless forloop.first and section.settings.open_first %}hidden{% endunless %}
+            >
+              <div class="rte">{{ block.settings.answer }}</div>
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Appointment FAQ",
+  "tag": "section",
+  "class": "section-appointment-faq",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "FAQ"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Everything you need to know before booking."
+    },
+    {
+      "type": "checkbox",
+      "id": "open_first",
+      "label": "Open first item by default",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "How do I confirm my booking?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>After selecting your coach, date, and time, tap Confirm to send your request via WhatsApp. Our team will reply within business hours.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Appointment FAQ",
+      "blocks": [
+        {
+          "type": "question",
+          "settings": {
+            "question": "How do I confirm my booking?",
+            "answer": "<p>Tap Confirm booking to send your details via WhatsApp. We'll confirm availability and payment options.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "Can I reschedule?",
+            "answer": "<p>Yes — message us at least 24 hours before your session to reschedule at no extra charge.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "What should I bring?",
+            "answer": "<p>Wear comfortable training gear, bring water, and arrive 10 minutes early for your first session.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

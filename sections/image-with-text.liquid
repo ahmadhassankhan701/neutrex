@@ -1,0 +1,220 @@
+{%- liquid
+  assign section_class = 'section image-with-text'
+  if section.settings.background_style == 'surface'
+    assign section_class = section_class | append: ' section--surface'
+  endif
+  if section.settings.reverse
+    assign section_class = section_class | append: ' image-with-text--reverse'
+  endif
+-%}
+
+<section
+  class="{{ section_class }}"
+  aria-labelledby="ImageWithText-{{ section.id }}"
+  {{ section.shopify_attributes }}
+>
+  <div class="page-width">
+    <div class="image-with-text__grid">
+      <div
+        class="image-with-text__media animate-slide-in-start image-reveal"
+        data-animate
+      >
+        {%- if section.settings.image != blank -%}
+          {%- render 'media',
+            image: section.settings.image,
+            alt: section.settings.image.alt | default: section.settings.heading,
+            loading: 'lazy',
+            widths: '400,600,800,1000,1200',
+            sizes: '(min-width: 990px) 45vw, 100vw'
+          -%}
+        {%- else -%}
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder' }}
+        {%- endif -%}
+      </div>
+
+      <div class="image-with-text__content animate-slide-in-end" data-animate>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="section__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.heading != blank -%}
+          <h2 class="image-with-text__title" id="ImageWithText-{{ section.id }}">
+            {{ section.settings.heading | escape }}
+          </h2>
+        {%- endif -%}
+
+        {%- if section.settings.text != blank -%}
+          <div class="image-with-text__text rte">{{ section.settings.text }}</div>
+        {%- endif -%}
+
+        {%- if section.settings.button_label != blank -%}
+          <div class="image-with-text__cta">
+            {%- render 'button',
+              label: section.settings.button_label,
+              url: section.settings.button_url,
+              style: section.settings.button_style,
+              class: 'btn-ripple'
+            -%}
+          {%- if section.settings.button_secondary_label != blank -%}
+            {%- render 'button',
+              label: section.settings.button_secondary_label,
+              url: section.settings.button_secondary_url,
+              style: 'secondary'
+            -%}
+          {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .image-with-text__grid {
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: 1fr;
+    align-items: center;
+  }
+  @media (min-width: 990px) {
+    .image-with-text__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-8);
+    }
+    .image-with-text--reverse .image-with-text__grid {
+      direction: rtl;
+    }
+    .image-with-text--reverse .image-with-text__content,
+    .image-with-text--reverse .image-with-text__media {
+      direction: ltr;
+    }
+  }
+  .image-with-text__media {
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: var(--color-surface);
+  }
+  .image-with-text__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .image-with-text__title {
+    font-size: var(--fs-2xl);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-4);
+  }
+  .image-with-text__text {
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+    line-height: var(--lh-normal);
+    margin-bottom: var(--space-5);
+  }
+  .image-with-text__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Image with text",
+  "tag": "section",
+  "class": "section-image-with-text",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "checkbox",
+      "id": "reverse",
+      "label": "Reverse layout (image on right)",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Our story"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Built by athletes, for athletes"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>From the lab to the gym floor, Neutrex combines science-backed formulations with premium materials and expert coaching. We don't cut corners — because neither do you.</p>"
+    },
+    {
+      "type": "select",
+      "id": "background_style",
+      "label": "Background",
+      "options": [
+        { "value": "default", "label": "Default" },
+        { "value": "surface", "label": "Surface" }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "header",
+      "content": "Primary button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Label",
+      "default": "Learn more"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "URL"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Style",
+      "options": [
+        { "value": "primary", "label": "Primary" },
+        { "value": "gold", "label": "Gold" },
+        { "value": "secondary", "label": "Secondary" }
+      ],
+      "default": "primary"
+    },
+    {
+      "type": "header",
+      "content": "Secondary button"
+    },
+    {
+      "type": "text",
+      "id": "button_secondary_label",
+      "label": "Label"
+    },
+    {
+      "type": "url",
+      "id": "button_secondary_url",
+      "label": "URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image with text",
+      "settings": {
+        "eyebrow": "Our story",
+        "heading": "Built by athletes, for athletes",
+        "text": "<p>From the lab to the gym floor, Neutrex combines science-backed formulations with premium materials and expert coaching. We don't cut corners — because neither do you.</p>",
+        "button_label": "Learn more"
+      }
+    }
+  ]
+}
+{% endschema %}

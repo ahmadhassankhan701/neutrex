@@ -1,0 +1,14 @@
+{
+  "layout": "theme",
+  "sections": {
+    "main": {
+      "type": "main-wishlist",
+      "settings": {
+        "subtitle": "Products you save appear here.",
+        "empty_title": "Your wishlist is empty",
+        "empty_text": "Save products you love and come back anytime."
+      }
+    }
+  },
+  "order": ["main"]
+}

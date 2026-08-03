@@ -1,0 +1,218 @@
+{%- liquid
+  assign bg_image = section.settings.background_image
+  assign price_amount = section.settings.price_from | default: 0
+  assign duration = section.settings.duration_minutes | default: 60
+  assign booking_anchor = section.settings.booking_anchor | default: 'booking'
+-%}
+
+<section
+  class="appointment-hero"
+  id="shopify-section-{{ section.id }}"
+  {{ section.shopify_attributes }}
+>
+  <div class="appointment-hero__bg" aria-hidden="true">
+    {%- if bg_image != blank -%}
+      {{
+        bg_image
+        | image_url: width: 2400
+        | image_tag:
+          loading: 'eager',
+          fetchpriority: 'high',
+          sizes: '100vw',
+          widths: '750, 1100, 1500, 2000, 2400',
+          alt: ''
+      }}
+    {%- endif -%}
+  </div>
+  <div class="appointment-hero__overlay" aria-hidden="true"></div>
+
+  <div class="appointment-hero__content">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="appointment-hero__eyebrow">
+        {%- render 'icon', icon: 'clock', size: 14 -%}
+        {{ section.settings.eyebrow | escape }}
+      </p>
+    {%- endif -%}
+
+    <h1 class="appointment-hero__title">
+      {{ section.settings.title | default: page.title | escape }}
+    </h1>
+
+    {%- if section.settings.subtitle != blank -%}
+      <p class="appointment-hero__subtitle">{{ section.settings.subtitle | escape }}</p>
+    {%- endif -%}
+
+    <div class="appointment-hero__stats">
+      {%- if section.settings.show_price -%}
+        <div class="appointment-hero__stat">
+          <span class="appointment-hero__stat-value">
+            {%- if section.settings.price_label != blank -%}
+              {{ section.settings.price_label | escape }}
+            {%- else -%}
+              {{ price_amount | times: 100 | money }}
+            {%- endif -%}
+          </span>
+          <span class="appointment-hero__stat-label">{{ 'appointments.pricing' | t }}</span>
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.show_duration -%}
+        <div class="appointment-hero__stat">
+          <span class="appointment-hero__stat-value">{{ duration }}</span>
+          <span class="appointment-hero__stat-label">{{ 'appointments.duration' | t }}</span>
+        </div>
+      {%- endif -%}
+
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'stat' -%}
+          <div class="appointment-hero__stat" {{ block.shopify_attributes }}>
+            <span class="appointment-hero__stat-value">{{ block.settings.value | escape }}</span>
+            <span class="appointment-hero__stat-label">{{ block.settings.label | escape }}</span>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.show_cta -%}
+      <div style="margin-top: var(--space-6);">
+        {%- liquid
+          assign cta_text = section.settings.cta_label
+          if cta_text == blank
+            assign cta_text = 'appointments.book_now' | t
+          endif
+          assign cta_url = '#' | append: booking_anchor
+        -%}
+        {%- render 'button',
+          label: cta_text,
+          url: cta_url,
+          style: 'gold',
+          size: 'lg',
+          class: 'appointment-hero__cta'
+        -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Appointment hero",
+  "tag": "section",
+  "class": "section-appointment-hero",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Service title",
+      "default": "Personal Training"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "One-on-one coaching tailored to your goals, schedule, and performance level."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Elite coaching"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
+      "type": "header",
+      "content": "Pricing & duration"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Show price",
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "price_from",
+      "label": "Price from",
+      "default": 150
+    },
+    {
+      "type": "text",
+      "id": "price_label",
+      "label": "Price display override",
+      "info": "Leave blank to use shop currency formatting"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_duration",
+      "label": "Show duration badge",
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "duration_minutes",
+      "label": "Duration (minutes)",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Show Book Now button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label"
+    },
+    {
+      "type": "text",
+      "id": "booking_anchor",
+      "label": "Booking section anchor ID",
+      "default": "booking",
+      "info": "Must match the booking section anchor"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "500+"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Sessions completed"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Appointment hero",
+      "blocks": [
+        {
+          "type": "stat",
+          "settings": {
+            "value": "4.9",
+            "label": "Average rating"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,49 @@
+{
+  "layout": "theme",
+  "sections": {
+    "profile": {
+      "type": "coach-profile",
+      "settings": {
+        "name": "Alex Rivera",
+        "role": "Head performance coach",
+        "bio": "Elite coach focused on strength, conditioning, and sustainable transformation.",
+        "show_stats": true,
+        "stat_clients": "500+",
+        "stat_years": "10",
+        "stat_sessions": "5000+",
+        "book_url": "/pages/personal-training#booking"
+      },
+      "blocks": {
+        "cert_1": {
+          "type": "certification",
+          "settings": {
+            "name": "CSCS",
+            "issuer": "NSCA"
+          }
+        },
+        "cert_2": {
+          "type": "certification",
+          "settings": {
+            "name": "NASM CPT",
+            "issuer": "National Academy of Sports Medicine"
+          }
+        }
+      },
+      "block_order": ["cert_1", "cert_2"]
+    },
+    "cta": {
+      "type": "appointment-cta",
+      "settings": {
+        "title": "Train with Alex",
+        "text": "Book a session and start your performance journey.",
+        "primary_label": "Book session",
+        "primary_url": "/pages/personal-training#booking"
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "settings": {}
+    }
+  },
+  "order": ["profile", "cta", "testimonials"]
+}

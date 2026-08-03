@@ -1,0 +1,83 @@
+{%- liquid
+  assign show_description = section.settings.show_description
+  assign show_count = section.settings.show_product_count
+  assign overlay_opacity = section.settings.overlay_opacity | divided_by: 100.0
+-%}
+
+<div class="collection-banner" {{ section.shopify_attributes }}>
+  {%- if collection.image -%}
+    <div class="collection-banner__media">
+      {{
+        collection.image
+        | image_url: width: 2000
+        | image_tag:
+          loading: 'eager',
+          sizes: '100vw',
+          widths: '750,990,1200,1600,2000',
+          alt: collection.title
+      }}
+    </div>
+  {%- endif -%}
+
+  <div class="collection-banner__overlay" style="opacity: {{ overlay_opacity }};"></div>
+
+  <div class="collection-banner__content">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="collection-banner__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    {%- endif -%}
+
+    <h1 class="collection-banner__title">{{ collection.title | escape }}</h1>
+
+    {%- if show_description and collection.description != blank -%}
+      <div class="collection-banner__description rte">{{ collection.description }}</div>
+    {%- endif -%}
+
+    {%- if show_count -%}
+      <p class="collection-banner__count">
+        {{ 'collections.products_count' | t: count: collection.products_count }}
+      </p>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection banner",
+  "tag": "section",
+  "class": "section-collection-banner",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show collection description",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_count",
+      "label": "Show product count",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection banner"
+    }
+  ]
+}
+{% endschema %}

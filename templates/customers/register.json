@@ -1,0 +1,12 @@
+{
+  "layout": "theme",
+  "sections": {
+    "main": {
+      "type": "main-register",
+      "settings": {
+        "subtitle": "Join Neutrex and track orders, wishlists, and bookings."
+      }
+    }
+  },
+  "order": ["main"]
+}

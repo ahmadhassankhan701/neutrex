@@ -1,0 +1,29 @@
+{%- comment -%}
+  Light / dark theme toggle button.
+  @param {string} [class] - Additional CSS classes
+{%- endcomment -%}
+
+{%- liquid
+  assign toggle_class = 'theme-switcher'
+  if class != blank
+    assign toggle_class = toggle_class | append: ' ' | append: class
+  endif
+-%}
+
+<button
+  type="button"
+  class="{{ toggle_class }}"
+  data-theme-toggle
+  aria-pressed="false"
+  aria-label="{{ 'general.accessibility.theme_dark' | t }}"
+  data-label-light="{{ 'general.accessibility.theme_light' | t | escape }}"
+  data-label-dark="{{ 'general.accessibility.theme_dark' | t | escape }}"
+>
+  <span class="theme-switcher__icon theme-switcher__icon--sun" aria-hidden="true">
+    {%- render 'icon', icon: 'sun' -%}
+  </span>
+  <span class="theme-switcher__icon theme-switcher__icon--moon" aria-hidden="true">
+    {%- render 'icon', icon: 'moon' -%}
+  </span>
+  <span class="visually-hidden">{{ 'general.accessibility.theme_dark' | t }}</span>
+</button>

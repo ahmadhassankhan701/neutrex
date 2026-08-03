@@ -1,0 +1,57 @@
+{%- comment -%}
+  Neutrex — CSS custom properties from theme settings
+  Rendered in <head> to override base.css defaults
+{%- endcomment -%}
+
+<style>
+  :root {
+    --color-primary: {{ settings.color_primary }};
+    --color-primary-hover: {{ settings.color_primary | color_darken: 12 }};
+    --color-primary-soft: {{ settings.color_primary | color_modify: 'alpha', 0.08 }};
+    --color-gold: {{ settings.color_gold }};
+    --color-gold-soft: {{ settings.color_gold | color_modify: 'alpha', 0.14 }};
+    --color-charcoal: {{ settings.color_charcoal }};
+
+    --color-bg: {{ settings.color_bg }};
+    --color-bg-elevated: {{ settings.color_bg }};
+    --color-surface: {{ settings.color_surface }};
+    --color-surface-2: {{ settings.color_surface | color_darken: 3 }};
+    --color-text: {{ settings.color_text }};
+    --color-text-muted: {{ settings.color_text_muted }};
+    --color-border: {{ settings.color_border }};
+    --color-border-strong: {{ settings.color_border | color_darken: 8 }};
+    --color-focus: {{ settings.color_primary }};
+
+    --font-scale: {{ settings.font_scale | times: 0.01 }};
+    --heading-weight: {{ settings.heading_weight }};
+
+    --page-width: {{ settings.page_width | divided_by: 16.0 }}rem;
+    --space-section: {{ settings.section_spacing | divided_by: 16.0 }}rem;
+    --radius-sm: {{ settings.border_radius | times: 0.5 | divided_by: 16.0 }}rem;
+    --radius-md: {{ settings.border_radius | times: 0.75 | divided_by: 16.0 }}rem;
+    --radius-lg: {{ settings.border_radius | divided_by: 16.0 }}rem;
+    --radius-xl: {{ settings.border_radius | times: 1.25 | divided_by: 16.0 }}rem;
+    --radius-2xl: {{ settings.border_radius | times: 1.5 | divided_by: 16.0 }}rem;
+
+    --product-card-ratio: {{ settings.product_image_ratio }};
+  }
+
+  [data-theme="dark"] {
+    --color-primary: {{ settings.color_primary_dark }};
+    --color-primary-hover: {{ settings.color_primary_dark | color_lighten: 8 }};
+    --color-primary-soft: {{ settings.color_primary_dark | color_modify: 'alpha', 0.18 }};
+    --color-gold: {{ settings.color_gold_dark }};
+    --color-gold-soft: {{ settings.color_gold_dark | color_modify: 'alpha', 0.16 }};
+    --color-charcoal: {{ settings.color_text_dark }};
+
+    --color-bg: {{ settings.color_bg_dark }};
+    --color-bg-elevated: {{ settings.color_surface_dark }};
+    --color-surface: {{ settings.color_surface_dark }};
+    --color-surface-2: {{ settings.color_surface_dark | color_lighten: 4 }};
+    --color-text: {{ settings.color_text_dark }};
+    --color-text-muted: {{ settings.color_text_muted_dark }};
+    --color-border: {{ settings.color_border_dark }};
+    --color-border-strong: {{ settings.color_border_dark | color_lighten: 6 }};
+    --color-focus: {{ settings.color_primary_dark }};
+  }
+</style>

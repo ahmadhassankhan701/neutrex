@@ -1,0 +1,325 @@
+{%- liquid
+  assign section_class = 'section transformation-gallery'
+  if section.settings.background_style == 'surface'
+    assign section_class = section_class | append: ' section--surface'
+  endif
+-%}
+
+<section
+  class="{{ section_class }}"
+  aria-labelledby="TransformationGallery-{{ section.id }}"
+  {{ section.shopify_attributes }}
+>
+  <div class="page-width">
+    {%- if section.settings.heading != blank or section.settings.subtitle != blank -%}
+      <header class="section__header animate-fade-up" data-animate id="TransformationGallery-{{ section.id }}">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="section__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="section__title">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subtitle != blank -%}
+          <p class="section__subtitle">{{ section.settings.subtitle | escape }}</p>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    <div class="transformation-gallery__grid animate-stagger" data-animate>
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'transformation' -%}
+          {%- assign compare_id = 'compare-' | append: section.id | append: '-' | append: block.id -%}
+          <article class="transformation-card" {{ block.shopify_attributes }}>
+            {%- if section.settings.layout == 'slider' and block.settings.before_image != blank and block.settings.after_image != blank -%}
+              <div
+                class="transformation-card__compare"
+                data-compare
+                id="{{ compare_id }}"
+                role="img"
+                aria-label="{{ block.settings.name | escape }} before and after"
+              >
+                <div class="transformation-card__before">
+                  {%- render 'media',
+                    image: block.settings.before_image,
+                    alt: 'Before',
+                    loading: 'lazy',
+                    widths: '400,600,800',
+                    sizes: '(min-width: 990px) 33vw, 50vw'
+                  -%}
+                </div>
+                <div class="transformation-card__after" data-compare-after>
+                  {%- render 'media',
+                    image: block.settings.after_image,
+                    alt: 'After',
+                    loading: 'lazy',
+                    widths: '400,600,800',
+                    sizes: '(min-width: 990px) 33vw, 50vw'
+                  -%}
+                </div>
+                <div class="transformation-card__handle" data-compare-handle aria-hidden="true"></div>
+                <div class="transformation-card__labels">
+                  <span class="transformation-card__label">{{ section.settings.before_label | default: 'Before' | escape }}</span>
+                  <span class="transformation-card__label">{{ section.settings.after_label | default: 'After' | escape }}</span>
+                </div>
+              </div>
+            {%- else -%}
+              <div class="transformation-card__side-by-side">
+                {%- if block.settings.before_image != blank -%}
+                  <div class="transformation-card__side image-reveal" data-animate>
+                    {%- render 'media',
+                      image: block.settings.before_image,
+                      alt: 'Before',
+                      loading: 'lazy',
+                      widths: '300,400,600',
+                      sizes: '50vw'
+                    -%}
+                    <span class="transformation-card__label">{{ section.settings.before_label | default: 'Before' | escape }}</span>
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.after_image != blank -%}
+                  <div class="transformation-card__side image-reveal" data-animate>
+                    {%- render 'media',
+                      image: block.settings.after_image,
+                      alt: 'After',
+                      loading: 'lazy',
+                      widths: '300,400,600',
+                      sizes: '50vw'
+                    -%}
+                    <span class="transformation-card__label">{{ section.settings.after_label | default: 'After' | escape }}</span>
+                  </div>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+
+            <div class="transformation-card__body">
+              {%- if block.settings.name != blank -%}
+                <h3 class="transformation-card__name">{{ block.settings.name | escape }}</h3>
+              {%- endif -%}
+              {%- if block.settings.story != blank -%}
+                <p class="transformation-card__story">{{ block.settings.story | escape }}</p>
+              {%- endif -%}
+              {%- if block.settings.stat_1 != blank or block.settings.stat_2 != blank -%}
+                <div class="transformation-card__stats">
+                  {%- if block.settings.stat_1 != blank -%}
+                    <span class="transformation-card__stat">{{ block.settings.stat_1 }}</span>
+                  {%- endif -%}
+                  {%- if block.settings.stat_2 != blank -%}
+                    <span class="transformation-card__stat">{{ block.settings.stat_2 }}</span>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            </div>
+          </article>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  .transformation-card__side-by-side {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--color-border);
+  }
+  .transformation-card__side {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+  }
+  .transformation-card__side img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .transformation-card__side .transformation-card__label {
+    position: absolute;
+    inset-block-end: var(--space-3);
+    inset-inline-start: var(--space-3);
+  }
+  .transformation-card__story {
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+    line-height: var(--lh-normal);
+    margin-bottom: var(--space-3);
+  }
+</style>
+
+<script>
+  (function () {
+    document.querySelectorAll('[data-compare]').forEach(function (container) {
+      if (container.dataset.compareBound) return;
+      container.dataset.compareBound = 'true';
+
+      var after = container.querySelector('[data-compare-after]');
+      var handle = container.querySelector('[data-compare-handle]');
+      if (!after || !handle) return;
+
+      var dragging = false;
+
+      function setPosition(clientX) {
+        var rect = container.getBoundingClientRect();
+        var x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+        var pct = (x / rect.width) * 100;
+        after.style.clipPath = 'inset(0 0 0 ' + pct + '%)';
+        handle.style.insetInlineStart = pct + '%';
+      }
+
+      container.addEventListener('pointerdown', function (e) {
+        dragging = true;
+        container.setPointerCapture(e.pointerId);
+        setPosition(e.clientX);
+      });
+
+      container.addEventListener('pointermove', function (e) {
+        if (!dragging) return;
+        setPosition(e.clientX);
+      });
+
+      container.addEventListener('pointerup', function () {
+        dragging = false;
+      });
+
+      container.addEventListener('pointercancel', function () {
+        dragging = false;
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Transformation gallery",
+  "tag": "section",
+  "class": "section-transformation-gallery",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Results"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Real transformations"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Results speak louder than reps"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Compare layout",
+      "options": [
+        { "value": "slider", "label": "Before/after slider" },
+        { "value": "side_by_side", "label": "Side by side" }
+      ],
+      "default": "slider"
+    },
+    {
+      "type": "text",
+      "id": "before_label",
+      "label": "Before label",
+      "default": "Before"
+    },
+    {
+      "type": "text",
+      "id": "after_label",
+      "label": "After label",
+      "default": "After"
+    },
+    {
+      "type": "select",
+      "id": "background_style",
+      "label": "Background",
+      "options": [
+        { "value": "default", "label": "Default" },
+        { "value": "surface", "label": "Surface" }
+      ],
+      "default": "default"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "transformation",
+      "name": "Transformation",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "before_image",
+          "label": "Before image"
+        },
+        {
+          "type": "image_picker",
+          "id": "after_image",
+          "label": "After image"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Alex M."
+        },
+        {
+          "type": "textarea",
+          "id": "story",
+          "label": "Story",
+          "default": "12-week cut with Neutrex coaching and nutrition plan."
+        },
+        {
+          "type": "inline_richtext",
+          "id": "stat_1",
+          "label": "Stat 1",
+          "default": "<strong>-18kg</strong> body fat"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "stat_2",
+          "label": "Stat 2",
+          "default": "<strong>12</strong> weeks"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Transformation gallery",
+      "blocks": [
+        {
+          "type": "transformation",
+          "settings": {
+            "name": "Alex M.",
+            "story": "12-week cut with Neutrex coaching and nutrition plan.",
+            "stat_1": "<strong>-18kg</strong> body fat",
+            "stat_2": "<strong>12</strong> weeks"
+          }
+        },
+        {
+          "type": "transformation",
+          "settings": {
+            "name": "Sarah K.",
+            "story": "Competition prep and stage-ready conditioning.",
+            "stat_1": "<strong>1st</strong> place",
+            "stat_2": "<strong>16</strong> weeks"
+          }
+        },
+        {
+          "type": "transformation",
+          "settings": {
+            "name": "James T.",
+            "story": "Lean bulk and strength gain program.",
+            "stat_1": "<strong>+8kg</strong> lean mass",
+            "stat_2": "<strong>20</strong> weeks"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,64 @@
+{%- if section.settings.enable and settings.whatsapp_number != blank -%}
+  {%- liquid
+    assign wa_number = settings.whatsapp_number | remove: '+' | remove: ' ' | remove: '-' | remove: '(' | remove: ')'
+    assign wa_message = section.settings.message | url_encode
+    assign wa_url = 'https://wa.me/' | append: wa_number
+    if section.settings.message != blank
+      assign wa_url = wa_url | append: '?text=' | append: wa_message
+    endif
+  -%}
+
+  <div class="whatsapp-float" {{ section.shopify_attributes }}>
+    <a
+      href="{{ wa_url }}"
+      class="whatsapp-float__btn"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="{{ 'footer.whatsapp' | t }}: {{ settings.whatsapp_number | escape }}"
+    >
+      {% render 'icon', icon: 'whatsapp', size: 24 %}
+    </a>
+    {%- if section.settings.show_label -%}
+      <span class="whatsapp-float__label">{{ section.settings.label | default: 'footer.whatsapp' | t }}</span>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "WhatsApp float",
+  "tag": "section",
+  "class": "section-whatsapp-float",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable",
+      "label": "Enable floating WhatsApp button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_label",
+      "label": "Show label on hover",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Chat with us"
+    },
+    {
+      "type": "text",
+      "id": "message",
+      "label": "Pre-filled message",
+      "default": "Hi Neutrex, I'd like to know more about your products."
+    }
+  ],
+  "presets": [
+    {
+      "name": "WhatsApp float"
+    }
+  ]
+}
+{% endschema %}

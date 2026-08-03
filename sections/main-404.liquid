@@ -1,0 +1,150 @@
+<div class="error-page page-width" {{ section.shopify_attributes }}>
+  <div class="error-page__inner">
+    <p class="error-page__code" aria-hidden="true">404</p>
+    <h1 class="error-page__title">{{ section.settings.heading | default: 'general.404.title' | t }}</h1>
+    <p class="error-page__text">{{ section.settings.text | default: 'general.404.text' | t }}</p>
+
+    <div class="error-page__actions">
+      <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="btn btn--primary">
+        {{ section.settings.button_label | default: 'general.404.button' | t }}
+      </a>
+      {%- if section.settings.secondary_link != blank -%}
+        <a href="{{ section.settings.secondary_link }}" class="btn btn--secondary">
+          {{ section.settings.secondary_label | escape }}
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.show_search -%}
+      <form action="{{ routes.search_url }}" method="get" role="search" class="error-page__search">
+        <label class="visually-hidden" for="ErrorSearch-{{ section.id }}">{{ 'search.title' | t }}</label>
+        {%- render 'icon', icon: 'search', size: 'sm' -%}
+        <input
+          id="ErrorSearch-{{ section.id }}"
+          type="search"
+          name="q"
+          class="error-page__search-input"
+          placeholder="{{ 'search.placeholder' | t }}"
+        >
+        <input type="hidden" name="options[prefix]" value="last">
+        <button type="submit" class="btn btn--ghost btn--sm">{{ 'search.title' | t }}</button>
+      </form>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .error-page {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-block: var(--space-section);
+    text-align: center;
+  }
+  .error-page__inner {
+    max-width: 32rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .error-page__code {
+    font-size: clamp(4rem, 15vw, 8rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.06em;
+    background: var(--gradient-cta);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: var(--space-2);
+  }
+  .error-page__title {
+    font-size: var(--fs-2xl);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  .error-page__text {
+    font-size: var(--fs-md);
+    color: var(--color-text-muted);
+    line-height: var(--lh-normal);
+  }
+  .error-page__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    justify-content: center;
+    margin-top: var(--space-4);
+  }
+  .error-page__search {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: 100%;
+    max-width: 24rem;
+    margin-top: var(--space-6);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background: var(--color-bg-elevated);
+  }
+  .error-page__search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    min-height: 2.25rem;
+    font-size: var(--fs-sm);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "404 page",
+  "tag": "section",
+  "class": "section-main-404",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Description"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Primary button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Secondary button label"
+    },
+    {
+      "type": "url",
+      "id": "secondary_link",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search field",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "404 page"
+    }
+  ]
+}
+{% endschema %}

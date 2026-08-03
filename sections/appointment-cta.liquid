@@ -1,0 +1,149 @@
+<section class="appointment-cta section" {{ section.shopify_attributes }}>
+  <div class="appointment-cta__glow" aria-hidden="true"></div>
+  <div class="page-width appointment-cta__inner">
+    <div>
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="section__eyebrow" style="margin-bottom: var(--space-3);">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      <h2 class="appointment-cta__title">
+        {%- if section.settings.title != blank -%}
+          {{ section.settings.title | escape }}
+        {%- else -%}
+          {{ 'sections.appointment_cta.title' | t }}
+        {%- endif -%}
+      </h2>
+      {%- if section.settings.text != blank -%}
+        <p class="appointment-cta__text">{{ section.settings.text | escape }}</p>
+      {%- else -%}
+        <p class="appointment-cta__text">{{ 'sections.appointment_cta.subtitle' | t }}</p>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <ul class="appointment-cta__services" style="display:flex;flex-wrap:wrap;gap:var(--space-3);margin-top:var(--space-5);list-style:none;padding:0;">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'service' -%}
+              {%- assign service_icon = block.settings.icon | default: 'check' -%}
+              <li class="badge" {{ block.shopify_attributes }}>
+                {%- render 'icon', icon: service_icon -%}
+                {{ block.settings.label | escape }}
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+    <div class="appointment-cta__actions">
+      {%- liquid
+        assign primary_text = section.settings.primary_label
+        if primary_text == blank
+          assign primary_text = 'sections.appointment_cta.cta' | t
+        endif
+      -%}
+      {%- if section.settings.primary_url != blank -%}
+        {%- render 'button',
+          label: primary_text,
+          url: section.settings.primary_url,
+          style: 'gold',
+          size: 'lg'
+        -%}
+      {%- endif -%}
+      {%- if section.settings.secondary_url != blank -%}
+        {%- render 'button',
+          label: section.settings.secondary_label,
+          url: section.settings.secondary_url,
+          style: 'ghost',
+          size: 'lg'
+        -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Appointment CTA",
+  "tag": "section",
+  "class": "section-appointment-cta",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Elite coaching"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Ready to level up?"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text",
+      "default": "Book a session with elite coaches and start your transformation today."
+    },
+    {
+      "type": "text",
+      "id": "primary_label",
+      "label": "Primary button label",
+      "default": "Book appointment"
+    },
+    {
+      "type": "url",
+      "id": "primary_url",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Secondary button label",
+      "default": "Contact us"
+    },
+    {
+      "type": "url",
+      "id": "secondary_url",
+      "label": "Secondary button link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "service",
+      "name": "Service chip",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "check", "label": "Check" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "star", "label": "Star" }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Personal Training"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Appointment CTA",
+      "settings": {
+        "primary_url": "/pages/personal-training"
+      },
+      "blocks": [
+        { "type": "service", "settings": { "label": "Personal Training" } },
+        { "type": "service", "settings": { "label": "Online Coaching" } },
+        { "type": "service", "settings": { "label": "Competition Prep" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

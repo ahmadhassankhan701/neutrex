@@ -1,0 +1,228 @@
+{%- liquid
+  assign section_class = 'section logo-list'
+  if section.settings.background_style == 'surface'
+    assign section_class = section_class | append: ' section--surface'
+  endif
+-%}
+
+<section
+  class="{{ section_class }}"
+  aria-labelledby="LogoList-{{ section.id }}"
+  {{ section.shopify_attributes }}
+>
+  <div class="page-width">
+    {%- if section.settings.heading != blank or section.settings.subtitle != blank -%}
+      <header class="section__header animate-fade-up" data-animate id="LogoList-{{ section.id }}">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="section__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="section__title">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subtitle != blank -%}
+          <p class="section__subtitle">{{ section.settings.subtitle | escape }}</p>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    {%- if section.settings.layout == 'marquee' -%}
+      <div class="logo-list__marquee animate-marquee" aria-label="{{ section.settings.heading | default: 'Partner logos' | escape }}">
+        <div class="animate-marquee__track">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'logo' -%}
+              <div class="logo-list__item" {{ block.shopify_attributes }}>
+                {%- if block.settings.link != blank -%}
+                  <a href="{{ block.settings.link }}" class="logo-list__link" {% if block.settings.external %}target="_blank" rel="noopener noreferrer"{% endif %}>
+                    {%- if block.settings.image != blank -%}
+                      {%- render 'media', image: block.settings.image, alt: block.settings.title, loading: 'lazy', widths: '120,180,240', sizes: '120px' -%}
+                    {%- elsif block.settings.title != blank -%}
+                      <span class="logo-list__text">{{ block.settings.title | escape }}</span>
+                    {%- endif -%}
+                  </a>
+                {%- else -%}
+                  {%- if block.settings.image != blank -%}
+                    {%- render 'media', image: block.settings.image, alt: block.settings.title, loading: 'lazy', widths: '120,180,240', sizes: '120px' -%}
+                  {%- elsif block.settings.title != blank -%}
+                    <span class="logo-list__text">{{ block.settings.title | escape }}</span>
+                  {%- endif -%}
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+          {%- comment -%} Duplicate for seamless marquee {%- endcomment -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'logo' -%}
+              <div class="logo-list__item" aria-hidden="true">
+                {%- if block.settings.image != blank -%}
+                  {%- render 'media', image: block.settings.image, alt: block.settings.title, loading: 'lazy', widths: '120,180,240', sizes: '120px' -%}
+                {%- elsif block.settings.title != blank -%}
+                  <span class="logo-list__text">{{ block.settings.title | escape }}</span>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- else -%}
+      <div class="logo-list__grid animate-stagger" data-animate>
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'logo' -%}
+            <div class="logo-list__item" {{ block.shopify_attributes }}>
+              {%- if block.settings.link != blank -%}
+                <a href="{{ block.settings.link }}" class="logo-list__link" {% if block.settings.external %}target="_blank" rel="noopener noreferrer"{% endif %}>
+                  {%- if block.settings.image != blank -%}
+                    {%- render 'media', image: block.settings.image, alt: block.settings.title, loading: 'lazy', widths: '120,180,240', sizes: '120px' -%}
+                  {%- elsif block.settings.title != blank -%}
+                    <span class="logo-list__text">{{ block.settings.title | escape }}</span>
+                  {%- endif -%}
+                </a>
+              {%- else -%}
+                {%- if block.settings.image != blank -%}
+                  {%- render 'media', image: block.settings.image, alt: block.settings.title, loading: 'lazy', widths: '120,180,240', sizes: '120px' -%}
+                {%- elsif block.settings.title != blank -%}
+                  <span class="logo-list__text">{{ block.settings.title | escape }}</span>
+                {%- endif -%}
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  .logo-list__grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-6) var(--space-8);
+  }
+  .logo-list__item {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.55;
+    filter: grayscale(1);
+    transition:
+      opacity var(--duration) var(--ease-out),
+      filter var(--duration) var(--ease-out);
+  }
+  .logo-list__item:hover {
+    opacity: 1;
+    filter: none;
+  }
+  .logo-list__item img {
+    max-height: 2rem;
+    width: auto;
+    max-width: 8rem;
+    object-fit: contain;
+  }
+  .logo-list__text {
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .logo-list__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .logo-list__marquee .logo-list__item {
+    flex-shrink: 0;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Logo list",
+  "tag": "section",
+  "class": "section-logo-list",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Trusted by"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "As seen in"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "grid", "label": "Grid" },
+        { "value": "marquee", "label": "Marquee scroll" }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "select",
+      "id": "background_style",
+      "label": "Background",
+      "options": [
+        { "value": "default", "label": "Default" },
+        { "value": "surface", "label": "Surface" }
+      ],
+      "default": "surface"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Logo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Logo image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title (fallback text)",
+          "default": "Brand"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "checkbox",
+          "id": "external",
+          "label": "Open in new tab",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Logo list",
+      "blocks": [
+        { "type": "logo", "settings": { "title": "Men's Health" } },
+        { "type": "logo", "settings": { "title": "Flex Magazine" } },
+        { "type": "logo", "settings": { "title": "Muscle & Fitness" } },
+        { "type": "logo", "settings": { "title": "GQ" } },
+        { "type": "logo", "settings": { "title": "ESPN" } },
+        { "type": "logo", "settings": { "title": "Forbes" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

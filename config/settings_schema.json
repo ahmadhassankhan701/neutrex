@@ -1,0 +1,421 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Neutrex",
+    "theme_version": "1.0.0",
+    "theme_author": "Neutrex Studio",
+    "theme_documentation_url": "https://neutrex.fit",
+    "theme_support_url": "https://neutrex.fit/support"
+  },
+  {
+    "name": "t:settings_schema.brand.name",
+    "settings": [
+      {
+        "type": "text",
+        "id": "brand_name",
+        "label": "t:settings_schema.brand.brand_name",
+        "default": "Neutrex"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "t:settings_schema.brand.logo"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_dark",
+        "label": "t:settings_schema.brand.logo_dark"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "t:settings_schema.brand.favicon"
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "min": 60,
+        "max": 240,
+        "step": 4,
+        "unit": "px",
+        "label": "t:settings_schema.brand.logo_width",
+        "default": 140
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.colors.name",
+    "settings": [
+      {
+        "type": "header",
+        "content": "t:settings_schema.colors.light_mode"
+      },
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "t:settings_schema.colors.primary",
+        "default": "#7A1F3D"
+      },
+      {
+        "type": "color",
+        "id": "color_gold",
+        "label": "t:settings_schema.colors.gold",
+        "default": "#D4AF37"
+      },
+      {
+        "type": "color",
+        "id": "color_charcoal",
+        "label": "t:settings_schema.colors.charcoal",
+        "default": "#1E1E1E"
+      },
+      {
+        "type": "color",
+        "id": "color_bg",
+        "label": "t:settings_schema.colors.background",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "color_surface",
+        "label": "t:settings_schema.colors.surface",
+        "default": "#F7F5F6"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "t:settings_schema.colors.text",
+        "default": "#1E1E1E"
+      },
+      {
+        "type": "color",
+        "id": "color_text_muted",
+        "label": "t:settings_schema.colors.text_muted",
+        "default": "#6B6568"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "t:settings_schema.colors.border",
+        "default": "#E8E2E4"
+      },
+      {
+        "type": "header",
+        "content": "t:settings_schema.colors.dark_mode"
+      },
+      {
+        "type": "color",
+        "id": "color_primary_dark",
+        "label": "t:settings_schema.colors.primary",
+        "default": "#A83256"
+      },
+      {
+        "type": "color",
+        "id": "color_gold_dark",
+        "label": "t:settings_schema.colors.gold",
+        "default": "#E0C15A"
+      },
+      {
+        "type": "color",
+        "id": "color_bg_dark",
+        "label": "t:settings_schema.colors.background",
+        "default": "#0F0D0E"
+      },
+      {
+        "type": "color",
+        "id": "color_surface_dark",
+        "label": "t:settings_schema.colors.surface",
+        "default": "#1A1618"
+      },
+      {
+        "type": "color",
+        "id": "color_text_dark",
+        "label": "t:settings_schema.colors.text",
+        "default": "#F5F2F3"
+      },
+      {
+        "type": "color",
+        "id": "color_text_muted_dark",
+        "label": "t:settings_schema.colors.text_muted",
+        "default": "#A39A9E"
+      },
+      {
+        "type": "color",
+        "id": "color_border_dark",
+        "label": "t:settings_schema.colors.border",
+        "default": "#2E282B"
+      },
+      {
+        "type": "select",
+        "id": "color_scheme_default",
+        "label": "t:settings_schema.colors.default_scheme",
+        "options": [
+          { "value": "system", "label": "t:settings_schema.colors.system" },
+          { "value": "light", "label": "t:settings_schema.colors.light" },
+          { "value": "dark", "label": "t:settings_schema.colors.dark" }
+        ],
+        "default": "system"
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.typography.name",
+    "settings": [
+      {
+        "type": "range",
+        "id": "font_scale",
+        "min": 90,
+        "max": 110,
+        "step": 1,
+        "unit": "%",
+        "label": "t:settings_schema.typography.font_scale",
+        "default": 100
+      },
+      {
+        "type": "range",
+        "id": "heading_weight",
+        "min": 600,
+        "max": 800,
+        "step": 100,
+        "label": "t:settings_schema.typography.heading_weight",
+        "default": 700
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.layout.name",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "min": 1100,
+        "max": 1600,
+        "step": 20,
+        "unit": "px",
+        "label": "t:settings_schema.layout.page_width",
+        "default": 1400
+      },
+      {
+        "type": "range",
+        "id": "section_spacing",
+        "min": 40,
+        "max": 120,
+        "step": 4,
+        "unit": "px",
+        "label": "t:settings_schema.layout.section_spacing",
+        "default": 80
+      },
+      {
+        "type": "range",
+        "id": "border_radius",
+        "min": 0,
+        "max": 24,
+        "step": 2,
+        "unit": "px",
+        "label": "t:settings_schema.layout.border_radius",
+        "default": 16
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.header.name",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "header_sticky",
+        "label": "t:settings_schema.header.sticky",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "header_transparent",
+        "label": "t:settings_schema.header.transparent",
+        "default": true
+      },
+      {
+        "type": "link_list",
+        "id": "menu",
+        "label": "t:settings_schema.header.menu",
+        "default": "main-menu"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_mega_menu",
+        "label": "t:settings_schema.header.mega_menu",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.cart.name",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "t:settings_schema.cart.type",
+        "options": [
+          { "value": "drawer", "label": "t:settings_schema.cart.drawer" },
+          { "value": "page", "label": "t:settings_schema.cart.page" }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_free_shipping_bar",
+        "label": "t:settings_schema.cart.free_shipping_bar",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "free_shipping_threshold",
+        "label": "t:settings_schema.cart.free_shipping_threshold",
+        "default": "150",
+        "info": "t:settings_schema.cart.free_shipping_info"
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.appointments.name",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "appointments_enabled",
+        "label": "t:settings_schema.appointments.enabled",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_number",
+        "label": "t:settings_schema.appointments.whatsapp",
+        "default": "+971500000000",
+        "info": "t:settings_schema.appointments.whatsapp_info"
+      },
+      {
+        "type": "url",
+        "id": "booking_form_url",
+        "label": "t:settings_schema.appointments.booking_url"
+      },
+      {
+        "type": "text",
+        "id": "business_hours",
+        "label": "t:settings_schema.appointments.hours",
+        "default": "Sun–Thu · 6:00 AM – 10:00 PM"
+      },
+      {
+        "type": "text",
+        "id": "business_location",
+        "label": "t:settings_schema.appointments.location",
+        "default": "Dubai, UAE"
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.social.name",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram",
+        "info": "https://instagram.com/..."
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "TikTok"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube",
+        "label": "YouTube"
+      },
+      {
+        "type": "text",
+        "id": "social_twitter",
+        "label": "X / Twitter"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "label": "Facebook"
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.product.name",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_wishlist",
+        "label": "t:settings_schema.product.wishlist",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_quick_add",
+        "label": "t:settings_schema.product.quick_add",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_quick_view",
+        "label": "t:settings_schema.product.quick_view",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_vendor",
+        "label": "t:settings_schema.product.vendor",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "product_image_ratio",
+        "label": "t:settings_schema.product.image_ratio",
+        "options": [
+          { "value": "1 / 1", "label": "1:1" },
+          { "value": "4 / 5", "label": "4:5" },
+          { "value": "3 / 4", "label": "3:4" },
+          { "value": "2 / 3", "label": "2:3" }
+        ],
+        "default": "4 / 5"
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.performance.name",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_animations",
+        "label": "t:settings_schema.performance.animations",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "lazy_load_images",
+        "label": "t:settings_schema.performance.lazy_load",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.seo.name",
+    "settings": [
+      {
+        "type": "text",
+        "id": "seo_organization_name",
+        "label": "t:settings_schema.seo.org_name",
+        "default": "Neutrex"
+      },
+      {
+        "type": "text",
+        "id": "seo_phone",
+        "label": "t:settings_schema.seo.phone"
+      },
+      {
+        "type": "textarea",
+        "id": "seo_address",
+        "label": "t:settings_schema.seo.address"
+      }
+    ]
+  }
+]

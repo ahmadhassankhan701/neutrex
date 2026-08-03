@@ -1,0 +1,163 @@
+<section class="section" {{ section.shopify_attributes }}>
+  <div class="page-width">
+    <div class="auth__row auth__row--2" style="align-items: start; gap: var(--space-8);">
+      <div>
+        <header class="section-header" style="margin-bottom: var(--space-6);">
+          <h1 class="section-header__title">{{ section.settings.title | default: 'footer.contact' | t | escape }}</h1>
+          {%- if section.settings.subtitle != blank -%}
+            <p class="section-header__subtitle">{{ section.settings.subtitle | escape }}</p>
+          {%- endif -%}
+        </header>
+
+        {%- form 'contact', class: 'auth__form' -%}
+          {%- if form.posted_successfully? -%}
+            <div class="auth__success" role="status">{{ section.settings.success_message | default: 'Thanks for reaching out. We will reply shortly.' | escape }}</div>
+          {%- endif -%}
+          {%- if form.errors -%}
+            <div class="auth__error" role="alert">{{ form.errors | default_errors }}</div>
+          {%- endif -%}
+
+          <div class="auth__row auth__row--2">
+            <div class="field">
+              <label class="field__label" for="ContactName">{{ 'customer.register.first_name' | t }}</label>
+              <input type="text" id="ContactName" name="contact[name]" class="field__input" autocomplete="name" required value="{% if form.name %}{{ form.name | escape }}{% endif %}">
+            </div>
+            <div class="field">
+              <label class="field__label" for="ContactEmail">{{ 'customer.login.email' | t }}</label>
+              <input type="email" id="ContactEmail" name="contact[email]" class="field__input" autocomplete="email" required value="{% if form.email %}{{ form.email | escape }}{% endif %}">
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="ContactPhone">Phone</label>
+            <input type="tel" id="ContactPhone" name="contact[phone]" class="field__input" autocomplete="tel">
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="ContactSubject">Subject</label>
+            <input type="text" id="ContactSubject" name="contact[subject]" class="field__input" placeholder="Training inquiry">
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="ContactMessage">Message</label>
+            <textarea id="ContactMessage" name="contact[body]" class="field__textarea" rows="6" required>{% if form.body %}{{ form.body }}{% endif %}</textarea>
+          </div>
+
+          {%- liquid
+            assign send_label = section.settings.button_label | default: 'Send message'
+          -%}
+          {%- render 'button', label: send_label, style: 'primary', full_width: true, type: 'submit' -%}
+        {%- endform -%}
+      </div>
+
+      <aside>
+        <div class="booking-summary" style="position: static;">
+          <h2 class="booking-summary__title">{{ section.settings.info_heading | default: 'Visit Neutrex' | escape }}</h2>
+
+          {%- if section.settings.location != blank or settings.appointments_location != blank -%}
+            <div class="booking-summary__row">
+              <span class="booking-summary__row-label">{%- render 'icon', icon: 'map-pin', size: 16 -%} Location</span>
+              <span class="booking-summary__row-value">{{ section.settings.location | default: settings.business_location | escape }}</span>
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.hours != blank or settings.appointments_hours != blank -%}
+            <div class="booking-summary__row">
+              <span class="booking-summary__row-label">{%- render 'icon', icon: 'clock', size: 16 -%} Hours</span>
+              <span class="booking-summary__row-value">{{ section.settings.hours | default: settings.business_hours | escape }}</span>
+            </div>
+          {%- endif -%}
+
+          {%- if settings.whatsapp_number != blank -%}
+            {%- assign wa = settings.whatsapp_number | remove: '+' | remove: ' ' | remove: '-' -%}
+            <div class="booking-summary__row">
+              <span class="booking-summary__row-label">{%- render 'icon', icon: 'whatsapp', size: 16 -%} WhatsApp</span>
+              <a class="booking-summary__row-value" href="https://wa.me/{{ wa }}" target="_blank" rel="noopener noreferrer">{{ settings.whatsapp_number | escape }}</a>
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.map_embed != blank -%}
+            <div class="booking-summary__divider"></div>
+            <div class="rte">{{ section.settings.map_embed }}</div>
+          {%- elsif section.settings.show_map_placeholder -%}
+            <div class="coach-profile__cover" style="height: 12rem; margin-top: var(--space-4); border-radius: var(--radius-lg);">
+              <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--color-text-muted);font-size:var(--fs-sm);">
+                {%- render 'icon', icon: 'map-pin', size: 24 -%}
+                Map embed
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact form",
+  "tag": "section",
+  "class": "section-contact-form",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Contact"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Questions about training, products, or partnerships? We're here to help."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Submit button label",
+      "default": "Send message"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message"
+    },
+    {
+      "type": "header",
+      "content": "Location info"
+    },
+    {
+      "type": "text",
+      "id": "info_heading",
+      "label": "Info sidebar heading",
+      "default": "Visit Neutrex"
+    },
+    {
+      "type": "textarea",
+      "id": "location",
+      "label": "Location override"
+    },
+    {
+      "type": "textarea",
+      "id": "hours",
+      "label": "Hours override"
+    },
+    {
+      "type": "html",
+      "id": "map_embed",
+      "label": "Map embed HTML"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_map_placeholder",
+      "label": "Show map placeholder when embed empty",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact form"
+    }
+  ]
+}
+{% endschema %}

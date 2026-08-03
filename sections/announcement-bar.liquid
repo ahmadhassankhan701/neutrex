@@ -1,0 +1,170 @@
+{%- if section.settings.enable -%}
+  {%- liquid
+    assign bar_id = 'announcement-bar-' | append: section.id
+    assign use_custom_colors = false
+    if section.settings.background_color != blank or section.settings.text_color != blank
+      assign use_custom_colors = true
+    endif
+  -%}
+
+  <div
+    id="{{ bar_id }}"
+    class="announcement-bar{% if section.settings.use_gradient %} announcement-bar--gradient{% endif %}"
+    role="region"
+    aria-label="{{ 'general.accessibility.skip_to_content' | t | replace: 'Skip to content', 'Announcement' }}"
+    data-announcement-bar
+    {% if section.settings.dismissible %}data-dismissible{% endif %}
+    {% if use_custom_colors %}
+      style="
+        {%- if section.settings.background_color != blank -%}--announcement-bg: {{ section.settings.background_color }}; background: {{ section.settings.background_color }};{%- endif -%}
+        {%- if section.settings.text_color != blank -%}color: {{ section.settings.text_color }};{%- endif -%}
+      "
+    {% endif %}
+    {{ section.shopify_attributes }}
+  >
+    <div class="announcement-bar__inner page-width">
+      <div class="announcement-bar__message" id="{{ bar_id }}-message">
+        {%- if section.settings.link != blank -%}
+          <a href="{{ section.settings.link }}">{{ section.settings.text | escape }}</a>
+        {%- else -%}
+          <span>{{ section.settings.text | escape }}</span>
+        {%- endif -%}
+
+        {%- if section.settings.show_countdown and section.settings.countdown_end != blank -%}
+          <span
+            class="announcement-bar__countdown"
+            data-countdown
+            data-countdown-end="{{ section.settings.countdown_end | date: '%Y-%m-%dT%H:%M:%S%z' }}"
+            aria-live="polite"
+            aria-atomic="true"
+          ></span>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.dismissible -%}
+        <button
+          type="button"
+          class="announcement-bar__close"
+          data-announcement-close
+          aria-label="{{ 'general.accessibility.close' | t }}"
+        >
+          {% render 'icon', icon: 'close', size: 16 %}
+        </button>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var bar = document.getElementById('{{ bar_id }}');
+      if (!bar) return;
+
+      var storageKey = 'neutrex-announcement-dismissed-{{ section.id }}';
+
+      if (bar.dataset.dismissible !== undefined) {
+        try {
+          if (localStorage.getItem(storageKey) === '1') {
+            bar.hidden = true;
+            return;
+          }
+        } catch (e) {}
+
+        var closeBtn = bar.querySelector('[data-announcement-close]');
+        closeBtn?.addEventListener('click', function () {
+          bar.hidden = true;
+          try { localStorage.setItem(storageKey, '1'); } catch (e) {}
+        });
+      }
+
+      var countdown = bar.querySelector('[data-countdown]');
+      if (countdown) {
+        var end = new Date(countdown.dataset.countdownEnd).getTime();
+        function tick() {
+          var now = Date.now();
+          var diff = end - now;
+          if (diff <= 0) {
+            countdown.textContent = '';
+            return;
+          }
+          var d = Math.floor(diff / 86400000);
+          var h = Math.floor((diff % 86400000) / 3600000);
+          var m = Math.floor((diff % 3600000) / 60000);
+          var s = Math.floor((diff % 60000) / 1000);
+          countdown.textContent = [d, h, m, s].map(function (n) { return String(n).padStart(2, '0'); }).join(':');
+          requestAnimationFrame(function () { setTimeout(tick, 1000); });
+        }
+        tick();
+      }
+    })();
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "tag": "section",
+  "class": "section-announcement-bar",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable",
+      "label": "Enable announcement bar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "Free shipping on orders over $150 · Elite performance starts here"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_gradient",
+      "label": "Use gradient background",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "checkbox",
+      "id": "dismissible",
+      "label": "Allow dismiss",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Countdown"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_countdown",
+      "label": "Show countdown",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "countdown_end",
+      "label": "Countdown end (YYYY-MM-DD HH:MM)",
+      "info": "Shop timezone. Example: 2026-12-31 23:59"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement bar"
+    }
+  ]
+}
+{% endschema %}

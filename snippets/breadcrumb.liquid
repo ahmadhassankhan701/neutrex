@@ -1,0 +1,55 @@
+{%- comment -%}
+  Visual breadcrumb navigation.
+  @param {array} breadcrumb_list - Optional array of {title, url} objects
+  @param {string} [class] - Additional CSS classes
+{%- endcomment -%}
+
+<nav
+  class="breadcrumb{% if class != blank %} {{ class }}{% endif %}"
+  aria-label="{{ 'general.pagination.label' | t }}"
+>
+  <a href="{{ routes.root_url }}">{{ shop.name | escape }}</a>
+
+  {%- if breadcrumb_list != blank -%}
+    {%- for item in breadcrumb_list -%}
+      <span class="breadcrumb__sep" aria-hidden="true">/</span>
+      {%- if item.url != blank and forloop.last == false -%}
+        <a href="{{ item.url }}">{{ item.title | escape }}</a>
+      {%- else -%}
+        <span aria-current="page">{{ item.title | escape }}</span>
+      {%- endif -%}
+    {%- endfor -%}
+  {%- else -%}
+    {%- case request.page_type -%}
+      {%- when 'product' -%}
+        {%- if collection -%}
+          <span class="breadcrumb__sep" aria-hidden="true">/</span>
+          <a href="{{ collection.url }}">{{ collection.title | escape }}</a>
+        {%- endif -%}
+        <span class="breadcrumb__sep" aria-hidden="true">/</span>
+        <span aria-current="page">{{ product.title | escape }}</span>
+
+      {%- when 'collection' -%}
+        <span class="breadcrumb__sep" aria-hidden="true">/</span>
+        <span aria-current="page">{{ collection.title | escape }}</span>
+
+      {%- when 'blog' -%}
+        <span class="breadcrumb__sep" aria-hidden="true">/</span>
+        <span aria-current="page">{{ blog.title | escape }}</span>
+
+      {%- when 'article' -%}
+        <span class="breadcrumb__sep" aria-hidden="true">/</span>
+        <a href="{{ blog.url }}">{{ blog.title | escape }}</a>
+        <span class="breadcrumb__sep" aria-hidden="true">/</span>
+        <span aria-current="page">{{ article.title | escape }}</span>
+
+      {%- when 'page' -%}
+        <span class="breadcrumb__sep" aria-hidden="true">/</span>
+        <span aria-current="page">{{ page.title | escape }}</span>
+
+      {%- when 'search' -%}
+        <span class="breadcrumb__sep" aria-hidden="true">/</span>
+        <span aria-current="page">{{ 'search.title' | t }}</span>
+    {%- endcase -%}
+  {%- endif -%}
+</nav>

@@ -1,0 +1,249 @@
+{%- liquid
+  assign terms = search.terms | escape
+  assign products_per_page = section.settings.products_per_page | default: 12
+  assign enable_filters = section.settings.enable_filters
+-%}
+
+<div class="search-page page-width" {{ section.shopify_attributes }}>
+  {%- render 'breadcrumb' -%}
+
+  <header class="search-page__header">
+    <h1 class="search-page__title">{{ 'search.title' | t }}</h1>
+
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-page__form">
+      <label class="visually-hidden" for="SearchInput-{{ section.id }}">{{ 'search.title' | t }}</label>
+      {%- render 'icon', icon: 'search', size: 'sm' -%}
+      <input
+        id="SearchInput-{{ section.id }}"
+        type="search"
+        name="q"
+        value="{{ search.terms | escape }}"
+        class="search-page__input field__input"
+        placeholder="{{ 'search.placeholder' | t }}"
+        autocomplete="off"
+      >
+      <input type="hidden" name="options[prefix]" value="last">
+      <button type="submit" class="btn btn--primary btn--sm">
+        {{ 'search.title' | t }}
+      </button>
+    </form>
+
+    {%- if search.performed -%}
+      <p class="search-page__meta">
+        {%- if search.results_count == 0 -%}
+          {{ 'search.no_results' | t: terms: terms }}
+        {%- else -%}
+          {{ 'search.results' | t: count: search.results_count }}
+        {%- endif -%}
+      </p>
+    {%- endif -%}
+  </header>
+
+  {%- paginate search.results by products_per_page -%}
+    {%- if search.performed -%}
+      {%- if search.results.size > 0 -%}
+        <div class="search-page__results">
+          {%- assign product_results = search.results | where: 'object_type', 'product' -%}
+          {%- assign collection_results = search.results | where: 'object_type', 'collection' -%}
+          {%- assign page_results = search.results | where: 'object_type', 'page' -%}
+          {%- assign article_results = search.results | where: 'object_type', 'article' -%}
+
+          {%- if product_results.size > 0 -%}
+            <section class="search-page__section" aria-labelledby="SearchProducts-{{ section.id }}">
+              <h2 id="SearchProducts-{{ section.id }}" class="search-page__section-title">
+                {{ 'search.products' | t }}
+              </h2>
+              <div class="collection-grid" data-product-grid>
+                {%- for item in product_results -%}
+                  {%- render 'product-card', product: item -%}
+                {%- endfor -%}
+              </div>
+            </section>
+          {%- endif -%}
+
+          {%- if collection_results.size > 0 -%}
+            <section class="search-page__section" aria-labelledby="SearchCollections-{{ section.id }}">
+              <h2 id="SearchCollections-{{ section.id }}" class="search-page__section-title">
+                {{ 'search.collections' | t }}
+              </h2>
+              <ul class="search-page__list" role="list">
+                {%- for item in collection_results -%}
+                  <li>
+                    <a href="{{ item.url }}" class="search-page__link">{{ item.title | escape }}</a>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </section>
+          {%- endif -%}
+
+          {%- if page_results.size > 0 -%}
+            <section class="search-page__section" aria-labelledby="SearchPages-{{ section.id }}">
+              <h2 id="SearchPages-{{ section.id }}" class="search-page__section-title">
+                {{ 'search.pages' | t }}
+              </h2>
+              <ul class="search-page__list" role="list">
+                {%- for item in page_results -%}
+                  <li>
+                    <a href="{{ item.url }}" class="search-page__link">{{ item.title | escape }}</a>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </section>
+          {%- endif -%}
+
+          {%- if article_results.size > 0 -%}
+            <section class="search-page__section" aria-labelledby="SearchArticles-{{ section.id }}">
+              <h2 id="SearchArticles-{{ section.id }}" class="search-page__section-title">
+                {{ 'search.suggestions' | t }}
+              </h2>
+              <ul class="search-page__list" role="list">
+                {%- for item in article_results -%}
+                  <li>
+                    <a href="{{ item.url }}" class="search-page__link">{{ item.title | escape }}</a>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </section>
+          {%- endif -%}
+        </div>
+
+        {%- render 'pagination', paginate: paginate, class: 'search-page__pagination' -%}
+      {%- else -%}
+        <div class="search-page__empty empty-state">
+          <p class="empty-state__title">{{ 'search.no_results' | t: terms: terms }}</p>
+          {%- if section.settings.trending_links != blank -%}
+            <div class="search-page__trending">
+              <h2 class="search-page__section-title">{{ 'search.trending' | t }}</h2>
+              <ul class="search-page__list" role="list">
+                {%- assign trending = section.settings.trending_links | newline_to_br | split: '<br />' -%}
+                {%- for line in trending -%}
+                  {%- assign term = line | strip -%}
+                  {%- if term != blank -%}
+                    <li>
+                      <a href="{{ routes.search_url }}?q={{ term | url_encode }}" class="search-page__link">
+                        {{ term | escape }}
+                      </a>
+                    </li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- else -%}
+      <div class="search-page__empty empty-state">
+        <p class="empty-state__title">{{ 'search.placeholder' | t }}</p>
+      </div>
+    {%- endif -%}
+  {%- endpaginate -%}
+</div>
+
+{% stylesheet %}
+  .search-page {
+    padding-block: var(--space-section);
+  }
+  .search-page__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+  }
+  .search-page__title {
+    font-size: var(--fs-3xl);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  .search-page__form {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    max-width: 36rem;
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background: var(--color-bg-elevated);
+  }
+  .search-page__input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    min-height: 2.5rem;
+  }
+  .search-page__meta {
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+  }
+  .search-page__section + .search-page__section {
+    margin-top: var(--space-8);
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--color-border);
+  }
+  .search-page__section-title {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    margin-bottom: var(--space-5);
+  }
+  .search-page__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .search-page__link {
+    font-size: var(--fs-md);
+    font-weight: 500;
+    color: var(--color-primary);
+  }
+  .search-page__link:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .search-page__empty {
+    text-align: center;
+    padding: var(--space-section) 0;
+  }
+  .search-page__trending {
+    margin-top: var(--space-6);
+    text-align: start;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Search results",
+  "tag": "section",
+  "class": "section-main-search",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Results per page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 12
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filters",
+      "label": "Enable filters",
+      "default": false,
+      "info": "Search filtering requires Shopify Search & Discovery app configuration"
+    },
+    {
+      "type": "textarea",
+      "id": "trending_links",
+      "label": "Trending searches",
+      "info": "One search term per line, shown when no results found",
+      "default": "Protein\nCreatine\nTraining"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Search results"
+    }
+  ]
+}
+{% endschema %}

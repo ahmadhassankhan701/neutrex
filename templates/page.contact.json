@@ -1,0 +1,16 @@
+{
+  "layout": "theme",
+  "sections": {
+    "main": {
+      "type": "contact-form",
+      "settings": {
+        "title": "Contact",
+        "subtitle": "Questions about training, products, or partnerships? We're here to help.",
+        "button_label": "Send message",
+        "info_heading": "Visit Neutrex",
+        "show_map_placeholder": true
+      }
+    }
+  },
+  "order": ["main"]
+}

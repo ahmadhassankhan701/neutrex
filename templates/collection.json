@@ -1,0 +1,23 @@
+{
+  "sections": {
+    "banner": {
+      "type": "main-collection-banner",
+      "settings": {
+        "show_description": true,
+        "show_product_count": true,
+        "overlay_opacity": 100
+      }
+    },
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "products_per_page": 12,
+        "columns": 3,
+        "enable_filtering": true,
+        "enable_sorting": true,
+        "infinite_scroll": true
+      }
+    }
+  },
+  "order": ["banner", "main"]
+}

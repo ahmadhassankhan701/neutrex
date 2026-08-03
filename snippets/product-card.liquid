@@ -1,0 +1,175 @@
+{%- comment -%}
+  Premium product card with hover image swap, badges, and quick actions.
+  @param {product} product - Shopify product object
+  @param {string} [image_ratio] - Aspect ratio override
+  @param {boolean} [show_vendor] - Show vendor
+  @param {boolean} [enable_wishlist] - Show wishlist button
+  @param {boolean} [enable_quick_add] - Show quick add
+  @param {boolean} [enable_quick_view] - Show quick view
+  @param {string} [class] - Additional card classes
+  @param {string} [loading] - Image loading strategy
+{%- endcomment -%}
+
+{%- if product != blank -%}
+  {%- liquid
+    assign card_class = 'product-card'
+    if class != blank
+      assign card_class = card_class | append: ' ' | append: class
+    endif
+
+    assign ratio = image_ratio | default: settings.product_image_ratio
+    assign show_vendor_label = show_vendor | default: settings.show_vendor
+    assign wishlist_enabled = enable_wishlist | default: settings.enable_wishlist
+    assign quick_add_enabled = enable_quick_add | default: settings.enable_quick_add
+    assign quick_view_enabled = enable_quick_view | default: settings.enable_quick_view
+
+    assign current_variant = product.selected_or_first_available_variant
+    assign featured_media = product.featured_media
+    assign secondary_media = product.media[1]
+
+    assign on_sale = false
+    if current_variant.compare_at_price > current_variant.price
+      assign on_sale = true
+    endif
+
+    assign is_new = false
+    assign is_bestseller = false
+    for tag in product.tags
+      assign tag_lower = tag | downcase
+      if tag_lower == 'new'
+        assign is_new = true
+      endif
+      if tag_lower == 'bestseller' or tag_lower == 'best-seller' or tag_lower == 'best seller'
+        assign is_bestseller = true
+      endif
+    endfor
+
+    assign image_loading = loading | default: 'lazy'
+    if lazy_load == false
+      assign image_loading = 'eager'
+    elsif settings.lazy_load_images == false
+      assign image_loading = 'eager'
+    endif
+  -%}
+
+  <article
+    class="{{ card_class }}"
+    data-product-card
+    data-product-id="{{ product.id }}"
+    data-product-handle="{{ product.handle | escape }}"
+  >
+    <div class="product-card__media" style="--product-card-ratio: {{ ratio }};">
+      <a
+        class="product-card__media-link"
+        href="{{ product.url }}"
+        aria-label="{{ product.title | escape }}"
+      >
+        {%- if featured_media -%}
+          {%- render 'media',
+            image: featured_media.preview_image,
+            alt: featured_media.alt | default: product.title,
+            class: 'product-card__img product-card__img--primary',
+            loading: image_loading,
+            widths: '360,540,720,900',
+            sizes: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw'
+          -%}
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'product-card__img product-card__img--primary placeholder' }}
+        {%- endif -%}
+
+        {%- if secondary_media -%}
+          {{
+            secondary_media.preview_image
+            | image_url: width: 900
+            | image_tag:
+              class: 'product-card__img product-card__img--secondary',
+              loading: 'lazy',
+              widths: '360,540,720,900',
+              sizes: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw',
+              alt: secondary_media.alt | default: product.title,
+              data-product-image-secondary: ''
+          }}
+        {%- endif -%}
+      </a>
+
+      {%- if on_sale or is_new or is_bestseller -%}
+        <div class="product-card__badges">
+          {%- if on_sale -%}
+            {%- assign badge_sale = 'products.sale' | t -%}
+            {%- render 'badge', text: badge_sale, type: 'sale' -%}
+          {%- endif -%}
+          {%- if is_new -%}
+            {%- assign badge_new = 'products.new' | t -%}
+            {%- render 'badge', text: badge_new, type: 'new' -%}
+          {%- endif -%}
+          {%- if is_bestseller -%}
+            {%- assign badge_best = 'products.bestseller' | t -%}
+            {%- render 'badge', text: badge_best, type: 'new' -%}
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <div class="product-card__actions">
+        {%- if wishlist_enabled -%}
+          {%- render 'wishlist-button', product: product -%}
+        {%- endif -%}
+
+        {%- if quick_view_enabled -%}
+          <button
+            type="button"
+            class="product-card__action-btn"
+            data-quick-view
+            data-product-url="{{ product.url }}"
+            aria-label="{{ 'products.quick_view' | t }}: {{ product.title | escape }}"
+          >
+            {%- render 'icon', icon: 'zoom' -%}
+          </button>
+        {%- endif -%}
+      </div>
+
+      {%- if quick_add_enabled -%}
+        <div class="product-card__quick-add">
+          {%- if product.available -%}
+            {%- if product.variants.size == 1 -%}
+              <button
+                type="button"
+                class="btn btn--primary btn--sm btn--full"
+                data-quick-add
+                data-variant-id="{{ current_variant.id }}"
+                aria-label="{{ 'products.quick_add' | t }}: {{ product.title | escape }}"
+              >
+                {{ 'products.quick_add' | t }}
+              </button>
+            {%- else -%}
+              <a
+                href="{{ product.url }}"
+                class="btn btn--secondary btn--sm btn--full"
+                aria-label="{{ 'products.choose_options' | t }}: {{ product.title | escape }}"
+              >
+                {{ 'products.choose_options' | t }}
+              </a>
+            {%- endif -%}
+          {%- else -%}
+            <span class="btn btn--ghost btn--sm btn--full" aria-disabled="true">
+              {{ 'products.sold_out' | t }}
+            </span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="product-card__body">
+      {%- if show_vendor_label and product.vendor != blank -%}
+        <p class="product-card__vendor">{{ product.vendor | escape }}</p>
+      {%- endif -%}
+
+      <h3 class="product-card__title">
+        <a href="{{ product.url }}">{{ product.title | escape }}</a>
+      </h3>
+
+      <div class="product-card__footer">
+        {%- render 'price', product: product, class: 'product-card__price' -%}
+      </div>
+    </div>
+  </article>
+{%- endif -%}

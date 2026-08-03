@@ -1,0 +1,22 @@
+{%- comment -%}
+  Skeleton placeholder for product card loading states.
+  @param {string} [class] - Additional CSS classes
+{%- endcomment -%}
+
+{%- liquid
+  assign placeholder_class = 'product-card product-card--placeholder'
+  if class != blank
+    assign placeholder_class = placeholder_class | append: ' ' | append: class
+  endif
+-%}
+
+<article class="{{ placeholder_class }}" aria-hidden="true" data-product-card-placeholder>
+  <div class="product-card__media skeleton" style="--product-card-ratio: {{ settings.product_image_ratio }};">
+    <span class="visually-hidden">{{ 'general.accessibility.loading' | t }}</span>
+  </div>
+  <div class="product-card__body">
+    <div class="skeleton product-card__vendor" style="width: 40%; height: 0.75rem; border-radius: var(--radius-full);"></div>
+    <div class="skeleton" style="width: 85%; height: 1rem; margin-block: 0.5rem; border-radius: var(--radius-sm);"></div>
+    <div class="skeleton" style="width: 35%; height: 1rem; border-radius: var(--radius-sm);"></div>
+  </div>
+</article>

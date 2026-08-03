@@ -1,0 +1,31 @@
+{%- comment -%}
+  Responsive image helper with srcset and sizes.
+  @param {image} image - Shopify image object
+  @param {string} [alt] - Alt text override
+  @param {string} [class] - CSS classes
+  @param {string} [sizes] - Sizes attribute
+  @param {string} [loading] - lazy | eager
+  @param {number} [width] - Fallback width
+  @param {string} [widths] - Comma-separated srcset widths
+{%- endcomment -%}
+
+{%- if image != blank -%}
+  {%- liquid
+    assign image_alt = alt | default: image.alt | escape
+    assign image_loading = loading | default: 'lazy'
+    assign image_width = width | default: 800
+    assign image_widths = widths | default: '180,360,540,720,900,1080,1200,1600'
+    assign image_sizes = sizes | default: '(min-width: 1400px) 600px, (min-width: 990px) 45vw, 100vw'
+  -%}
+
+  {{
+    image
+    | image_url: width: image_width
+    | image_tag:
+      alt: image_alt,
+      class: class,
+      loading: image_loading,
+      widths: image_widths,
+      sizes: image_sizes
+  }}
+{%- endif -%}

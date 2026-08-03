@@ -1,0 +1,339 @@
+{
+  "general": {
+    "accessibility": {
+      "skip_to_content": "Skip to content",
+      "close": "Close",
+      "menu": "Menu",
+      "cart": "Cart",
+      "search": "Search",
+      "account": "Account",
+      "wishlist": "Wishlist",
+      "theme_light": "Switch to light mode",
+      "theme_dark": "Switch to dark mode",
+      "loading": "Loading",
+      "previous": "Previous",
+      "next": "Next",
+      "play": "Play",
+      "pause": "Pause"
+    },
+    "404": {
+      "title": "Page not found",
+      "text": "The page you're looking for doesn't exist or has been moved.",
+      "button": "Back to shop"
+    },
+    "meta": {
+      "page": "Page {{ page }}",
+      "of": "of"
+    },
+    "social": {
+      "share_on": "Share on {{ platform }}",
+      "share": "Share"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "page": "Page {{ number }}"
+    }
+  },
+  "header": {
+    "shop_now": "Shop Now",
+    "book_training": "Book Training",
+    "search_placeholder": "Search Neutrex…",
+    "language": "Language",
+    "account": "Account",
+    "wishlist": "Wishlist",
+    "cart": "Cart",
+    "menu": "Menu"
+  },
+  "footer": {
+    "newsletter_heading": "Join the elite",
+    "newsletter_text": "Training tips, drops, and exclusive member offers.",
+    "newsletter_placeholder": "Email address",
+    "newsletter_button": "Subscribe",
+    "newsletter_success": "You're on the list.",
+    "quick_links": "Explore",
+    "categories": "Shop",
+    "policies": "Support",
+    "contact": "Contact",
+    "whatsapp": "WhatsApp",
+    "location": "Location",
+    "hours": "Hours",
+    "copyright": "© {{ year }} {{ shop_name }}. All rights reserved.",
+    "payment": "We accept"
+  },
+  "products": {
+    "add_to_cart": "Add to cart",
+    "buy_now": "Buy now",
+    "sold_out": "Sold out",
+    "unavailable": "Unavailable",
+    "quick_add": "Quick add",
+    "quick_view": "Quick view",
+    "wishlist_add": "Add to wishlist",
+    "wishlist_remove": "Remove from wishlist",
+    "size_guide": "Size guide",
+    "nutrition_facts": "Nutrition facts",
+    "benefits": "Benefits",
+    "ingredients": "Ingredients",
+    "reviews": "Reviews",
+    "shipping": "Shipping & returns",
+    "related": "You may also like",
+    "recently_viewed": "Recently viewed",
+    "in_stock": "In stock",
+    "low_stock": "Only {{ count }} left",
+    "out_of_stock": "Out of stock",
+    "from": "From",
+    "sale": "Sale",
+    "new": "New",
+    "bestseller": "Bestseller",
+    "share": "Share",
+    "quantity": "Quantity",
+    "view_details": "View details",
+    "choose_options": "Choose options",
+    "description": "Description",
+    "sku": "SKU"
+  },
+  "collections": {
+    "filter": "Filter",
+    "filters": "Filters",
+    "sort": "Sort by",
+    "clear": "Clear all",
+    "apply": "Apply",
+    "products_count": "{{ count }} products",
+    "no_results": "No products match your filters.",
+    "load_more": "Load more",
+    "availability": "Availability",
+    "price": "Price",
+    "in_stock_only": "In stock only",
+    "all_collections": "All collections",
+    "active_filters": "Active filters"
+  },
+  "cart": {
+    "title": "Your bag",
+    "empty": "Your bag is empty",
+    "continue": "Continue shopping",
+    "subtotal": "Subtotal",
+    "checkout": "Checkout",
+    "view_cart": "View bag",
+    "remove": "Remove",
+    "update": "Update",
+    "note": "Order note",
+    "note_placeholder": "Special instructions…",
+    "free_shipping_complete": "You've unlocked free shipping",
+    "free_shipping_remaining": "Spend {{ amount }} more for free shipping",
+    "taxes": "Taxes and shipping calculated at checkout"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search products, categories…",
+    "no_results": "No results for “{{ terms }}”",
+    "results": "{{ count }} results",
+    "products": "Products",
+    "collections": "Collections",
+    "pages": "Pages",
+    "suggestions": "Suggestions",
+    "trending": "Trending",
+    "view_all": "View all results"
+  },
+  "appointments": {
+    "book_now": "Book now",
+    "book_session": "Book session",
+    "select_trainer": "Select trainer",
+    "select_date": "Select date",
+    "select_time": "Select time",
+    "duration": "Duration",
+    "pricing": "Investment",
+    "minutes": "{{ count }} min",
+    "faq": "FAQ",
+    "reviews": "Client reviews",
+    "trainer_profile": "Trainer profile",
+    "available_times": "Available times",
+    "personal_training": "Personal Training",
+    "online_coaching": "Online Coaching",
+    "gym_consultation": "Gym Consultation",
+    "bodybuilding_coaching": "Bodybuilding Coaching",
+    "confirm": "Confirm booking",
+    "whatsapp_cta": "Book via WhatsApp"
+  },
+  "coach": {
+    "achievements": "Achievements",
+    "certifications": "Certifications",
+    "experience": "Experience",
+    "transformations": "Transformations",
+    "book_session": "Book a session",
+    "follow": "Follow on Instagram",
+    "years": "{{ count }}+ years"
+  },
+  "account": {
+    "dashboard": "Dashboard",
+    "orders": "Orders",
+    "wishlist": "Wishlist",
+    "appointments": "Appointments",
+    "addresses": "Addresses",
+    "recently_viewed": "Recently viewed",
+    "rewards": "Rewards",
+    "logout": "Log out",
+    "login": "Log in",
+    "register": "Create account",
+    "welcome": "Welcome back, {{ name }}",
+    "no_orders": "No orders yet",
+    "view_order": "View order",
+    "order_number": "Order {{ number }}"
+  },
+  "newsletter": {
+    "success": "Thanks for joining Neutrex.",
+    "error": "Please enter a valid email."
+  },
+  "customer": {
+    "login": {
+      "title": "Log in",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "forgot": "Forgot password?",
+      "create": "Create account"
+    },
+    "register": {
+      "title": "Create account",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Create account",
+      "login": "Already have an account? Log in"
+    },
+    "recover": {
+      "title": "Reset password",
+      "submit": "Send reset link",
+      "success": "We've sent you an email."
+    }
+  },
+  "sections": {
+    "hero": {
+      "shop_now": "Shop Now",
+      "book_training": "Book Training"
+    },
+    "stats": {
+      "athletes": "Athletes trained",
+      "sessions": "Sessions booked",
+      "products": "Products sold",
+      "rating": "Average rating"
+    },
+    "categories": {
+      "title": "Shop by category",
+      "subtitle": "Performance gear engineered for results"
+    },
+    "bestsellers": {
+      "title": "Best sellers",
+      "subtitle": "What the community is training with"
+    },
+    "trending": {
+      "title": "Trending now",
+      "subtitle": "Fresh drops. Peak performance."
+    },
+    "coach": {
+      "title": "Featured coach",
+      "cta": "Meet your coach"
+    },
+    "appointment_cta": {
+      "title": "Ready to level up?",
+      "subtitle": "Book a session with elite coaches.",
+      "cta": "Book appointment"
+    },
+    "transformations": {
+      "title": "Real transformations",
+      "subtitle": "Results speak louder than reps"
+    },
+    "testimonials": {
+      "title": "What athletes say",
+      "subtitle": "Trusted by professionals and beginners alike"
+    },
+    "instagram": {
+      "title": "Follow the movement",
+      "handle": "@neutrex"
+    }
+  },
+  "settings_schema": {
+    "brand": {
+      "name": "Brand",
+      "brand_name": "Brand name",
+      "logo": "Logo (light)",
+      "logo_dark": "Logo (dark)",
+      "favicon": "Favicon",
+      "logo_width": "Logo width"
+    },
+    "colors": {
+      "name": "Colors",
+      "light_mode": "Light mode",
+      "dark_mode": "Dark mode",
+      "primary": "Primary",
+      "gold": "Luxury gold",
+      "charcoal": "Charcoal",
+      "background": "Background",
+      "surface": "Surface",
+      "text": "Text",
+      "text_muted": "Muted text",
+      "border": "Border",
+      "default_scheme": "Default color scheme",
+      "system": "System preference",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "typography": {
+      "name": "Typography",
+      "font_scale": "Font scale",
+      "heading_weight": "Heading weight"
+    },
+    "layout": {
+      "name": "Layout",
+      "page_width": "Page width",
+      "section_spacing": "Section spacing",
+      "border_radius": "Border radius"
+    },
+    "header": {
+      "name": "Header",
+      "sticky": "Sticky header",
+      "transparent": "Transparent on homepage",
+      "menu": "Main menu",
+      "mega_menu": "Enable mega menu"
+    },
+    "cart": {
+      "name": "Cart",
+      "type": "Cart type",
+      "drawer": "Drawer",
+      "page": "Page",
+      "free_shipping_bar": "Show free shipping bar",
+      "free_shipping_threshold": "Free shipping threshold",
+      "free_shipping_info": "Amount in shop currency (number only)"
+    },
+    "appointments": {
+      "name": "Appointments",
+      "enabled": "Enable appointments",
+      "whatsapp": "WhatsApp number",
+      "whatsapp_info": "Include country code",
+      "booking_url": "External booking URL",
+      "hours": "Business hours",
+      "location": "Location"
+    },
+    "social": {
+      "name": "Social media"
+    },
+    "product": {
+      "name": "Products",
+      "wishlist": "Enable wishlist",
+      "quick_add": "Enable quick add",
+      "quick_view": "Enable quick view",
+      "vendor": "Show vendor",
+      "image_ratio": "Card image ratio"
+    },
+    "performance": {
+      "name": "Performance",
+      "animations": "Enable animations",
+      "lazy_load": "Lazy load images"
+    },
+    "seo": {
+      "name": "SEO & Schema",
+      "org_name": "Organization name",
+      "phone": "Business phone",
+      "address": "Business address"
+    }
+  }
+}

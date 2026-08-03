@@ -1,0 +1,470 @@
+{%- liquid
+  assign whatsapp = section.settings.whatsapp_override | default: settings.whatsapp_number
+  assign booking_url = section.settings.booking_url | default: settings.booking_form_url
+  assign service_name = section.settings.service_name | default: page.title
+  assign default_duration = section.settings.duration_minutes | default: 60
+  assign default_price = section.settings.price | default: 0
+  assign submit_mode = section.settings.submit_mode | default: 'whatsapp'
+
+  if section.settings.available_times != blank
+    assign times_array = section.settings.available_times | newline_to_br | split: '<br />'
+  else
+    assign times_array = '09:00,10:00,11:00,14:00,15:00,16:00,17:00,18:00' | split: ','
+  endif
+
+  assign duration_blocks = section.blocks | where: 'type', 'duration'
+  assign trainer_blocks = section.blocks | where: 'type', 'trainer'
+-%}
+
+<section
+  class="booking-wizard section"
+  id="{{ section.settings.section_anchor | default: 'booking' }}"
+  {{ section.shopify_attributes }}
+>
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <header class="section-header" style="text-align: center; margin-bottom: var(--space-8);">
+        <h2 class="section-header__title">{{ section.settings.heading | escape }}</h2>
+        {%- if section.settings.subheading != blank -%}
+          <p class="section-header__subtitle">{{ section.settings.subheading | escape }}</p>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    {%- if section.settings.show_steps -%}
+      <div class="booking-wizard__steps" aria-label="{{ 'appointments.book_session' | t }}">
+        <div class="booking-wizard__step is-active">
+          <span class="booking-wizard__step-indicator">1</span>
+          <span class="booking-wizard__step-label">{{ 'appointments.select_trainer' | t }}</span>
+        </div>
+        <span class="booking-wizard__step-divider" aria-hidden="true"></span>
+        <div class="booking-wizard__step">
+          <span class="booking-wizard__step-indicator">2</span>
+          <span class="booking-wizard__step-label">{{ 'appointments.select_date' | t }}</span>
+        </div>
+        <span class="booking-wizard__step-divider" aria-hidden="true"></span>
+        <div class="booking-wizard__step">
+          <span class="booking-wizard__step-indicator">3</span>
+          <span class="booking-wizard__step-label">{{ 'appointments.select_time' | t }}</span>
+        </div>
+        <span class="booking-wizard__step-divider" aria-hidden="true"></span>
+        <div class="booking-wizard__step">
+          <span class="booking-wizard__step-indicator">4</span>
+          <span class="booking-wizard__step-label">{{ 'appointments.confirm' | t }}</span>
+        </div>
+      </div>
+    {%- endif -%}
+
+    <div
+      class="booking-wizard__layout"
+      data-appointment-booking
+      data-whatsapp="{{ whatsapp | escape }}"
+      data-form-url="{{ booking_url | escape }}"
+      data-submit-mode="{{ submit_mode | escape }}"
+      data-service-name="{{ service_name | escape }}"
+      data-default-duration="{{ default_duration }}"
+      data-default-price="{{ default_price }}"
+      {% if section.settings.weekdays_only %}data-weekdays-only="true"{% endif %}
+    >
+      <div class="booking-wizard__main">
+        {%- comment -%} Trainers {%- endcomment -%}
+        <div class="booking-wizard__panel is-active" data-booking-panel="trainers">
+          <h3 class="time-slots__title">{{ 'appointments.select_trainer' | t }}</h3>
+          <div class="trainer-grid" data-booking-trainers style="margin-top: var(--space-5);">
+            {%- for block in trainer_blocks -%}
+              <button
+                type="button"
+                class="trainer-card"
+                data-trainer-id="{{ block.id }}"
+                aria-pressed="false"
+                {{ block.shopify_attributes }}
+              >
+                <span class="trainer-card__check" aria-hidden="true">
+                  {%- render 'icon', icon: 'check', size: 14 -%}
+                </span>
+                <div class="trainer-card__image">
+                  {%- if block.settings.image != blank -%}
+                    {{
+                      block.settings.image
+                      | image_url: width: 600
+                      | image_tag:
+                        loading: 'lazy',
+                        widths: '300, 450, 600',
+                        sizes: '(min-width: 990px) 33vw, 50vw',
+                        alt: block.settings.name
+                    }}
+                  {%- else -%}
+                    {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                  {%- endif -%}
+                </div>
+                <div class="trainer-card__body">
+                  <span class="trainer-card__name">{{ block.settings.name | escape }}</span>
+                  {%- if block.settings.role != blank -%}
+                    <span class="trainer-card__specialty">{{ block.settings.role | escape }}</span>
+                  {%- endif -%}
+                  {%- if block.settings.bio != blank -%}
+                    <p class="trainer-card__bio">{{ block.settings.bio | escape }}</p>
+                  {%- endif -%}
+                  {%- if block.settings.experience != blank -%}
+                    <div class="trainer-card__meta">
+                      <span>{{ block.settings.experience | escape }}</span>
+                    </div>
+                  {%- endif -%}
+                </div>
+              </button>
+            {%- else -%}
+              <p class="text-muted">{{ section.settings.no_trainers_text | default: 'Our coaches will be listed here soon.' }}</p>
+            {%- endfor -%}
+          </div>
+        </div>
+
+        {%- comment -%} Calendar {%- endcomment -%}
+        <div class="booking-wizard__panel is-active" data-booking-panel="calendar" style="margin-top: var(--space-8);">
+          <h3 class="time-slots__title">{{ 'appointments.select_date' | t }}</h3>
+          <div class="booking-calendar" data-booking-calendar style="margin-top: var(--space-5);">
+            <div class="booking-calendar__header">
+              <button type="button" class="booking-calendar__nav-btn" data-calendar-prev aria-label="{{ 'general.accessibility.previous' | t }}">
+                {%- render 'icon', icon: 'chevron-left', size: 18 -%}
+              </button>
+              <span class="booking-calendar__month" data-calendar-month></span>
+              <button type="button" class="booking-calendar__nav-btn" data-calendar-next aria-label="{{ 'general.accessibility.next' | t }}">
+                {%- render 'icon', icon: 'chevron-right', size: 18 -%}
+              </button>
+            </div>
+            <div class="booking-calendar__weekdays" aria-hidden="true">
+              <span class="booking-calendar__weekday">Su</span>
+              <span class="booking-calendar__weekday">Mo</span>
+              <span class="booking-calendar__weekday">Tu</span>
+              <span class="booking-calendar__weekday">We</span>
+              <span class="booking-calendar__weekday">Th</span>
+              <span class="booking-calendar__weekday">Fr</span>
+              <span class="booking-calendar__weekday">Sa</span>
+            </div>
+            <div class="booking-calendar__days" data-calendar-grid role="grid" aria-label="{{ 'appointments.select_date' | t }}"></div>
+          </div>
+        </div>
+
+        {%- comment -%} Time slots {%- endcomment -%}
+        <div class="booking-wizard__panel is-active" data-booking-panel="times" style="margin-top: var(--space-8);">
+          <div class="time-slots">
+            <h3 class="time-slots__title">{{ 'appointments.available_times' | t }}</h3>
+            <div class="time-slots__grid" data-booking-times role="group" aria-label="{{ 'appointments.select_time' | t }}"></div>
+          </div>
+        </div>
+      </div>
+
+      {%- comment -%} Summary sidebar {%- endcomment -%}
+      <aside class="booking-summary" data-booking-summary>
+        <h3 class="booking-summary__title">{{ 'appointments.book_session' | t }}</h3>
+
+        <div class="booking-summary__row">
+          <span class="booking-summary__row-label">{{ 'appointments.trainer_profile' | t }}</span>
+          <span class="booking-summary__row-value" data-summary-trainer>—</span>
+        </div>
+        <div class="booking-summary__row">
+          <span class="booking-summary__row-label">{{ 'appointments.select_date' | t }}</span>
+          <span class="booking-summary__row-value" data-summary-date>—</span>
+        </div>
+        <div class="booking-summary__row">
+          <span class="booking-summary__row-label">{{ 'appointments.select_time' | t }}</span>
+          <span class="booking-summary__row-value" data-summary-time>—</span>
+        </div>
+        <div class="booking-summary__row">
+          <span class="booking-summary__row-label">{{ 'appointments.duration' | t }}</span>
+          <span class="booking-summary__row-value" data-summary-duration>{{ default_duration }} min</span>
+        </div>
+
+        <div class="booking-summary__divider"></div>
+
+        {%- if duration_blocks.size > 0 -%}
+          <p class="booking-summary__row-label" style="margin-bottom: var(--space-3);">{{ 'appointments.duration' | t }}</p>
+          <div class="booking-summary__duration-options">
+            {%- for block in duration_blocks -%}
+              <button
+                type="button"
+                class="booking-summary__duration{% if forloop.first %} is-selected{% endif %}"
+                data-duration-option="{{ block.settings.minutes }}"
+                data-price="{{ block.settings.price }}"
+                aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+                {{ block.shopify_attributes }}
+              >
+                <span>{{ 'appointments.minutes' | t: count: block.settings.minutes }}</span>
+                <span>{{ block.settings.price | times: 100 | money }}</span>
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        <div class="booking-summary__total">
+          <span>{{ 'appointments.pricing' | t }}</span>
+          <span class="booking-summary__total-value" data-summary-price>{{ default_price | times: 100 | money }}</span>
+        </div>
+
+        {%- liquid
+          assign cta_label = 'appointments.whatsapp_cta' | t
+          if submit_mode == 'form'
+            assign cta_label = 'appointments.confirm' | t
+          endif
+        -%}
+        <button type="button" class="btn btn--primary btn--full" data-booking-submit disabled aria-disabled="true">
+          {{ cta_label | escape }}
+        </button>
+      </aside>
+    </div>
+  </div>
+
+  {%- comment -%} JSON data for appointments.js {%- endcomment -%}
+  <script type="application/json" data-trainers-json>
+    [
+      {%- for block in trainer_blocks -%}
+        {
+          "id": {{ block.id | json }},
+          "name": {{ block.settings.name | default: 'Coach' | json }},
+          "image": {%- if block.settings.image != blank -%}{{ block.settings.image | image_url: width: 96 | json }}{%- else -%}null{%- endif -%},
+          "specialty": {{ block.settings.role | json }},
+          "experience": {{ block.settings.experience | json }}
+        }{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    ]
+  </script>
+
+  <script type="application/json" data-time-slots-json>
+    {
+      "default": [
+        {%- assign time_first = true -%}
+        {%- for line in times_array -%}
+          {%- assign slot_time = line | strip -%}
+          {%- if slot_time != blank -%}
+            {%- unless time_first -%},{%- endunless -%}
+            {{ slot_time | json }}
+            {%- assign time_first = false -%}
+          {%- endif -%}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+
+  <script type="application/json" data-blocked-dates-json>
+    [
+      {%- assign date_first = true -%}
+      {%- if section.settings.blocked_dates != blank -%}
+        {%- assign blocked_lines = section.settings.blocked_dates | newline_to_br | split: '<br />' -%}
+        {%- for line in blocked_lines -%}
+          {%- assign blocked_date = line | strip -%}
+          {%- if blocked_date != blank -%}
+            {%- unless date_first -%},{%- endunless -%}
+            {{ blocked_date | json }}
+            {%- assign date_first = false -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+    ]
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Appointment booking",
+  "tag": "section",
+  "class": "section-appointment-booking",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_anchor",
+      "label": "Section anchor ID",
+      "default": "booking"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Book your session"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Choose your coach, date, and time — we'll confirm via WhatsApp."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_steps",
+      "label": "Show step indicators",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Service details"
+    },
+    {
+      "type": "text",
+      "id": "service_name",
+      "label": "Service name",
+      "default": "Personal Training"
+    },
+    {
+      "type": "number",
+      "id": "duration_minutes",
+      "label": "Default duration (minutes)",
+      "default": 60
+    },
+    {
+      "type": "number",
+      "id": "price",
+      "label": "Default price",
+      "default": 150,
+      "info": "Amount in shop currency (number only)"
+    },
+    {
+      "type": "textarea",
+      "id": "available_times",
+      "label": "Available times",
+      "default": "09:00\n10:00\n11:00\n14:00\n15:00\n16:00\n17:00\n18:00",
+      "info": "One time per line (24h format)"
+    },
+    {
+      "type": "checkbox",
+      "id": "weekdays_only",
+      "label": "Weekdays only",
+      "default": true,
+      "info": "Block Saturday and Sunday automatically"
+    },
+    {
+      "type": "textarea",
+      "id": "blocked_dates",
+      "label": "Additional blocked dates",
+      "info": "One date per line (YYYY-MM-DD)"
+    },
+    {
+      "type": "header",
+      "content": "Booking action"
+    },
+    {
+      "type": "select",
+      "id": "submit_mode",
+      "label": "Confirm method",
+      "default": "whatsapp",
+      "options": [
+        { "value": "whatsapp", "label": "WhatsApp message" },
+        { "value": "form", "label": "Contact form URL" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_override",
+      "label": "WhatsApp number override",
+      "info": "Leave blank to use theme settings"
+    },
+    {
+      "type": "url",
+      "id": "booking_url",
+      "label": "Booking / contact form URL",
+      "info": "Used when confirm method is Contact form"
+    },
+    {
+      "type": "text",
+      "id": "no_trainers_text",
+      "label": "Empty trainers message"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "trainer",
+      "name": "Trainer",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Photo"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Coach Name"
+        },
+        {
+          "type": "text",
+          "id": "role",
+          "label": "Specialty / role",
+          "default": "Strength & conditioning"
+        },
+        {
+          "type": "textarea",
+          "id": "bio",
+          "label": "Bio"
+        },
+        {
+          "type": "text",
+          "id": "experience",
+          "label": "Experience",
+          "default": "8+ years"
+        }
+      ]
+    },
+    {
+      "type": "duration",
+      "name": "Duration option",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "number",
+          "id": "minutes",
+          "label": "Duration (minutes)",
+          "default": 60
+        },
+        {
+          "type": "number",
+          "id": "price",
+          "label": "Price",
+          "default": 150
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Personal Training booking",
+      "settings": {
+        "service_name": "Personal Training",
+        "heading": "Book personal training",
+        "subheading": "Train with elite coaches at Neutrex — in studio or online."
+      },
+      "blocks": [
+        {
+          "type": "trainer",
+          "settings": {
+            "name": "Alex Rivera",
+            "role": "Personal trainer",
+            "bio": "Certified strength coach specializing in hypertrophy and athletic performance.",
+            "experience": "10+ years"
+          }
+        },
+        {
+          "type": "trainer",
+          "settings": {
+            "name": "Sara Chen",
+            "role": "Online coach",
+            "bio": "Remote programming and nutrition guidance for busy professionals.",
+            "experience": "7+ years"
+          }
+        },
+        {
+          "type": "duration",
+          "settings": {
+            "minutes": 60,
+            "price": 150
+          }
+        },
+        {
+          "type": "duration",
+          "settings": {
+            "minutes": 90,
+            "price": 200
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

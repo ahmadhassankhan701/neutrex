@@ -1,0 +1,187 @@
+{%- liquid
+  assign trending_lines = section.settings.trending_searches | newline_to_br | split: '<br />'
+-%}
+{%- capture trending_json -%}[{%- assign trending_first = true -%}{%- for line in trending_lines -%}{%- assign term = line | strip -%}{%- if term != blank -%}{%- unless trending_first -%},{%- endunless -%}{{ term | json }}{%- assign trending_first = false -%}{%- endif -%}{%- endfor -%}]{%- endcapture -%}
+
+<predictive-search
+  class="search-overlay"
+  aria-hidden="true"
+  data-debounce="{{ section.settings.debounce_ms }}"
+  data-min-chars="{{ section.settings.min_characters }}"
+  data-trending='{{ trending_json }}'
+  data-trending-label="{{ 'search.trending' | t | escape }}"
+  data-empty-label="{{ 'search.no_results' | t: terms: '__QUERY__' | escape }}"
+  data-suggestions-label="{{ 'search.suggestions' | t | escape }}"
+  data-products-label="{{ 'search.products' | t | escape }}"
+  data-collections-label="{{ 'search.collections' | t | escape }}"
+  data-view-all-label="{{ 'search.view_all' | t | escape }}"
+  {{ section.shopify_attributes }}
+>
+  <div class="search-overlay__backdrop" data-predictive-search-close tabindex="-1" aria-hidden="true"></div>
+
+  <div class="search-overlay__panel">
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-overlay__form">
+      <label class="visually-hidden" for="PredictiveSearchInput-{{ section.id }}">{{ 'search.title' | t }}</label>
+      {% render 'icon', icon: 'search', size: 22 %}
+      <input
+        id="PredictiveSearchInput-{{ section.id }}"
+        type="search"
+        name="q"
+        class="search-overlay__input"
+        data-predictive-search-input
+        placeholder="{{ section.settings.placeholder | default: 'header.search_placeholder' | t }}"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+        aria-autocomplete="list"
+        aria-controls="PredictiveSearchResults-{{ section.id }}"
+        aria-expanded="false"
+      >
+      <input type="hidden" name="options[prefix]" value="last">
+      <button type="button" class="modal__close" data-predictive-search-close aria-label="{{ 'general.accessibility.close' | t }}">
+        {% render 'icon', icon: 'close', size: 20 %}
+      </button>
+    </form>
+
+    <div
+      id="PredictiveSearchResults-{{ section.id }}"
+      class="search-overlay__results"
+      data-predictive-search-results
+      role="region"
+      aria-live="polite"
+      aria-label="{{ 'search.title' | t }}"
+    ></div>
+  </div>
+</predictive-search>
+
+{% stylesheet %}
+  .predictive-search__section,
+  .search-overlay__section {
+    padding: var(--space-4) var(--space-5);
+  }
+  .predictive-search__section + .predictive-search__section,
+  .search-overlay__section + .search-overlay__section {
+    border-top: 1px solid var(--color-border);
+  }
+  .predictive-search__heading,
+  .search-overlay__section-title {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-3);
+  }
+  .predictive-search__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .predictive-search__item,
+  .search-overlay__result {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    font-size: var(--fs-sm);
+    font-weight: 500;
+    color: var(--color-text);
+    transition: background var(--duration) var(--ease-out);
+  }
+  .predictive-search__item:hover,
+  .search-overlay__result:hover {
+    background: var(--color-surface);
+  }
+  .predictive-search__list--products .predictive-search__product {
+    align-items: center;
+  }
+  .predictive-search__product img {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .predictive-search__title {
+    display: block;
+    font-weight: 600;
+  }
+  .predictive-search__price {
+    display: block;
+    font-size: var(--fs-xs);
+    color: var(--color-text-muted);
+  }
+  .predictive-search__empty {
+    padding: var(--space-6);
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: var(--fs-sm);
+  }
+  .predictive-search__view-all {
+    display: block;
+    padding: var(--space-4) var(--space-5);
+    text-align: center;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--color-primary);
+    border-top: 1px solid var(--color-border);
+  }
+  .predictive-search__view-all:hover {
+    background: var(--color-surface);
+  }
+  .predictive-search__item mark {
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+    border-radius: 2px;
+    padding: 0 2px;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Predictive search",
+  "tag": "section",
+  "class": "section-predictive-search",
+  "settings": [
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Placeholder",
+      "default": "Search Neutrex…"
+    },
+    {
+      "type": "textarea",
+      "id": "trending_searches",
+      "label": "Trending searches",
+      "info": "One search term per line",
+      "default": "Protein\nPre-workout\nCompression wear\nCreatine\nTraining"
+    },
+    {
+      "type": "range",
+      "id": "debounce_ms",
+      "min": 150,
+      "max": 600,
+      "step": 10,
+      "unit": "ms",
+      "label": "Debounce delay",
+      "default": 280
+    },
+    {
+      "type": "range",
+      "id": "min_characters",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "label": "Minimum characters",
+      "default": 2
+    }
+  ],
+  "presets": [
+    {
+      "name": "Predictive search"
+    }
+  ]
+}
+{% endschema %}

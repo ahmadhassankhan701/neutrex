@@ -1,0 +1,16 @@
+{%- comment -%}
+  Badge component.
+  @param {string} text - Badge label
+  @param {string} [type] - sale | new | stock | bestseller | default
+  @param {string} [class] - Additional CSS classes
+{%- endcomment -%}
+
+{%- liquid
+  assign badge_type = type | default: 'default'
+  assign badge_class = 'badge badge--' | append: badge_type
+  if class != blank
+    assign badge_class = badge_class | append: ' ' | append: class
+  endif
+-%}
+
+<span class="{{ badge_class }}">{{ text | escape }}</span>

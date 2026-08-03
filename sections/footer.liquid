@@ -1,0 +1,308 @@
+<footer class="site-footer" role="contentinfo" {{ section.shopify_attributes }}>
+  <div class="page-width">
+    <div class="site-footer__grid">
+      {%- comment -%} Brand column {%- endcomment -%}
+      <div class="site-footer__brand">
+        <a href="{{ routes.root_url }}" class="site-footer__logo" aria-label="{{ shop.name | escape }}">
+          {%- if settings.logo != blank -%}
+            {{
+              settings.logo
+              | image_url: width: settings.logo_width
+              | image_tag:
+                width: settings.logo_width,
+                height: 'auto',
+                alt: shop.name,
+                loading: 'lazy'
+            }}
+          {%- else -%}
+            {{ settings.brand_name | default: shop.name }}
+          {%- endif -%}
+        </a>
+
+        {%- if section.settings.brand_text != blank -%}
+          <p class="site-footer__tagline">{{ section.settings.brand_text | escape }}</p>
+        {%- endif -%}
+
+        {% render 'social-icons' %}
+      </div>
+
+      {%- comment -%} Link list blocks {%- endcomment -%}
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'link_list' -%}
+            <div class="site-footer__column" {{ block.shopify_attributes }}>
+              <p class="site-footer__column-title">{{ block.settings.heading | escape }}</p>
+              {%- if block.settings.menu != blank -%}
+                <ul class="site-footer__links" role="list">
+                  {%- for link in linklists[block.settings.menu].links -%}
+                    <li>
+                      <a href="{{ link.url }}" class="site-footer__link">{{ link.title | escape }}</a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </div>
+
+          {%- when 'newsletter' -%}
+            <div class="site-footer__column site-footer__newsletter" {{ block.shopify_attributes }}>
+              <p class="site-footer__column-title">{{ block.settings.heading | default: 'footer.newsletter_heading' | t }}</p>
+              {%- if block.settings.text != blank -%}
+                <p class="site-footer__tagline">{{ block.settings.text | escape }}</p>
+              {%- else -%}
+                <p class="site-footer__tagline">{{ 'footer.newsletter_text' | t }}</p>
+              {%- endif -%}
+
+              {%- form 'customer', class: 'site-footer__newsletter-form' -%}
+                <input type="hidden" name="contact[tags]" value="newsletter">
+                <div class="field">
+                  <label class="visually-hidden" for="FooterNewsletter-{{ section.id }}">
+                    {{ 'footer.newsletter_placeholder' | t }}
+                  </label>
+                  <input
+                    id="FooterNewsletter-{{ section.id }}"
+                    type="email"
+                    name="contact[email]"
+                    class="field__input"
+                    value="{{ form.email }}"
+                    placeholder="{{ 'footer.newsletter_placeholder' | t }}"
+                    autocomplete="email"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    required
+                    aria-required="true"
+                  >
+                  <label class="field field--checkbox">
+                    <input type="checkbox" name="contact[accepts_marketing]" value="true" checked>
+                    <span class="field__label">{{ block.settings.consent_text | default: 'Accept marketing emails' }}</span>
+                  </label>
+                  <button type="submit" class="btn btn--gold btn--full">
+                    {{ 'footer.newsletter_button' | t }}
+                  </button>
+                </div>
+                {%- if form.posted_successfully? -%}
+                  <p class="site-footer__form-success" role="status">{{ 'footer.newsletter_success' | t }}</p>
+                {%- endif -%}
+                {%- if form.errors -%}
+                  <p class="site-footer__form-error" role="alert">{{ form.errors.messages.email | default: 'newsletter.error' | t }}</p>
+                {%- endif -%}
+              {%- endform -%}
+            </div>
+
+          {%- when 'contact' -%}
+            <div class="site-footer__column site-footer__contact" {{ block.shopify_attributes }}>
+              <p class="site-footer__column-title">{{ block.settings.heading | default: 'footer.contact' | t }}</p>
+              <ul class="site-footer__links site-footer__contact-list" role="list">
+                {%- assign wa_number = settings.whatsapp_number | remove: '+' | remove: ' ' | remove: '-' -%}
+                {%- if wa_number != blank -%}
+                  <li>
+                    <a
+                      href="https://wa.me/{{ wa_number }}"
+                      class="site-footer__link site-footer__contact-item"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {% render 'icon', icon: 'whatsapp', size: 16 %}
+                      <span>{{ 'footer.whatsapp' | t }}: {{ settings.whatsapp_number | escape }}</span>
+                    </a>
+                  </li>
+                {%- endif -%}
+                {%- if settings.business_location != blank -%}
+                  <li class="site-footer__contact-item">
+                    {% render 'icon', icon: 'map-pin', size: 16 %}
+                    <span>{{ 'footer.location' | t }}: {{ settings.business_location | escape }}</span>
+                  </li>
+                {%- endif -%}
+                {%- if settings.business_hours != blank -%}
+                  <li class="site-footer__contact-item">
+                    {% render 'icon', icon: 'clock', size: 16 %}
+                    <span>{{ 'footer.hours' | t }}: {{ settings.business_hours | escape }}</span>
+                  </li>
+                {%- endif -%}
+              </ul>
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="site-footer__bottom">
+      <p class="site-footer__copyright">
+        {{ 'footer.copyright' | t: year: 'now' | date: '%Y', shop_name: shop.name }}
+      </p>
+
+      {%- if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
+        <div class="site-footer__payments" aria-label="{{ 'footer.payment' | t }}">
+          {%- for type in shop.enabled_payment_types -%}
+            <span class="site-footer__payment-icon">{{ type | payment_type_svg_tag }}</span>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.show_policy_links -%}
+        <nav class="site-footer__policies" aria-label="{{ 'footer.policies' | t }}">
+          <ul class="site-footer__policy-links" role="list">
+            {%- for policy in shop.policies -%}
+              {%- if policy != blank -%}
+                <li>
+                  <a href="{{ policy.url }}" class="site-footer__link">{{ policy.title | escape }}</a>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </nav>
+      {%- endif -%}
+    </div>
+  </div>
+</footer>
+
+{% stylesheet %}
+  .site-footer__newsletter-form .field { gap: var(--space-3); }
+  .field--checkbox {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--space-2);
+    font-size: var(--fs-xs);
+    opacity: 0.85;
+  }
+  .field--checkbox input { margin-top: 0.2rem; }
+  .site-footer__form-success {
+    margin-top: var(--space-3);
+    font-size: var(--fs-sm);
+    color: var(--color-success);
+  }
+  .site-footer__form-error {
+    margin-top: var(--space-3);
+    font-size: var(--fs-sm);
+    color: var(--color-error);
+  }
+  .site-footer__contact-item {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+  .site-footer__contact-list .site-footer__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .site-footer__policy-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    justify-content: center;
+  }
+  @media (min-width: 750px) {
+    .site-footer__policy-links { justify-content: flex-end; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Footer",
+  "tag": "section",
+  "class": "section-footer",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "brand_text",
+      "label": "Brand description",
+      "default": "Luxury performance fitness. Engineered for athletes who demand excellence."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "Show payment icons",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_policy_links",
+      "label": "Show policy links",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link_list",
+      "name": "Link list",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Explore"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "default": "footer"
+        }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "name": "Newsletter",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Join the elite"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Description"
+        },
+        {
+          "type": "text",
+          "id": "consent_text",
+          "label": "Marketing consent text",
+          "default": "Send me training tips, drops, and exclusive offers"
+        }
+      ]
+    },
+    {
+      "type": "contact",
+      "name": "Contact info",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Contact"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "blocks": [
+        {
+          "type": "link_list",
+          "settings": {
+            "heading": "Explore",
+            "menu": "footer"
+          }
+        },
+        {
+          "type": "link_list",
+          "settings": {
+            "heading": "Shop",
+            "menu": "footer"
+          }
+        },
+        {
+          "type": "newsletter"
+        },
+        {
+          "type": "contact"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

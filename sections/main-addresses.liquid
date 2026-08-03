@@ -1,0 +1,161 @@
+<div class="account page-width" {{ section.shopify_attributes }}>
+  <div class="account__layout">
+    <aside class="account__sidebar" aria-label="{{ 'account.addresses' | t }}">
+      <p class="account__nav-title">{{ 'account.dashboard' | t }}</p>
+      <nav class="account__nav-list">
+        <a href="{{ routes.account_url }}" class="account__nav-link">{%- render 'icon', icon: 'account', size: 18 -%}{{ 'account.dashboard' | t }}</a>
+        <a href="{{ routes.account_addresses_url }}" class="account__nav-link is-active" aria-current="page">{%- render 'icon', icon: 'map-pin', size: 18 -%}{{ 'account.addresses' | t }}</a>
+        <a href="{{ routes.account_logout_url }}" class="account__nav-link">{{ 'account.logout' | t }}</a>
+      </nav>
+    </aside>
+
+    <div class="account__content">
+      <header class="account__header">
+        <h1 class="account__greeting">{{ 'account.addresses' | t }}</h1>
+        <p class="account__subtitle">{{ section.settings.subtitle | default: 'Manage shipping and billing addresses.' | escape }}</p>
+      </header>
+
+      {%- paginate customer.addresses by 12 -%}
+        <div class="address-grid">
+          {%- for address in customer.addresses -%}
+            <article class="address-card{% if address == customer.default_address %} is-default{% endif %}" data-address-id="{{ address.id }}">
+              {%- if address == customer.default_address -%}
+                <span class="address-card__badge badge badge--primary">Default</span>
+              {%- endif -%}
+              <h2 class="address-card__name">{{ address.name | escape }}</h2>
+              <div class="address-card__lines">
+                {%- if address.company != blank -%}<p>{{ address.company | escape }}</p>{%- endif -%}
+                <p>{{ address.address1 | escape }}</p>
+                {%- if address.address2 != blank -%}<p>{{ address.address2 | escape }}</p>{%- endif -%}
+                <p>{{ address.city | escape }}{% if address.province %}, {{ address.province | escape }}{% endif %} {{ address.zip | escape }}</p>
+                <p>{{ address.country | escape }}</p>
+                {%- if address.phone != blank -%}<p>{{ address.phone | escape }}</p>{%- endif -%}
+              </div>
+              <div class="address-card__actions">
+                <button type="button" class="address-card__action" data-address-edit="{{ address.id }}">Edit</button>
+                <button type="button" class="address-card__action address-card__action--delete" data-address-delete="{{ address.id }}">Delete</button>
+              </div>
+            </article>
+          {%- endfor -%}
+
+          <button type="button" class="address-card address-card--add" data-address-new aria-expanded="false">
+            {%- render 'icon', icon: 'plus', size: 24 -%}
+            <span>Add address</span>
+          </button>
+        </div>
+
+        {%- render 'pagination', paginate: paginate -%}
+      {%- endpaginate -%}
+
+      <div id="address-form-panel" hidden style="margin-top: var(--space-8);">
+        {%- form 'customer_address', customer.new_address, class: 'auth__form' -%}
+          <h2 class="coach-profile__section-title" data-address-form-title>Add address</h2>
+          <div class="auth__row auth__row--2">
+            <div class="field">
+              <label class="field__label" for="AddressFirstName">{{ 'customer.register.first_name' | t }}</label>
+              <input type="text" id="AddressFirstName" name="address[first_name]" class="field__input" autocomplete="given-name">
+            </div>
+            <div class="field">
+              <label class="field__label" for="AddressLastName">{{ 'customer.register.last_name' | t }}</label>
+              <input type="text" id="AddressLastName" name="address[last_name]" class="field__input" autocomplete="family-name">
+            </div>
+          </div>
+          <div class="field">
+            <label class="field__label" for="AddressCompany">Company</label>
+            <input type="text" id="AddressCompany" name="address[company]" class="field__input">
+          </div>
+          <div class="field">
+            <label class="field__label" for="AddressAddress1">Address</label>
+            <input type="text" id="AddressAddress1" name="address[address1]" class="field__input" autocomplete="street-address">
+          </div>
+          <div class="field">
+            <label class="field__label" for="AddressAddress2">Apartment, suite, etc.</label>
+            <input type="text" id="AddressAddress2" name="address[address2]" class="field__input">
+          </div>
+          <div class="auth__row auth__row--2">
+            <div class="field">
+              <label class="field__label" for="AddressCity">City</label>
+              <input type="text" id="AddressCity" name="address[city]" class="field__input" autocomplete="address-level2">
+            </div>
+            <div class="field">
+              <label class="field__label" for="AddressZip">Postal code</label>
+              <input type="text" id="AddressZip" name="address[zip]" class="field__input" autocomplete="postal-code">
+            </div>
+          </div>
+          <div class="field">
+            <label class="field__label" for="AddressCountry">Country</label>
+            <select id="AddressCountry" name="address[country]" class="field__select" data-default="{{ form.country | default: customer.default_address.country }}" autocomplete="country">
+              {{ all_country_option_tags }}
+            </select>
+          </div>
+          <div class="field">
+            <label class="field__label" for="AddressPhone">Phone</label>
+            <input type="tel" id="AddressPhone" name="address[phone]" class="field__input" autocomplete="tel">
+          </div>
+          <label class="auth__checkbox-row">
+            <input type="checkbox" id="AddressDefault" name="address[default]" value="1">
+            <span>Set as default address</span>
+          </label>
+          <div class="auth__row" style="grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+            {%- render 'button', label: 'Save address', style: 'primary', type: 'submit' -%}
+            <button type="button" class="btn btn--secondary" data-address-cancel>Cancel</button>
+          </div>
+        {%- endform -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var panel = document.getElementById('address-form-panel');
+    var form = panel?.querySelector('form');
+    if (!panel || !form) return;
+
+    function openForm(title) {
+      panel.hidden = false;
+      panel.querySelector('[data-address-form-title]').textContent = title;
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    document.querySelector('[data-address-new]')?.addEventListener('click', function () {
+      form.reset();
+      form.action = '{{ routes.account_addresses_url }}';
+      openForm('Add address');
+    });
+
+    document.querySelectorAll('[data-address-edit]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        openForm('Edit address');
+      });
+    });
+
+    document.querySelectorAll('[data-address-delete]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.dataset.addressDelete;
+        if (!id || !confirm('Delete this address?')) return;
+        Shopify.postLink('/account/addresses/' + id, { parameters: { _method: 'delete' } });
+      });
+    });
+
+    document.querySelector('[data-address-cancel]')?.addEventListener('click', function () {
+      panel.hidden = true;
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Addresses",
+  "tag": "section",
+  "class": "section-main-addresses",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Manage shipping and billing addresses."
+    }
+  ]
+}
+{% endschema %}

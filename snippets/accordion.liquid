@@ -1,0 +1,74 @@
+{%- comment -%}
+  Accessible accordion (JS-enhanced via product.js / appointments.js).
+  @param {array} [blocks] - Array of {title, content} objects
+  @param {string} [title] - Single item title
+  @param {string} [content] - Single item content (HTML)
+  @param {string} [mode] - single | multiple (default multiple)
+  @param {string} [class] - Additional wrapper classes
+  @param {boolean} [first_open] - Open first item by default
+{%- endcomment -%}
+
+{%- liquid
+  assign accordion_mode = mode | default: 'multiple'
+  assign accordion_class = 'accordion'
+  if class != blank
+    assign accordion_class = accordion_class | append: ' ' | append: class
+  endif
+-%}
+
+<div class="{{ accordion_class }}" data-accordion="{{ accordion_mode }}">
+  {%- if blocks != blank -%}
+    {%- for block in blocks -%}
+      {%- liquid
+        assign section_ref = section.id | default: 'global'
+        assign panel_id = 'accordion-panel-' | append: section_ref | append: '-' | append: forloop.index
+      -%}
+      <div class="accordion__item">
+        <button
+          type="button"
+          class="accordion__trigger"
+          data-accordion-trigger
+          id="accordion-trigger-{{ forloop.index }}"
+          aria-controls="{{ panel_id }}"
+          aria-expanded="{% if first_open and forloop.first %}true{% else %}false{% endif %}"
+        >
+          <span>{{ block.title | escape }}</span>
+          {%- render 'icon', icon: 'plus', class: 'accordion__icon' -%}
+        </button>
+        <div
+          class="accordion__panel{% if first_open and forloop.first %} is-open{% endif %}"
+          id="{{ panel_id }}"
+          role="region"
+          aria-labelledby="accordion-trigger-{{ forloop.index }}"
+          {% unless first_open and forloop.first %}hidden{% endunless %}
+        >
+          {{ block.content }}
+        </div>
+      </div>
+    {%- endfor -%}
+  {%- elsif title != blank -%}
+    {%- assign panel_id = 'accordion-panel-single' -%}
+    <div class="accordion__item">
+      <button
+        type="button"
+        class="accordion__trigger"
+        data-accordion-trigger
+        id="accordion-trigger-single"
+        aria-controls="{{ panel_id }}"
+        aria-expanded="{% if first_open %}true{% else %}false{% endif %}"
+      >
+        <span>{{ title | escape }}</span>
+        {%- render 'icon', icon: 'plus', class: 'accordion__icon' -%}
+      </button>
+      <div
+        class="accordion__panel{% if first_open %} is-open{% endif %}"
+        id="{{ panel_id }}"
+        role="region"
+        aria-labelledby="accordion-trigger-single"
+        {% unless first_open %}hidden{% endunless %}
+      >
+        {{ content }}
+      </div>
+    </div>
+  {%- endif -%}
+</div>

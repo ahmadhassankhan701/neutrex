@@ -1,0 +1,19 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-article",
+      "settings": {
+        "show_featured_image": true,
+        "show_share": true
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "Stay in the circle",
+        "text": "Get training insights and product drops in your inbox."
+      }
+    }
+  },
+  "order": ["main", "newsletter"]
+}

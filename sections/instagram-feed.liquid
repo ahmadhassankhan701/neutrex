@@ -1,0 +1,198 @@
+{%- liquid
+  assign section_class = 'section instagram-feed'
+  if section.settings.background_style == 'surface'
+    assign section_class = section_class | append: ' section--surface'
+  endif
+
+  assign columns = section.settings.columns | default: '6'
+-%}
+
+<section
+  class="{{ section_class }}"
+  aria-labelledby="InstagramFeed-{{ section.id }}"
+  {{ section.shopify_attributes }}
+>
+  <div class="page-width">
+    <header class="section__header animate-fade-up" data-animate id="InstagramFeed-{{ section.id }}">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="section__title">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.handle != blank or section.settings.instagram_url != blank -%}
+        <a
+          href="{{ section.settings.instagram_url | default: '#' }}"
+          class="instagram-feed__header-link"
+          {% if section.settings.instagram_url != blank %}
+            target="_blank"
+            rel="noopener noreferrer"
+          {% endif %}
+        >
+          {%- render 'icon', icon: 'instagram' -%}
+          {{ section.settings.handle | default: 'sections.instagram.handle' | t }}
+        </a>
+      {%- endif -%}
+
+      {%- if section.settings.subtitle != blank -%}
+        <p class="section__subtitle">{{ section.settings.subtitle | escape }}</p>
+      {%- endif -%}
+    </header>
+
+    <div
+      class="instagram-feed__grid animate-stagger instagram-feed__grid--{{ columns }}"
+      data-animate
+    >
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'post' -%}
+          {%- assign post_url = block.settings.link | default: section.settings.instagram_url | default: '#' -%}
+          <a
+            href="{{ post_url }}"
+            class="instagram-feed__item"
+            {% if block.settings.link != blank or section.settings.instagram_url != blank %}
+              target="_blank"
+              rel="noopener noreferrer"
+            {% endif %}
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.image != blank -%}
+              {%- render 'media',
+                image: block.settings.image,
+                alt: block.settings.alt | default: 'Instagram post',
+                loading: 'lazy',
+                widths: '200,300,400,600',
+                sizes: '(min-width: 990px) 16vw, (min-width: 750px) 25vw, 50vw'
+              -%}
+            {%- else -%}
+              {{ 'image' | placeholder_svg_tag: 'placeholder' }}
+            {%- endif -%}
+            <div class="instagram-feed__overlay" aria-hidden="true">
+              {%- if block.settings.likes != blank -%}
+                <span class="instagram-feed__stat">
+                  {%- render 'icon', icon: 'heart-filled', size: 'sm' -%}
+                  {{ block.settings.likes | escape }}
+                </span>
+              {%- endif -%}
+              {%- if block.settings.comments != blank -%}
+                <span class="instagram-feed__stat">
+                  {%- render 'icon', icon: 'share', size: 'sm' -%}
+                  {{ block.settings.comments | escape }}
+                </span>
+              {%- endif -%}
+            </div>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  .instagram-feed__grid--4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (min-width: 750px) {
+    .instagram-feed__grid--4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Instagram feed",
+  "tag": "section",
+  "class": "section-instagram-feed",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Follow the movement"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Daily training, nutrition tips, and behind-the-scenes from the Neutrex community."
+    },
+    {
+      "type": "text",
+      "id": "handle",
+      "label": "Handle text",
+      "default": "@neutrex"
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Columns (desktop)",
+      "options": [
+        { "value": "4", "label": "4 columns" },
+        { "value": "6", "label": "6 columns" }
+      ],
+      "default": "6"
+    },
+    {
+      "type": "select",
+      "id": "background_style",
+      "label": "Background",
+      "options": [
+        { "value": "default", "label": "Default" },
+        { "value": "surface", "label": "Surface" }
+      ],
+      "default": "default"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "post",
+      "name": "Post",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Image alt text"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Post link"
+        },
+        {
+          "type": "text",
+          "id": "likes",
+          "label": "Likes count (display only)",
+          "default": "1.2k"
+        },
+        {
+          "type": "text",
+          "id": "comments",
+          "label": "Comments count (display only)",
+          "default": "48"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Instagram feed",
+      "blocks": [
+        { "type": "post", "settings": { "likes": "2.4k", "comments": "86" } },
+        { "type": "post", "settings": { "likes": "1.8k", "comments": "52" } },
+        { "type": "post", "settings": { "likes": "3.1k", "comments": "124" } },
+        { "type": "post", "settings": { "likes": "956", "comments": "31" } },
+        { "type": "post", "settings": { "likes": "1.5k", "comments": "67" } },
+        { "type": "post", "settings": { "likes": "2.2k", "comments": "93" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

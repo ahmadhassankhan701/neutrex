@@ -1,0 +1,140 @@
+<section class="testimonials section" {{ section.shopify_attributes }}>
+  <div class="testimonials__bg" aria-hidden="true"></div>
+  <div class="page-width testimonials__inner">
+    <header class="section-header" style="text-align: center; margin-bottom: var(--space-8);">
+      <h2 class="section-header__title">{{ section.settings.title | default: 'sections.testimonials.title' | t | escape }}</h2>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="section-header__subtitle">{{ section.settings.subtitle | escape }}</p>
+      {%- else -%}
+        <p class="section-header__subtitle">{{ 'sections.testimonials.subtitle' | t | escape }}</p>
+      {%- endif -%}
+    </header>
+
+    <div class="testimonials__grid">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'testimonial' -%}
+          <article
+            class="testimonial-card{% if block.settings.featured %} testimonial-card--featured{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.rating > 0 -%}
+              <div class="testimonial-card__rating" aria-hidden="true">
+                {%- for i in (1..block.settings.rating) -%}
+                  {%- render 'icon', icon: 'star', size: 16 -%}
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+            <blockquote class="testimonial-card__quote">
+              <p>“{{ block.settings.quote | escape }}”</p>
+            </blockquote>
+            <footer class="testimonial-card__author">
+              {%- if block.settings.avatar != blank -%}
+                <div class="testimonial-card__avatar">
+                  {{ block.settings.avatar | image_url: width: 80 | image_tag: loading: 'lazy', alt: block.settings.name }}
+                </div>
+              {%- endif -%}
+              <div>
+                <cite class="testimonial-card__name">{{ block.settings.name | escape }}</cite>
+                {%- if block.settings.meta != blank -%}
+                  <p class="testimonial-card__meta">{{ block.settings.meta | escape }}</p>
+                {%- endif -%}
+              </div>
+            </footer>
+          </article>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "tag": "section",
+  "class": "section-testimonials",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "default": "Outstanding coaching — professional, knowledgeable, and genuinely invested in my progress."
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Athlete name"
+        },
+        {
+          "type": "text",
+          "id": "meta",
+          "label": "Meta",
+          "default": "Verified client"
+        },
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Rating",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "Avatar"
+        },
+        {
+          "type": "checkbox",
+          "id": "featured",
+          "label": "Featured",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The best coach I've worked with. Clear programming and constant support.",
+            "name": "Sam R.",
+            "meta": "Competition prep",
+            "rating": 5,
+            "featured": true
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Transformed my approach to training and nutrition.",
+            "name": "Leila H.",
+            "meta": "Online coaching",
+            "rating": 5
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

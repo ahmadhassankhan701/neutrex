@@ -1,0 +1,121 @@
+<div class="account page-width" {{ section.shopify_attributes }}>
+  <header class="account__header" style="text-align: center; max-width: 36rem; margin-inline: auto;">
+    <h1 class="account__greeting">{{ 'account.wishlist' | t }}</h1>
+    <p class="account__subtitle">{{ section.settings.subtitle | default: 'Products you save appear here.' | escape }}</p>
+  </header>
+
+  <div data-wishlist-page>
+    <div class="wishlist-grid" data-wishlist-grid hidden></div>
+
+    <div class="auth__panel" style="max-width: 28rem; margin-inline: auto; text-align: center;" data-wishlist-empty>
+      <span class="dashboard-card__icon" style="margin-inline: auto;" aria-hidden="true">
+        {%- render 'icon', icon: 'heart', size: 28 -%}
+      </span>
+      <h2 class="auth__title" style="font-size: var(--fs-xl);">{{ section.settings.empty_title | default: 'Your wishlist is empty' | escape }}</h2>
+      <p class="auth__subtitle">{{ section.settings.empty_text | default: 'Save products you love and come back anytime.' | escape }}</p>
+      {%- liquid
+        assign shop_label = 'header.shop_now' | t
+      -%}
+      {%- render 'button', label: shop_label, url: routes.all_products_collection_url, style: 'primary' -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var root = document.querySelector('[data-wishlist-page]');
+    if (!root || !window.NeutrexTheme?.Wishlist) return;
+
+    var grid = root.querySelector('[data-wishlist-grid]');
+    var empty = root.querySelector('[data-wishlist-empty]');
+    var moneyFormat = window.theme?.moneyFormat || '{{ shop.money_format | escape }}';
+
+    function formatMoney(cents) {
+      if (window.Shopify?.formatMoney) return window.Shopify.formatMoney(cents, moneyFormat);
+      return (cents / 100).toFixed(2);
+    }
+
+    function renderItem(product, handle) {
+      var item = document.createElement('article');
+      item.className = 'wishlist-item product-card';
+      item.dataset.handle = handle;
+
+      var image = product.featured_image || (product.images && product.images[0]);
+      var variant = product.variants && product.variants[0];
+      var price = variant ? variant.price : 0;
+
+      item.innerHTML =
+        '<button type="button" class="wishlist-item__remove" data-wishlist-toggle data-product-handle="' + handle + '" data-product-id="' + (variant ? variant.id : '') + '" aria-label="Remove from wishlist">' +
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>' +
+        '<a href="/products/' + handle + '" class="product-card__link">' +
+        '<div class="product-card__media">' +
+        (image ? '<img src="' + image + '" alt="' + (product.title || '') + '" loading="lazy" width="400" height="400">' : '') +
+        '</div><div class="product-card__body">' +
+        '<h3 class="product-card__title">' + (product.title || '') + '</h3>' +
+        '<p class="product-card__price">' + formatMoney(price) + '</p>' +
+        '</div></a>';
+
+      grid.appendChild(item);
+    }
+
+    function load() {
+      var items = window.NeutrexTheme.Wishlist.getItems();
+      grid.innerHTML = '';
+
+      if (!items.length) {
+        grid.hidden = true;
+        empty.hidden = false;
+        return;
+      }
+
+      empty.hidden = true;
+      grid.hidden = false;
+
+      items.forEach(function (entry) {
+        var handle = entry.handle || entry.id;
+        if (!handle) return;
+        fetch('/products/' + handle + '.js')
+          .then(function (res) { return res.ok ? res.json() : null; })
+          .then(function (product) {
+            if (product) renderItem(product, handle);
+          })
+          .catch(function () {});
+      });
+    }
+
+    load();
+    if (window.NeutrexTheme?.subscribe) {
+      window.NeutrexTheme.subscribe('neutrex:wishlist:updated', load);
+    } else {
+      document.addEventListener('neutrex:wishlist:updated', load);
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Wishlist",
+  "tag": "section",
+  "class": "section-main-wishlist",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Products you save appear here."
+    },
+    {
+      "type": "text",
+      "id": "empty_title",
+      "label": "Empty title",
+      "default": "Your wishlist is empty"
+    },
+    {
+      "type": "textarea",
+      "id": "empty_text",
+      "label": "Empty text",
+      "default": "Save products you love and come back anytime."
+    }
+  ]
+}
+{% endschema %}

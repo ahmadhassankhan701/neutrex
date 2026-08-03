@@ -1,0 +1,137 @@
+<div class="auth" {{ section.shopify_attributes }}>
+  <div class="auth__panel">
+    {%- if section.settings.show_logo -%}
+      <p class="auth__logo">{{ settings.brand_name | default: shop.name | escape }}</p>
+    {%- endif -%}
+
+    <div id="login-panel">
+      <h1 class="auth__title">{{ 'customer.login.title' | t }}</h1>
+      <p class="auth__subtitle">{{ section.settings.subtitle | default: 'Welcome back to Neutrex.' | escape }}</p>
+
+      {%- form 'customer_login', class: 'auth__form', id: 'CustomerLoginForm' -%}
+        {%- if form.errors -%}
+          <div class="auth__error" role="alert">
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <div class="field">
+          <label class="field__label" for="CustomerEmail">{{ 'customer.login.email' | t }}</label>
+          <input
+            type="email"
+            name="customer[email]"
+            id="CustomerEmail"
+            class="field__input"
+            autocomplete="email"
+            required
+            {% if form.email %}value="{{ form.email | escape }}"{% endif %}
+          >
+        </div>
+
+        <div class="field field--password">
+          <label class="field__label" for="CustomerPassword">{{ 'customer.login.password' | t }}</label>
+          <input
+            type="password"
+            name="customer[password]"
+            id="CustomerPassword"
+            class="field__input"
+            autocomplete="current-password"
+            required
+          >
+          <button type="button" class="field__toggle-password" data-password-toggle aria-label="Show password">
+            •••
+          </button>
+        </div>
+
+        <div class="auth__checkbox-row">
+          <a href="#recover-panel" data-recover-toggle>{{ 'customer.login.forgot' | t }}</a>
+        </div>
+
+        {%- render 'button', label: 'customer.login.submit' | t, style: 'primary', full_width: true, type: 'submit' -%}
+      {%- endform -%}
+
+      <p class="auth__footer">
+        {{ 'customer.register.login' | t | split: '?' | first }}?
+        <a href="{{ routes.account_register_url }}">{{ 'customer.login.create' | t }}</a>
+      </p>
+    </div>
+
+    <div id="recover-panel" hidden>
+      <h2 class="auth__title">{{ 'customer.recover.title' | t }}</h2>
+      <p class="auth__subtitle">{{ section.settings.recover_text | default: "We'll email you a reset link." | escape }}</p>
+
+      {%- form 'recover_customer_password', class: 'auth__form' -%}
+        {%- if form.posted_successfully? -%}
+          <div class="auth__success" role="status">{{ 'customer.recover.success' | t }}</div>
+        {%- endif -%}
+        {%- if form.errors -%}
+          <div class="auth__error" role="alert">{{ form.errors | default_errors }}</div>
+        {%- endif -%}
+
+        <div class="field">
+          <label class="field__label" for="RecoverEmail">{{ 'customer.login.email' | t }}</label>
+          <input type="email" name="email" id="RecoverEmail" class="field__input" autocomplete="email" required>
+        </div>
+
+        {%- render 'button', label: 'customer.recover.submit' | t, style: 'primary', full_width: true, type: 'submit' -%}
+      {%- endform -%}
+
+      <p class="auth__footer">
+        <a href="#login-panel" data-recover-toggle>{{ 'customer.login.title' | t }}</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var loginPanel = document.getElementById('login-panel');
+    var recoverPanel = document.getElementById('recover-panel');
+    document.querySelectorAll('[data-recover-toggle]').forEach(function (link) {
+      link.addEventListener('click', function (event) {
+        event.preventDefault();
+        var showRecover = link.getAttribute('href') === '#recover-panel';
+        loginPanel.hidden = showRecover;
+        recoverPanel.hidden = !showRecover;
+      });
+    });
+    document.querySelectorAll('[data-password-toggle]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var input = btn.closest('.field--password')?.querySelector('input');
+        if (!input) return;
+        input.type = input.type === 'password' ? 'text' : 'password';
+      });
+    });
+    if (window.location.hash === '#recover') {
+      loginPanel.hidden = true;
+      recoverPanel.hidden = false;
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Login",
+  "tag": "section",
+  "class": "section-main-login",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_logo",
+      "label": "Show brand name",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Welcome back to Neutrex."
+    },
+    {
+      "type": "textarea",
+      "id": "recover_text",
+      "label": "Recover password text"
+    }
+  ]
+}
+{% endschema %}

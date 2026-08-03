@@ -1,0 +1,375 @@
+{
+  "sections": {
+    "hero_premium": {
+      "type": "hero-premium",
+      "settings": {
+        "eyebrow": "Luxury Performance Fitness",
+        "heading": "Train like an <em>elite</em> athlete",
+        "subheading": "Premium supplements, performance apparel, and world-class coaching — engineered for athletes who refuse to settle.",
+        "cta_primary_label": "Shop Now",
+        "cta_primary_url": "shopify://collections/all",
+        "cta_secondary_label": "Book Training",
+        "cta_secondary_url": "shopify://pages/personal-training",
+        "full_viewport": true,
+        "text_alignment": "start",
+        "show_scroll_hint": true,
+        "scroll_hint": "Scroll"
+      },
+      "blocks": {
+        "float_1": {
+          "type": "floating_product",
+          "settings": {
+            "offset_style": "main",
+            "float_speed": "slow",
+            "parallax_speed": 0.15,
+            "float_offset": -12,
+            "float_rotate": 4
+          }
+        },
+        "float_2": {
+          "type": "floating_product",
+          "settings": {
+            "offset_style": "accent",
+            "float_speed": "slow",
+            "parallax_speed": 0.25,
+            "float_offset": -16,
+            "float_rotate": 6
+          }
+        }
+      },
+      "block_order": ["float_1", "float_2"]
+    },
+    "stats_animated": {
+      "type": "stats-animated",
+      "settings": {
+        "aria_label": "Neutrex statistics",
+        "use_surface": false,
+        "use_glass": false,
+        "counter_duration": 2000
+      },
+      "blocks": {
+        "stat_1": {
+          "type": "stat",
+          "settings": {
+            "number": "12000",
+            "suffix": "+",
+            "label": "Athletes trained"
+          }
+        },
+        "stat_2": {
+          "type": "stat",
+          "settings": {
+            "number": "48000",
+            "suffix": "+",
+            "label": "Sessions booked"
+          }
+        },
+        "stat_3": {
+          "type": "stat",
+          "settings": {
+            "number": "85000",
+            "suffix": "+",
+            "label": "Products sold"
+          }
+        },
+        "stat_4": {
+          "type": "stat",
+          "settings": {
+            "number": "4.9",
+            "suffix": "★",
+            "decimals": 1,
+            "label": "Average rating"
+          }
+        }
+      },
+      "block_order": ["stat_1", "stat_2", "stat_3", "stat_4"]
+    },
+    "featured_categories": {
+      "type": "featured-categories",
+      "settings": {
+        "heading": "Shop by category",
+        "subtitle": "Performance gear engineered for results",
+        "background_style": "default",
+        "hero_first_card": true
+      },
+      "blocks": {
+        "cat_training": {
+          "type": "category",
+          "settings": {
+            "title": "Training",
+            "description": "Personal training, online coaching, and elite programming",
+            "product_count": "12 services",
+            "link": "shopify://pages/personal-training",
+            "link_label": "Explore"
+          }
+        },
+        "cat_supplements": {
+          "type": "category",
+          "settings": {
+            "title": "Supplements",
+            "description": "Protein, creatine, pre-workout, and recovery",
+            "product_count": "64 products",
+            "link": "shopify://collections/supplements",
+            "link_label": "Shop now"
+          }
+        },
+        "cat_clothing": {
+          "type": "category",
+          "settings": {
+            "title": "Clothing",
+            "description": "Compression wear, hoodies, and performance layers",
+            "product_count": "86 products",
+            "link": "shopify://collections/clothing",
+            "link_label": "Shop now"
+          }
+        },
+        "cat_accessories": {
+          "type": "category",
+          "settings": {
+            "title": "Accessories",
+            "description": "Shakers, straps, belts, and training essentials",
+            "product_count": "32 products",
+            "link": "shopify://collections/accessories",
+            "link_label": "Shop now"
+          }
+        },
+        "cat_nutrition": {
+          "type": "category",
+          "settings": {
+            "title": "Nutrition",
+            "description": "Meal plans and macro-optimized nutrition programs",
+            "product_count": "18 plans",
+            "link": "shopify://collections/nutrition-plans",
+            "link_label": "Shop now"
+          }
+        }
+      },
+      "block_order": [
+        "cat_training",
+        "cat_supplements",
+        "cat_clothing",
+        "cat_accessories",
+        "cat_nutrition"
+      ]
+    },
+    "product_carousel_bestsellers": {
+      "type": "product-carousel",
+      "settings": {
+        "heading": "Best sellers",
+        "subtitle": "What the community is training with",
+        "collection": "",
+        "products_to_show": 8,
+        "columns": 4,
+        "background_style": "default",
+        "show_view_all": true,
+        "view_all_label": "View all"
+      }
+    },
+    "product_carousel_trending": {
+      "type": "product-carousel",
+      "settings": {
+        "heading": "Trending now",
+        "subtitle": "Fresh drops. Peak performance.",
+        "collection": "",
+        "products_to_show": 8,
+        "columns": 4,
+        "background_style": "surface",
+        "show_view_all": true,
+        "view_all_label": "View all"
+      }
+    },
+    "featured_coach": {
+      "type": "featured-coach",
+      "settings": {
+        "eyebrow": "Featured coach",
+        "name": "Marcus Reid",
+        "role": "Head Performance Coach · IFBB Pro",
+        "bio": "<p>Former national bodybuilding champion with 12+ years coaching elite athletes. Marcus specializes in hypertrophy programming, competition prep, and sustainable fat-loss transformations.</p>",
+        "badge_value": "12+",
+        "badge_label": "Years experience",
+        "cta_primary_label": "Book session",
+        "cta_primary_url": "shopify://pages/personal-training",
+        "cta_secondary_label": "View profile",
+        "cta_secondary_url": "shopify://pages/coach-marcus-reid",
+        "background_style": "default"
+      },
+      "blocks": {
+        "ach_1": {
+          "type": "achievement",
+          "settings": { "text": "IFBB Pro Card" }
+        },
+        "ach_2": {
+          "type": "achievement",
+          "settings": { "text": "NASM Certified" }
+        },
+        "ach_3": {
+          "type": "achievement",
+          "settings": { "text": "500+ Transformations" }
+        },
+        "ach_4": {
+          "type": "achievement",
+          "settings": { "text": "Olympia Prep Specialist" }
+        }
+      },
+      "block_order": ["ach_1", "ach_2", "ach_3", "ach_4"]
+    },
+    "appointment_cta": {
+      "type": "appointment-cta",
+      "settings": {
+        "eyebrow": "Elite coaching",
+        "title": "Ready to level up?",
+        "text": "Book a session with Neutrex elite coaches. Personal training, online coaching, and competition prep — tailored to your goals.",
+        "primary_label": "Book appointment",
+        "primary_url": "shopify://pages/personal-training",
+        "secondary_label": "View services",
+        "secondary_url": "shopify://pages/personal-training"
+      },
+      "blocks": {
+        "svc_1": {
+          "type": "service",
+          "settings": { "icon": "check", "label": "Personal Training" }
+        },
+        "svc_2": {
+          "type": "service",
+          "settings": { "icon": "check", "label": "Online Coaching" }
+        },
+        "svc_3": {
+          "type": "service",
+          "settings": { "icon": "check", "label": "Competition Prep" }
+        }
+      },
+      "block_order": ["svc_1", "svc_2", "svc_3"]
+    },
+    "transformation_gallery": {
+      "type": "transformation-gallery",
+      "settings": {
+        "eyebrow": "Results",
+        "heading": "Real transformations",
+        "subtitle": "Results speak louder than reps",
+        "layout": "slider",
+        "before_label": "Before",
+        "after_label": "After",
+        "background_style": "default"
+      },
+      "blocks": {
+        "trans_1": {
+          "type": "transformation",
+          "settings": {
+            "name": "Alex M.",
+            "story": "12-week cut with Neutrex coaching and nutrition plan.",
+            "stat_1": "<strong>-18kg</strong> body fat",
+            "stat_2": "<strong>12</strong> weeks"
+          }
+        },
+        "trans_2": {
+          "type": "transformation",
+          "settings": {
+            "name": "Sarah K.",
+            "story": "Competition prep and stage-ready conditioning.",
+            "stat_1": "<strong>1st</strong> place",
+            "stat_2": "<strong>16</strong> weeks"
+          }
+        },
+        "trans_3": {
+          "type": "transformation",
+          "settings": {
+            "name": "James T.",
+            "story": "Lean bulk and strength gain program.",
+            "stat_1": "<strong>+8kg</strong> lean mass",
+            "stat_2": "<strong>20</strong> weeks"
+          }
+        }
+      },
+      "block_order": ["trans_1", "trans_2", "trans_3"]
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "settings": {
+        "eyebrow": "Reviews",
+        "heading": "What athletes say",
+        "subtitle": "Trusted by professionals and beginners alike",
+        "layout": "grid",
+        "background_style": "surface"
+      },
+      "blocks": {
+        "test_1": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Neutrex changed how I train. The supplements are elite and Marcus pushed me beyond what I thought possible.",
+            "author": "Jordan Ellis",
+            "role": "Amateur Bodybuilder",
+            "rating": 5,
+            "featured": true
+          }
+        },
+        "test_2": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Best protein I've ever used. Clean ingredients, mixes perfectly, and the results speak for themselves.",
+            "author": "Priya Sharma",
+            "role": "CrossFit Athlete",
+            "rating": 5,
+            "featured": false
+          }
+        },
+        "test_3": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The compression wear is next level. Feels like a second skin during heavy sessions.",
+            "author": "David Chen",
+            "role": "Powerlifter",
+            "rating": 5,
+            "featured": false
+          }
+        }
+      },
+      "block_order": ["test_1", "test_2", "test_3"]
+    },
+    "instagram_feed": {
+      "type": "instagram-feed",
+      "settings": {
+        "heading": "Follow the movement",
+        "subtitle": "Daily training, nutrition tips, and behind-the-scenes from the Neutrex community.",
+        "handle": "@neutrex",
+        "instagram_url": "",
+        "columns": "6",
+        "background_style": "default"
+      },
+      "blocks": {
+        "post_1": { "type": "post", "settings": { "likes": "2.4k", "comments": "86" } },
+        "post_2": { "type": "post", "settings": { "likes": "1.8k", "comments": "52" } },
+        "post_3": { "type": "post", "settings": { "likes": "3.1k", "comments": "124" } },
+        "post_4": { "type": "post", "settings": { "likes": "956", "comments": "31" } },
+        "post_5": { "type": "post", "settings": { "likes": "1.5k", "comments": "67" } },
+        "post_6": { "type": "post", "settings": { "likes": "2.2k", "comments": "93" } }
+      },
+      "block_order": ["post_1", "post_2", "post_3", "post_4", "post_5", "post_6"]
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "eyebrow": "Inner circle",
+        "heading": "Join the elite",
+        "text": "Training tips, product drops, and exclusive member offers — delivered to your inbox.",
+        "placeholder": "Email address",
+        "button_label": "Subscribe",
+        "success_message": "Thanks for joining Neutrex.",
+        "disclaimer": "<p>By subscribing you agree to receive marketing emails. Unsubscribe anytime.</p>",
+        "layout": "default"
+      }
+    }
+  },
+  "order": [
+    "hero_premium",
+    "stats_animated",
+    "featured_categories",
+    "product_carousel_bestsellers",
+    "product_carousel_trending",
+    "featured_coach",
+    "appointment_cta",
+    "transformation_gallery",
+    "testimonials",
+    "instagram_feed",
+    "newsletter"
+  ]
+}

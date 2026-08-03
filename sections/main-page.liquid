@@ -1,0 +1,74 @@
+<div class="page-content page-width" {{ section.shopify_attributes }}>
+  {%- if section.settings.show_breadcrumb -%}
+    {%- render 'breadcrumb' -%}
+  {%- endif -%}
+
+  <article class="page-content__article">
+    {%- if section.settings.show_title -%}
+      <header class="page-content__header">
+        <h1 class="page-content__title">{{ page.title | escape }}</h1>
+      </header>
+    {%- endif -%}
+
+    <div class="page-content__body rte">
+      {{ page.content }}
+    </div>
+  </article>
+</div>
+
+{% stylesheet %}
+  .page-content {
+    padding-block: var(--space-section);
+  }
+  .page-content__header {
+    margin-bottom: var(--space-6);
+  }
+  .page-content__title {
+    font-size: clamp(var(--fs-2xl), 4vw, var(--fs-4xl));
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: var(--lh-tight);
+  }
+  .page-content__body {
+    max-width: 48rem;
+    font-size: var(--fs-md);
+    line-height: var(--lh-normal);
+    color: var(--color-text-muted);
+  }
+  .page-content__body h2,
+  .page-content__body h3 {
+    color: var(--color-text);
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-3);
+  }
+  .page-content__body p + p {
+    margin-top: var(--space-4);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Page",
+  "tag": "section",
+  "class": "section-main-page",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "Show breadcrumb",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show page title",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Page"
+    }
+  ]
+}
+{% endschema %}

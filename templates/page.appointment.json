@@ -1,0 +1,104 @@
+{
+  "layout": "theme",
+  "sections": {
+    "hero": {
+      "type": "appointment-hero",
+      "settings": {
+        "title": "Personal Training",
+        "subtitle": "One-on-one coaching tailored to your goals, schedule, and performance level.",
+        "eyebrow": "Elite coaching",
+        "price_from": 150,
+        "duration_minutes": 60,
+        "booking_anchor": "booking"
+      }
+    },
+    "booking": {
+      "type": "appointment-booking",
+      "settings": {
+        "section_anchor": "booking",
+        "service_name": "Personal Training",
+        "heading": "Book personal training",
+        "subheading": "Choose your coach, date, and time — we'll confirm via WhatsApp.",
+        "duration_minutes": 60,
+        "price": 150,
+        "weekdays_only": true,
+        "submit_mode": "whatsapp"
+      },
+      "blocks": {
+        "trainer_1": {
+          "type": "trainer",
+          "settings": {
+            "name": "Alex Rivera",
+            "role": "Personal trainer",
+            "bio": "Certified strength coach specializing in hypertrophy and athletic performance.",
+            "experience": "10+ years"
+          }
+        },
+        "trainer_2": {
+          "type": "trainer",
+          "settings": {
+            "name": "Sara Chen",
+            "role": "Performance coach",
+            "bio": "In-studio and hybrid programs for busy professionals.",
+            "experience": "7+ years"
+          }
+        },
+        "duration_60": {
+          "type": "duration",
+          "settings": {
+            "minutes": 60,
+            "price": 150
+          }
+        },
+        "duration_90": {
+          "type": "duration",
+          "settings": {
+            "minutes": 90,
+            "price": 200
+          }
+        }
+      },
+      "block_order": ["trainer_1", "trainer_2", "duration_60", "duration_90"]
+    },
+    "faq": {
+      "type": "appointment-faq",
+      "settings": {
+        "title": "FAQ",
+        "subtitle": "Everything you need to know before booking."
+      },
+      "blocks": {
+        "faq_1": {
+          "type": "question",
+          "settings": {
+            "question": "How do I confirm my booking?",
+            "answer": "<p>Tap Confirm booking to send your details via WhatsApp. We'll confirm availability and payment options.</p>"
+          }
+        },
+        "faq_2": {
+          "type": "question",
+          "settings": {
+            "question": "Can I reschedule?",
+            "answer": "<p>Yes — message us at least 24 hours before your session to reschedule at no extra charge.</p>"
+          }
+        }
+      },
+      "block_order": ["faq_1", "faq_2"]
+    },
+    "reviews": {
+      "type": "appointment-reviews",
+      "settings": {
+        "title": "Client reviews"
+      }
+    },
+    "cta": {
+      "type": "appointment-cta",
+      "settings": {
+        "title": "Ready to level up?",
+        "text": "Book a session with elite coaches and start your transformation today.",
+        "primary_label": "Book appointment",
+        "primary_url": "/pages/personal-training#booking"
+      }
+    }
+  },
+  "order": ["hero", "booking", "faq", "reviews", "cta"]
+}

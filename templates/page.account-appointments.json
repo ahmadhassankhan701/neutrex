@@ -1,0 +1,14 @@
+{
+  "layout": "theme",
+  "sections": {
+    "main": {
+      "type": "main-account-appointments",
+      "settings": {
+        "subtitle": "View booking info and manage sessions with our team.",
+        "upcoming_text": "No upcoming appointments on file. Book a session to get started.",
+        "booking_page": "/pages/personal-training#booking"
+      }
+    }
+  },
+  "order": ["main"]
+}

@@ -1,0 +1,339 @@
+{
+  "general": {
+    "accessibility": {
+      "skip_to_content": "تخطى إلى المحتوى",
+      "close": "إغلاق",
+      "menu": "القائمة",
+      "cart": "السلة",
+      "search": "بحث",
+      "account": "الحساب",
+      "wishlist": "المفضلة",
+      "theme_light": "التبديل إلى الوضع الفاتح",
+      "theme_dark": "التبديل إلى الوضع الداكن",
+      "loading": "جارٍ التحميل",
+      "previous": "السابق",
+      "next": "التالي",
+      "play": "تشغيل",
+      "pause": "إيقاف"
+    },
+    "404": {
+      "title": "الصفحة غير موجودة",
+      "text": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+      "button": "العودة للتسوق"
+    },
+    "meta": {
+      "page": "صفحة {{ page }}",
+      "of": "من"
+    },
+    "social": {
+      "share_on": "مشاركة على {{ platform }}",
+      "share": "مشاركة"
+    },
+    "pagination": {
+      "label": "ترقيم الصفحات",
+      "page": "صفحة {{ number }}"
+    }
+  },
+  "header": {
+    "shop_now": "تسوق الآن",
+    "book_training": "احجز تدريبًا",
+    "search_placeholder": "ابحث في نيوتريكس…",
+    "language": "اللغة",
+    "account": "الحساب",
+    "wishlist": "المفضلة",
+    "cart": "السلة",
+    "menu": "القائمة"
+  },
+  "footer": {
+    "newsletter_heading": "انضم للنخبة",
+    "newsletter_text": "نصائح تدريب وإصدارات وعروض حصرية للأعضاء.",
+    "newsletter_placeholder": "البريد الإلكتروني",
+    "newsletter_button": "اشترك",
+    "newsletter_success": "تم تسجيلك بنجاح.",
+    "quick_links": "استكشف",
+    "categories": "تسوق",
+    "policies": "الدعم",
+    "contact": "تواصل",
+    "whatsapp": "واتساب",
+    "location": "الموقع",
+    "hours": "ساعات العمل",
+    "copyright": "© {{ year }} {{ shop_name }}. جميع الحقوق محفوظة.",
+    "payment": "نقبل"
+  },
+  "products": {
+    "add_to_cart": "أضف إلى السلة",
+    "buy_now": "اشترِ الآن",
+    "sold_out": "نفد المخزون",
+    "unavailable": "غير متاح",
+    "quick_add": "إضافة سريعة",
+    "quick_view": "عرض سريع",
+    "wishlist_add": "أضف للمفضلة",
+    "wishlist_remove": "إزالة من المفضلة",
+    "size_guide": "دليل المقاسات",
+    "nutrition_facts": "القيمة الغذائية",
+    "benefits": "الفوائد",
+    "ingredients": "المكونات",
+    "reviews": "التقييمات",
+    "shipping": "الشحن والإرجاع",
+    "related": "قد يعجبك أيضًا",
+    "recently_viewed": "شوهد مؤخرًا",
+    "in_stock": "متوفر",
+    "low_stock": "متبقي {{ count }} فقط",
+    "out_of_stock": "غير متوفر",
+    "from": "من",
+    "sale": "تخفيض",
+    "new": "جديد",
+    "bestseller": "الأكثر مبيعًا",
+    "share": "مشاركة",
+    "quantity": "الكمية",
+    "view_details": "عرض التفاصيل",
+    "choose_options": "اختر الخيارات",
+    "description": "الوصف",
+    "sku": "رمز SKU"
+  },
+  "collections": {
+    "filter": "تصفية",
+    "filters": "الفلاتر",
+    "sort": "ترتيب حسب",
+    "clear": "مسح الكل",
+    "apply": "تطبيق",
+    "products_count": "{{ count }} منتج",
+    "no_results": "لا توجد منتجات مطابقة.",
+    "load_more": "تحميل المزيد",
+    "availability": "التوفر",
+    "price": "السعر",
+    "in_stock_only": "المتوفر فقط",
+    "all_collections": "كل المجموعات",
+    "active_filters": "الفلاتر النشطة"
+  },
+  "cart": {
+    "title": "حقيبتك",
+    "empty": "حقيبتك فارغة",
+    "continue": "متابعة التسوق",
+    "subtotal": "المجموع الفرعي",
+    "checkout": "إتمام الشراء",
+    "view_cart": "عرض الحقيبة",
+    "remove": "إزالة",
+    "update": "تحديث",
+    "note": "ملاحظة الطلب",
+    "note_placeholder": "تعليمات خاصة…",
+    "free_shipping_complete": "لقد حصلت على شحن مجاني",
+    "free_shipping_remaining": "أنفق {{ amount }} إضافية للشحن المجاني",
+    "taxes": "تُحسب الضرائب والشحن عند الدفع"
+  },
+  "search": {
+    "title": "بحث",
+    "placeholder": "ابحث عن منتجات أو تصنيفات…",
+    "no_results": "لا نتائج لـ «{{ terms }}»",
+    "results": "{{ count }} نتيجة",
+    "products": "المنتجات",
+    "collections": "المجموعات",
+    "pages": "الصفحات",
+    "suggestions": "اقتراحات",
+    "trending": "الأكثر بحثًا",
+    "view_all": "عرض كل النتائج"
+  },
+  "appointments": {
+    "book_now": "احجز الآن",
+    "book_session": "احجز جلسة",
+    "select_trainer": "اختر المدرب",
+    "select_date": "اختر التاريخ",
+    "select_time": "اختر الوقت",
+    "duration": "المدة",
+    "pricing": "الاستثمار",
+    "minutes": "{{ count }} دقيقة",
+    "faq": "الأسئلة الشائعة",
+    "reviews": "آراء العملاء",
+    "trainer_profile": "ملف المدرب",
+    "available_times": "الأوقات المتاحة",
+    "personal_training": "تدريب شخصي",
+    "online_coaching": "تدريب أونلاين",
+    "gym_consultation": "استشارة صالة رياضية",
+    "bodybuilding_coaching": "تدريب كمال أجسام",
+    "confirm": "تأكيد الحجز",
+    "whatsapp_cta": "احجز عبر واتساب"
+  },
+  "coach": {
+    "achievements": "الإنجازات",
+    "certifications": "الشهادات",
+    "experience": "الخبرة",
+    "transformations": "التحولات",
+    "book_session": "احجز جلسة",
+    "follow": "تابع على إنستغرام",
+    "years": "+{{ count }} سنوات"
+  },
+  "account": {
+    "dashboard": "لوحة التحكم",
+    "orders": "الطلبات",
+    "wishlist": "المفضلة",
+    "appointments": "المواعيد",
+    "addresses": "العناوين",
+    "recently_viewed": "شوهد مؤخرًا",
+    "rewards": "المكافآت",
+    "logout": "تسجيل الخروج",
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "welcome": "مرحبًا بعودتك، {{ name }}",
+    "no_orders": "لا توجد طلبات بعد",
+    "view_order": "عرض الطلب",
+    "order_number": "طلب {{ number }}"
+  },
+  "newsletter": {
+    "success": "شكرًا لانضمامك إلى نيوتريكس.",
+    "error": "يرجى إدخال بريد إلكتروني صالح."
+  },
+  "customer": {
+    "login": {
+      "title": "تسجيل الدخول",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "submit": "دخول",
+      "forgot": "نسيت كلمة المرور؟",
+      "create": "إنشاء حساب"
+    },
+    "register": {
+      "title": "إنشاء حساب",
+      "first_name": "الاسم الأول",
+      "last_name": "اسم العائلة",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "submit": "إنشاء حساب",
+      "login": "لديك حساب؟ سجّل الدخول"
+    },
+    "recover": {
+      "title": "إعادة تعيين كلمة المرور",
+      "submit": "إرسال رابط إعادة التعيين",
+      "success": "أرسلنا إليك بريدًا إلكترونيًا."
+    }
+  },
+  "sections": {
+    "hero": {
+      "shop_now": "تسوق الآن",
+      "book_training": "احجز تدريبًا"
+    },
+    "stats": {
+      "athletes": "رياضيون تم تدريبهم",
+      "sessions": "جلسات محجوزة",
+      "products": "منتجات مباعة",
+      "rating": "متوسط التقييم"
+    },
+    "categories": {
+      "title": "تسوق حسب الفئة",
+      "subtitle": "معدات أداء مصممة للنتائج"
+    },
+    "bestsellers": {
+      "title": "الأكثر مبيعًا",
+      "subtitle": "ما يتدرب به المجتمع"
+    },
+    "trending": {
+      "title": "رائج الآن",
+      "subtitle": "إصدارات جديدة. أداء أعلى."
+    },
+    "coach": {
+      "title": "المدرب المميز",
+      "cta": "تعرّف على مدربك"
+    },
+    "appointment_cta": {
+      "title": "جاهز للارتقاء؟",
+      "subtitle": "احجز جلسة مع نخبة المدربين.",
+      "cta": "احجز موعدًا"
+    },
+    "transformations": {
+      "title": "تحولات حقيقية",
+      "subtitle": "النتائج تتحدث بصوت أعلى من التكرارات"
+    },
+    "testimonials": {
+      "title": "ماذا يقول الرياضيون",
+      "subtitle": "موثوق من المحترفين والمبتدئين"
+    },
+    "instagram": {
+      "title": "تابع الحركة",
+      "handle": "@neutrex"
+    }
+  },
+  "settings_schema": {
+    "brand": {
+      "name": "العلامة التجارية",
+      "brand_name": "اسم العلامة",
+      "logo": "الشعار (فاتح)",
+      "logo_dark": "الشعار (داكن)",
+      "favicon": "أيقونة الموقع",
+      "logo_width": "عرض الشعار"
+    },
+    "colors": {
+      "name": "الألوان",
+      "light_mode": "الوضع الفاتح",
+      "dark_mode": "الوضع الداكن",
+      "primary": "الأساسي",
+      "gold": "ذهبي فاخر",
+      "charcoal": "فحمي",
+      "background": "الخلفية",
+      "surface": "السطح",
+      "text": "النص",
+      "text_muted": "نص باهت",
+      "border": "الحدود",
+      "default_scheme": "نظام الألوان الافتراضي",
+      "system": "تفضيل النظام",
+      "light": "فاتح",
+      "dark": "داكن"
+    },
+    "typography": {
+      "name": "الخطوط",
+      "font_scale": "مقياس الخط",
+      "heading_weight": "سمك العناوين"
+    },
+    "layout": {
+      "name": "التخطيط",
+      "page_width": "عرض الصفحة",
+      "section_spacing": "تباعد الأقسام",
+      "border_radius": "نصف قطر الزوايا"
+    },
+    "header": {
+      "name": "الترويسة",
+      "sticky": "ترويسة ثابتة",
+      "transparent": "شفافة في الصفحة الرئيسية",
+      "menu": "القائمة الرئيسية",
+      "mega_menu": "تفعيل القائمة الكبيرة"
+    },
+    "cart": {
+      "name": "السلة",
+      "type": "نوع السلة",
+      "drawer": "درج",
+      "page": "صفحة",
+      "free_shipping_bar": "شريط الشحن المجاني",
+      "free_shipping_threshold": "حد الشحن المجاني",
+      "free_shipping_info": "المبلغ بعملة المتجر (رقم فقط)"
+    },
+    "appointments": {
+      "name": "المواعيد",
+      "enabled": "تفعيل المواعيد",
+      "whatsapp": "رقم واتساب",
+      "whatsapp_info": "مع رمز الدولة",
+      "booking_url": "رابط الحجز الخارجي",
+      "hours": "ساعات العمل",
+      "location": "الموقع"
+    },
+    "social": {
+      "name": "وسائل التواصل"
+    },
+    "product": {
+      "name": "المنتجات",
+      "wishlist": "تفعيل المفضلة",
+      "quick_add": "إضافة سريعة",
+      "quick_view": "عرض سريع",
+      "vendor": "إظهار البائع",
+      "image_ratio": "نسبة صورة البطاقة"
+    },
+    "performance": {
+      "name": "الأداء",
+      "animations": "تفعيل الحركات",
+      "lazy_load": "تحميل كسول للصور"
+    },
+    "seo": {
+      "name": "SEO والبيانات المنظمة",
+      "org_name": "اسم المنظمة",
+      "phone": "هاتف العمل",
+      "address": "عنوان العمل"
+    }
+  }
+}

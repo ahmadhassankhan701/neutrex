@@ -1,0 +1,12 @@
+{
+  "layout": "theme",
+  "sections": {
+    "main": {
+      "type": "main-addresses",
+      "settings": {
+        "subtitle": "Manage shipping and billing addresses."
+      }
+    }
+  },
+  "order": ["main"]
+}

@@ -1,0 +1,227 @@
+{%- liquid
+  assign section_class = 'section featured-coach'
+  if section.settings.background_style == 'surface'
+    assign section_class = section_class | append: ' section--surface'
+  elsif section.settings.background_style == 'dark'
+    assign section_class = section_class | append: ' section--dark'
+  endif
+-%}
+
+<section
+  class="{{ section_class }}"
+  aria-labelledby="FeaturedCoach-{{ section.id }}"
+  {{ section.shopify_attributes }}
+>
+  <div class="page-width">
+    <div class="featured-coach__grid">
+      <div
+        class="featured-coach__media animate-slide-in-start image-reveal"
+        data-animate
+      >
+        {%- if section.settings.image != blank -%}
+          {%- render 'media',
+            image: section.settings.image,
+            alt: section.settings.name,
+            loading: 'lazy',
+            widths: '400,600,800,1000,1200',
+            sizes: '(min-width: 990px) 45vw, 100vw'
+          -%}
+        {%- else -%}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder' }}
+        {%- endif -%}
+
+        {%- if section.settings.badge_value != blank -%}
+          <div class="featured-coach__badge">
+            <p class="featured-coach__badge-value">{{ section.settings.badge_value | escape }}</p>
+            <p class="featured-coach__badge-label">{{ section.settings.badge_label | escape }}</p>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="featured-coach__content animate-slide-in-end" data-animate>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="featured-coach__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- else -%}
+          <p class="featured-coach__eyebrow">{{ 'sections.coach.title' | t }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.name != blank -%}
+          <h2 class="featured-coach__name" id="FeaturedCoach-{{ section.id }}">
+            {{ section.settings.name | escape }}
+          </h2>
+        {%- endif -%}
+
+        {%- if section.settings.role != blank -%}
+          <p class="featured-coach__role">{{ section.settings.role | escape }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.bio != blank -%}
+          <div class="featured-coach__bio rte">{{ section.settings.bio }}</div>
+        {%- endif -%}
+
+        {%- if section.blocks.size > 0 -%}
+          <ul class="featured-coach__specialties chips" role="list">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'achievement' -%}
+                <li class="chip chip--gold" {{ block.shopify_attributes }}>
+                  {{ block.settings.text | escape }}
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        <div class="featured-coach__ctas">
+          {%- if section.settings.cta_primary_label != blank -%}
+            {%- render 'button',
+              label: section.settings.cta_primary_label,
+              url: section.settings.cta_primary_url,
+              style: 'primary',
+              class: 'btn-ripple'
+            -%}
+          {%- endif -%}
+          {%- if section.settings.cta_secondary_label != blank -%}
+            {%- render 'button',
+              label: section.settings.cta_secondary_label,
+              url: section.settings.cta_secondary_url,
+              style: 'secondary'
+            -%}
+          {%- endif -%}
+          {%- if section.settings.instagram_url != blank -%}
+            <a
+              href="{{ section.settings.instagram_url }}"
+              class="btn btn--ghost"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {%- render 'icon', icon: 'instagram' -%}
+              {{ 'coach.follow' | t }}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured coach",
+  "tag": "section",
+  "class": "section-featured-coach",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Coach image"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Featured coach"
+    },
+    {
+      "type": "text",
+      "id": "name",
+      "label": "Name",
+      "default": "Marcus Reid"
+    },
+    {
+      "type": "text",
+      "id": "role",
+      "label": "Title / role",
+      "default": "Head Performance Coach · IFBB Pro"
+    },
+    {
+      "type": "richtext",
+      "id": "bio",
+      "label": "Bio",
+      "default": "<p>Former national bodybuilding champion with 12+ years coaching elite athletes. Marcus specializes in hypertrophy programming, competition prep, and sustainable fat-loss transformations.</p>"
+    },
+    {
+      "type": "text",
+      "id": "badge_value",
+      "label": "Badge value",
+      "default": "12+"
+    },
+    {
+      "type": "text",
+      "id": "badge_label",
+      "label": "Badge label",
+      "default": "Years experience"
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "header",
+      "content": "Primary CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_primary_label",
+      "label": "Label",
+      "default": "Book session"
+    },
+    {
+      "type": "url",
+      "id": "cta_primary_url",
+      "label": "URL"
+    },
+    {
+      "type": "header",
+      "content": "Secondary CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_secondary_label",
+      "label": "Label",
+      "default": "View profile"
+    },
+    {
+      "type": "url",
+      "id": "cta_secondary_url",
+      "label": "URL"
+    },
+    {
+      "type": "select",
+      "id": "background_style",
+      "label": "Background",
+      "options": [
+        { "value": "default", "label": "Default" },
+        { "value": "surface", "label": "Surface" },
+        { "value": "dark", "label": "Dark" }
+      ],
+      "default": "default"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "achievement",
+      "name": "Achievement",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "IFBB Pro Card"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured coach",
+      "blocks": [
+        { "type": "achievement", "settings": { "text": "IFBB Pro Card" } },
+        { "type": "achievement", "settings": { "text": "NASM Certified" } },
+        { "type": "achievement", "settings": { "text": "500+ Transformations" } },
+        { "type": "achievement", "settings": { "text": "Olympia Prep Specialist" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
