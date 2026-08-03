@@ -1,0 +1,22 @@
+{
+  "type": "header",
+  "name": "Header",
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "settings": {
+        "enable": true,
+        "text": "Free shipping on orders over $150 · Book your first session today"
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "menu": "main-menu",
+        "show_book_cta": true,
+        "book_cta_label": "Book Training"
+      }
+    }
+  },
+  "order": ["announcement-bar", "header"]
+}

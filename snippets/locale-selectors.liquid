@@ -38,14 +38,14 @@
       {%- if localization.available_countries.size > 1 -%}
         <div class="locale-selectors__field">
           <label class="visually-hidden" for="LocaleSelector-Country">
-            {{ 'localization.country_label' | t }}
+            {{ 'header.language' | t }}
           </label>
           <div class="locale-selectors__select-wrap">
             <select
               id="LocaleSelector-Country"
               class="locale-selectors__select"
               name="country_code"
-              aria-label="{{ 'localization.country_label' | t }}"
+              aria-label="Country"
               onchange="this.form.submit()"
             >
               {%- for country in localization.available_countries -%}

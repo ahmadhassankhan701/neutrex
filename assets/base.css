@@ -715,3 +715,11 @@ p { text-wrap: pretty; }
 .breadcrumb a:hover { color: var(--color-primary); }
 .breadcrumb__sep { opacity: 0.4; }
 .breadcrumb [aria-current="page"] { color: var(--color-text); font-weight: 500; }
+
+/* Responsive visibility */
+@media (max-width: 989px) {
+  .hide-mobile { display: none !important; }
+}
+@media (min-width: 990px) {
+  .hide-desktop { display: none !important; }
+}

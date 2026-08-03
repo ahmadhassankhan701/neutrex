@@ -126,7 +126,8 @@
 
     <div class="site-footer__bottom">
       <p class="site-footer__copyright">
-        {{ 'footer.copyright' | t: year: 'now' | date: '%Y', shop_name: shop.name }}
+        {%- assign copyright_year = 'now' | date: '%Y' -%}
+        {{ 'footer.copyright' | t: year: copyright_year, shop_name: shop.name }}
       </p>
 
       {%- if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
@@ -277,32 +278,8 @@
       ]
     }
   ],
-  "presets": [
-    {
-      "name": "Footer",
-      "blocks": [
-        {
-          "type": "link_list",
-          "settings": {
-            "heading": "Explore",
-            "menu": "footer"
-          }
-        },
-        {
-          "type": "link_list",
-          "settings": {
-            "heading": "Shop",
-            "menu": "footer"
-          }
-        },
-        {
-          "type": "newsletter"
-        },
-        {
-          "type": "contact"
-        }
-      ]
-    }
-  ]
+  "enabled_on": {
+    "groups": ["footer"]
+  }
 }
 {% endschema %}

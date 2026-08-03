@@ -1,21 +1,30 @@
 {%- liquid
-  assign menu_handle = section.settings.menu | default: settings.menu
-  assign main_menu = linklists[menu_handle]
+  assign main_menu = section.settings.menu
+  if main_menu == blank and settings.menu != blank
+    assign main_menu = linklists[settings.menu]
+  endif
   assign logo_width = settings.logo_width | default: 140
   assign is_transparent = false
   if settings.header_transparent and template.name == 'index'
     assign is_transparent = true
   endif
   assign show_wishlist = settings.enable_wishlist
+  assign book_cta_label = section.settings.book_cta_label
+  if book_cta_label == blank
+    assign book_cta_label = 'header.book_training' | t
+  endif
+  assign book_cta_link = section.settings.book_cta_link | default: settings.booking_form_url
+  if book_cta_link == blank
+    assign book_cta_link = '/pages/personal-training'
+  endif
 -%}
 
 <header
   class="site-header{% if is_transparent %} site-header--transparent{% endif %}{% unless settings.header_sticky %} site-header--static{% endif %}"
   data-site-header
   role="banner"
-  {{ section.shopify_attributes }}
 >
-  <div class="site-header__inner">
+  <div class="site-header__inner page-width">
     <button
       type="button"
       class="site-header__icon-btn site-header__menu-toggle"
@@ -24,46 +33,40 @@
       aria-controls="mobile-nav-{{ section.id }}"
       aria-label="{{ 'general.accessibility.menu' | t }}"
     >
-      {% render 'icon', icon: 'menu', size: 22 %}
+      {% render 'icon', icon: 'menu' %}
     </button>
 
     <a href="{{ routes.root_url }}" class="site-header__logo" aria-label="{{ shop.name | escape }}">
       {%- if settings.logo != blank -%}
-        {{
-          settings.logo
-          | image_url: width: logo_width
-          | image_tag:
-            class: 'site-header__logo-img site-header__logo-img--light',
-            width: logo_width,
-            height: 'auto',
-            alt: shop.name,
-            loading: 'eager'
-        }}
+        <img
+          class="site-header__logo-img site-header__logo-img--light"
+          src="{{ settings.logo | image_url: width: logo_width }}"
+          alt="{{ shop.name | escape }}"
+          width="{{ logo_width }}"
+          loading="eager"
+        >
       {%- endif -%}
       {%- if settings.logo_dark != blank -%}
-        {{
-          settings.logo_dark
-          | image_url: width: logo_width
-          | image_tag:
-            class: 'site-header__logo-img site-header__logo-img--dark',
-            width: logo_width,
-            height: 'auto',
-            alt: shop.name,
-            loading: 'eager'
-        }}
+        <img
+          class="site-header__logo-img site-header__logo-img--dark"
+          src="{{ settings.logo_dark | image_url: width: logo_width }}"
+          alt="{{ shop.name | escape }}"
+          width="{{ logo_width }}"
+          loading="eager"
+        >
       {%- elsif settings.logo == blank -%}
         <span>{{ settings.brand_name | default: shop.name }}</span>
       {%- endif -%}
     </a>
 
-    {%- if main_menu.links.size > 0 -%}
+    {%- if main_menu != blank and main_menu.links.size > 0 -%}
       <nav class="site-nav" aria-label="{{ 'header.menu' | t }}" data-mega-menu>
         <ul class="site-nav__list" role="list">
           {%- for link in main_menu.links -%}
             {%- liquid
               assign has_children = false
               assign has_grandchildren = false
-              assign mega_block = nil
+              assign mega_block = false
 
               if link.links.size > 0
                 assign has_children = true
@@ -107,7 +110,7 @@
                   aria-expanded="false"
                 >
                   {{ link.title | escape }}
-                  {% render 'icon', icon: 'chevron-down', size: 14, class: 'site-nav__chevron' %}
+                  {% render 'icon', icon: 'chevron-down', class: 'site-nav__chevron' %}
                 </button>
 
                 <div class="mega-menu" data-mega-menu-panel aria-hidden="true">
@@ -124,7 +127,11 @@
                           sizes: '(min-width: 990px) 240px, 50vw'
                         %}
                         <div class="mega-menu__featured-overlay">
-                          <p class="mega-menu__featured-title">{{ mega_block.settings.featured_title | default: link.title | escape }}</p>
+                          {%- if mega_block.settings.featured_title != blank -%}
+                            <p class="mega-menu__featured-title">{{ mega_block.settings.featured_title | escape }}</p>
+                          {%- else -%}
+                            <p class="mega-menu__featured-title">{{ link.title | escape }}</p>
+                          {%- endif -%}
                           <span class="btn btn--sm btn--outline-white">{{ 'header.shop_now' | t }}</span>
                         </div>
                       </a>
@@ -156,7 +163,7 @@
                 <details class="site-nav__details">
                   <summary class="site-nav__link">
                     {{ link.title | escape }}
-                    {% render 'icon', icon: 'chevron-down', size: 14, class: 'site-nav__chevron' %}
+                    {% render 'icon', icon: 'chevron-down', class: 'site-nav__chevron' %}
                   </summary>
                   <ul class="site-nav__dropdown" role="list">
                     {%- for child in link.links -%}
@@ -177,11 +184,8 @@
 
     <div class="site-header__actions">
       {%- if section.settings.show_book_cta -%}
-        <a
-          href="{{ section.settings.book_cta_link | default: settings.booking_form_url | default: '/pages/personal-training' }}"
-          class="btn btn--primary btn--sm site-header__cta hide-mobile"
-        >
-          {{ section.settings.book_cta_label | default: 'header.book_training' | t }}
+        <a href="{{ book_cta_link }}" class="btn btn--primary btn--sm site-header__cta hide-mobile">
+          {{ book_cta_label | escape }}
         </a>
       {%- endif -%}
 
@@ -191,7 +195,7 @@
         data-predictive-search-open
         aria-label="{{ 'general.accessibility.search' | t }}"
       >
-        {% render 'icon', icon: 'search', size: 20 %}
+        {% render 'icon', icon: 'search' %}
       </button>
 
       <a
@@ -199,7 +203,7 @@
         class="site-header__icon-btn hide-mobile"
         aria-label="{{ 'header.account' | t }}"
       >
-        {% render 'icon', icon: 'account', size: 20 %}
+        {% render 'icon', icon: 'account' %}
       </a>
 
       {%- if show_wishlist -%}
@@ -208,7 +212,7 @@
           class="site-header__icon-btn hide-mobile"
           aria-label="{{ 'header.wishlist' | t }}"
         >
-          {% render 'icon', icon: 'heart', size: 20 %}
+          {% render 'icon', icon: 'heart' %}
         </a>
       {%- endif -%}
 
@@ -226,188 +230,112 @@
         data-cart-open
         aria-label="{{ 'header.cart' | t }}"
       >
-        {% render 'icon', icon: 'cart', size: 20 %}
+        {% render 'icon', icon: 'cart' %}
         {% render 'cart-count' %}
       </button>
     </div>
   </div>
-</header>
 
-{%- comment -%} Mobile navigation drawer {%- endcomment -%}
-<div
-  id="mobile-nav-{{ section.id }}"
-  class="mobile-nav"
-  data-mobile-nav
-  aria-hidden="true"
-  aria-label="{{ 'header.menu' | t }}"
->
-  <div class="mobile-nav__overlay" data-mobile-nav-close tabindex="-1" aria-hidden="true"></div>
+  <div
+    class="mobile-nav"
+    id="mobile-nav-{{ section.id }}"
+    data-mobile-nav
+    hidden
+  >
+    <div class="mobile-nav__overlay" data-mobile-nav-close tabindex="-1"></div>
+    <div class="mobile-nav__panel" role="dialog" aria-modal="true" aria-label="{{ 'header.menu' | t }}">
+      <div class="mobile-nav__header">
+        <p class="mobile-nav__title">{{ 'header.menu' | t }}</p>
+        <button
+          type="button"
+          class="site-header__icon-btn"
+          data-mobile-nav-close
+          aria-label="{{ 'general.accessibility.close' | t }}"
+        >
+          {% render 'icon', icon: 'close' %}
+        </button>
+      </div>
 
-  <div class="mobile-nav__panel" data-mobile-nav-panel role="dialog" aria-modal="true" aria-label="{{ 'header.menu' | t }}">
-    <div class="mobile-nav__header">
-      <span class="mobile-nav__title">{{ 'header.menu' | t }}</span>
-      <button
-        type="button"
-        class="site-header__icon-btn"
-        data-mobile-nav-close
-        aria-label="{{ 'general.accessibility.close' | t }}"
-      >
-        {% render 'icon', icon: 'close', size: 22 %}
-      </button>
-    </div>
-
-    <div class="mobile-nav__body">
-      {%- if main_menu.links.size > 0 -%}
-        <ul class="mobile-nav__list" role="list">
-          {%- for link in main_menu.links -%}
-            <li class="mobile-nav__item" data-mobile-nav-item>
-              {%- if link.links.size > 0 -%}
-                <button
-                  type="button"
-                  class="mobile-nav__link mobile-nav__link--toggle"
-                  data-mobile-nav-submenu-toggle
-                  aria-expanded="false"
-                >
-                  <span>{{ link.title | escape }}</span>
-                  {% render 'icon', icon: 'chevron-down', size: 18 %}
-                </button>
-                <ul class="mobile-nav__sublist" data-mobile-nav-submenu role="list">
-                  <li>
-                    <a href="{{ link.url }}" class="mobile-nav__sublink mobile-nav__sublink--all">{{ link.title | escape }}</a>
-                  </li>
-                  {%- for child in link.links -%}
-                    <li>
-                      <a href="{{ child.url }}" class="mobile-nav__sublink">{{ child.title | escape }}</a>
-                      {%- if child.links.size > 0 -%}
-                        <ul class="mobile-nav__sublist mobile-nav__sublist--nested" role="list">
-                          {%- for grandchild in child.links -%}
-                            <li>
-                              <a href="{{ grandchild.url }}" class="mobile-nav__sublink">{{ grandchild.title | escape }}</a>
-                            </li>
-                          {%- endfor -%}
-                        </ul>
-                      {%- endif -%}
-                    </li>
-                  {%- endfor -%}
-                </ul>
-              {%- else -%}
-                <a href="{{ link.url }}" class="mobile-nav__link"{% if link.current %} aria-current="page"{% endif %}>
-                  {{ link.title | escape }}
-                </a>
-              {%- endif -%}
-            </li>
-          {%- endfor -%}
-        </ul>
+      {%- if main_menu != blank and main_menu.links.size > 0 -%}
+        <nav class="mobile-nav__nav" aria-label="{{ 'header.menu' | t }}">
+          <ul class="mobile-nav__list" role="list">
+            {%- for link in main_menu.links -%}
+              <li class="mobile-nav__item">
+                {%- if link.links.size > 0 -%}
+                  <details class="mobile-nav__details">
+                    <summary class="mobile-nav__link">
+                      <span>{{ link.title | escape }}</span>
+                      {% render 'icon', icon: 'chevron-down' %}
+                    </summary>
+                    <ul class="mobile-nav__sublist" role="list">
+                      <li>
+                        <a href="{{ link.url }}" class="mobile-nav__sublink mobile-nav__sublink--all">
+                          {{ 'header.shop_now' | t }}
+                        </a>
+                      </li>
+                      {%- for child in link.links -%}
+                        <li>
+                          <a href="{{ child.url }}" class="mobile-nav__sublink">{{ child.title | escape }}</a>
+                          {%- if child.links.size > 0 -%}
+                            <ul class="mobile-nav__sublist mobile-nav__sublist--nested" role="list">
+                              {%- for grandchild in child.links -%}
+                                <li>
+                                  <a href="{{ grandchild.url }}" class="mobile-nav__sublink">{{ grandchild.title | escape }}</a>
+                                </li>
+                              {%- endfor -%}
+                            </ul>
+                          {%- endif -%}
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  </details>
+                {%- else -%}
+                  <a href="{{ link.url }}" class="mobile-nav__link"{% if link.current %} aria-current="page"{% endif %}>
+                    {{ link.title | escape }}
+                  </a>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </nav>
       {%- endif -%}
-    </div>
 
-    <div class="mobile-nav__footer">
-      <div class="mobile-nav__footer-links">
-        <a href="{{ routes.account_url }}" class="mobile-nav__footer-link">
-          {% render 'icon', icon: 'account', size: 18 %}
-          {{ 'header.account' | t }}
-        </a>
-        {%- if show_wishlist -%}
-          <a href="/pages/wishlist" class="mobile-nav__footer-link">
-            {% render 'icon', icon: 'heart', size: 18 %}
-            {{ 'header.wishlist' | t }}
+      <div class="mobile-nav__footer">
+        {%- if section.settings.show_book_cta -%}
+          <a href="{{ book_cta_link }}" class="btn btn--primary btn--full">
+            {{ book_cta_label | escape }}
           </a>
         {%- endif -%}
-      </div>
 
-      <div class="mobile-nav__switchers">
-        {% render 'theme-switcher' %}
-        {% render 'locale-selectors' %}
-      </div>
+        <div class="mobile-nav__footer-links">
+          <a href="{{ routes.account_url }}" class="mobile-nav__footer-link">
+            {% render 'icon', icon: 'account' %}
+            {{ 'header.account' | t }}
+          </a>
+          {%- if show_wishlist -%}
+            <a href="/pages/wishlist" class="mobile-nav__footer-link">
+              {% render 'icon', icon: 'heart' %}
+              {{ 'header.wishlist' | t }}
+            </a>
+          {%- endif -%}
+        </div>
 
-      {%- if section.settings.show_book_cta -%}
-        <a
-          href="{{ section.settings.book_cta_link | default: settings.booking_form_url | default: '/pages/personal-training' }}"
-          class="btn btn--primary btn--full"
-        >
-          {{ section.settings.book_cta_label | default: 'header.book_training' | t }}
-        </a>
-      {%- endif -%}
+        <div class="mobile-nav__switchers">
+          {% render 'theme-switcher' %}
+          {% render 'locale-selectors' %}
+        </div>
+      </div>
     </div>
   </div>
-</div>
-
-{% stylesheet %}
-  .site-header__logo-img--dark { display: none; }
-  [data-theme="dark"] .site-header__logo-img--light { display: none; }
-  [data-theme="dark"] .site-header__logo-img--dark { display: inline-block; }
-  .site-header__cta.hide-mobile { display: none; }
-  @media (min-width: 990px) {
-    .site-header__cta.hide-mobile { display: inline-flex; }
-  }
-  .hide-mobile { display: none; }
-  @media (min-width: 990px) {
-    .hide-mobile { display: inline-flex; }
-    .hide-mobile.switcher,
-    .hide-mobile .theme-switch { display: inline-flex; }
-  }
-  .mobile-nav__link--toggle {
-    width: 100%;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font: inherit;
-  }
-  .mobile-nav__sublist:not(.is-open) { display: none; }
-  .mobile-nav__sublist.is-open { display: block; }
-  .mobile-nav__sublist--nested {
-    padding-inline-start: var(--space-4);
-    margin-block-start: var(--space-2);
-  }
-  .mobile-nav__sublink--all { font-weight: 700; color: var(--color-primary); }
-  .mobile-nav__footer-links {
-    display: flex;
-    gap: var(--space-4);
-    flex-wrap: wrap;
-  }
-  .mobile-nav__footer-link {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-size: var(--fs-sm);
-    font-weight: 600;
-  }
-  .mobile-nav__switchers {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    flex-wrap: wrap;
-  }
-  .mobile-nav__title {
-    font-size: var(--fs-md);
-    font-weight: 700;
-  }
-  .site-nav__details { position: relative; }
-  .site-nav__details > summary { list-style: none; cursor: pointer; }
-  .site-nav__details > summary::-webkit-details-marker { display: none; }
-  .site-nav__dropdown {
-    position: absolute;
-    inset-block-start: 100%;
-    inset-inline-start: 0;
-    min-width: 12rem;
-    padding: var(--space-3);
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
-    z-index: 5;
-  }
-{% endstylesheet %}
+</header>
 
 <script>
   (function () {
     var header = document.querySelector('[data-site-header]');
     if (!header) return;
-
     var onScroll = function () {
       header.classList.toggle('is-scrolled', window.scrollY > 24);
     };
-
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
   })();
@@ -416,7 +344,6 @@
 {% schema %}
 {
   "name": "Header",
-  "tag": "section",
   "class": "section-header",
   "settings": [
     {
@@ -477,10 +404,8 @@
       ]
     }
   ],
-  "presets": [
-    {
-      "name": "Header"
-    }
-  ]
+  "enabled_on": {
+    "groups": ["header"]
+  }
 }
 {% endschema %}

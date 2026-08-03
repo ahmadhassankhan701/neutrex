@@ -1,0 +1,57 @@
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "quick_links": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Explore",
+            "menu": "footer"
+          }
+        },
+        "categories": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Shop",
+            "menu": "main-menu"
+          }
+        },
+        "policies": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Support",
+            "menu": "footer"
+          }
+        },
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "Join the elite"
+          }
+        },
+        "contact": {
+          "type": "contact",
+          "settings": {
+            "heading": "Contact"
+          }
+        }
+      },
+      "block_order": ["quick_links", "categories", "policies", "newsletter", "contact"],
+      "settings": {
+        "show_newsletter": true,
+        "show_whatsapp": true,
+        "show_location": true,
+        "show_payment_icons": true,
+        "show_policy_links": true
+      }
+    },
+    "whatsapp-float": {
+      "type": "whatsapp-float",
+      "settings": {}
+    }
+  },
+  "order": ["footer", "whatsapp-float"]
+}
