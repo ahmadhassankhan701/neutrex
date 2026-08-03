@@ -52,8 +52,8 @@
           "show_social": false
         }
       },
-      "header": {
-        "type": "header",
+      "site-header": {
+        "type": "site-header",
         "settings": {
           "menu": "main-menu",
           "show_book_cta": true,
