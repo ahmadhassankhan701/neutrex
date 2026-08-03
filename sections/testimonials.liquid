@@ -2,11 +2,15 @@
   <div class="testimonials__bg" aria-hidden="true"></div>
   <div class="page-width testimonials__inner">
     <header class="section-header" style="text-align: center; margin-bottom: var(--space-8);">
-      <h2 class="section-header__title">{{ section.settings.title | default: 'sections.testimonials.title' | t | escape }}</h2>
+      {%- if section.settings.title != blank -%}
+        <h2 class="section-header__title">{{ section.settings.title | escape }}</h2>
+      {%- else -%}
+        <h2 class="section-header__title">{{ 'sections.testimonials.title' | t }}</h2>
+      {%- endif -%}
       {%- if section.settings.subtitle != blank -%}
         <p class="section-header__subtitle">{{ section.settings.subtitle | escape }}</p>
       {%- else -%}
-        <p class="section-header__subtitle">{{ 'sections.testimonials.subtitle' | t | escape }}</p>
+        <p class="section-header__subtitle">{{ 'sections.testimonials.subtitle' | t }}</p>
       {%- endif -%}
     </header>
 

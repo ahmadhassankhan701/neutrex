@@ -21,7 +21,7 @@
           "settings": {
             "offset_style": "main",
             "float_speed": "slow",
-            "parallax_speed": 0.15,
+            "parallax_speed": 15,
             "float_offset": -12,
             "float_rotate": 4
           }
@@ -31,7 +31,7 @@
           "settings": {
             "offset_style": "accent",
             "float_speed": "slow",
-            "parallax_speed": 0.25,
+            "parallax_speed": 25,
             "float_offset": -16,
             "float_rotate": 6
           }
@@ -285,19 +285,16 @@
     "testimonials": {
       "type": "testimonials",
       "settings": {
-        "eyebrow": "Reviews",
-        "heading": "What athletes say",
-        "subtitle": "Trusted by professionals and beginners alike",
-        "layout": "grid",
-        "background_style": "surface"
+        "title": "What athletes say",
+        "subtitle": "Trusted by professionals and beginners alike"
       },
       "blocks": {
         "test_1": {
           "type": "testimonial",
           "settings": {
             "quote": "Neutrex changed how I train. The supplements are elite and Marcus pushed me beyond what I thought possible.",
-            "author": "Jordan Ellis",
-            "role": "Amateur Bodybuilder",
+            "name": "Jordan Ellis",
+            "meta": "Amateur Bodybuilder",
             "rating": 5,
             "featured": true
           }
@@ -306,8 +303,8 @@
           "type": "testimonial",
           "settings": {
             "quote": "Best protein I've ever used. Clean ingredients, mixes perfectly, and the results speak for themselves.",
-            "author": "Priya Sharma",
-            "role": "CrossFit Athlete",
+            "name": "Priya Sharma",
+            "meta": "CrossFit Athlete",
             "rating": 5,
             "featured": false
           }
@@ -316,8 +313,8 @@
           "type": "testimonial",
           "settings": {
             "quote": "The compression wear is next level. Feels like a second skin during heavy sessions.",
-            "author": "David Chen",
-            "role": "Powerlifter",
+            "name": "David Chen",
+            "meta": "Powerlifter",
             "rating": 5,
             "featured": false
           }

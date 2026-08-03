@@ -65,8 +65,14 @@
 
       <div class="hero-premium__ctas animate-fade-up animate-fade-up--delay-4" data-animate>
         {%- liquid
-          assign cta_primary_label = section.settings.cta_primary_label | default: 'sections.hero.shop_now' | t
-          assign cta_secondary_label = section.settings.cta_secondary_label | default: 'sections.hero.book_training' | t
+          assign cta_primary_label = section.settings.cta_primary_label
+          if cta_primary_label == blank
+            assign cta_primary_label = 'sections.hero.shop_now' | t
+          endif
+          assign cta_secondary_label = section.settings.cta_secondary_label
+          if cta_secondary_label == blank
+            assign cta_secondary_label = 'sections.hero.book_training' | t
+          endif
         -%}
         {%- render 'button',
           label: cta_primary_label,
@@ -119,7 +125,8 @@
               -%}
               <div
                 class="{{ float_class }} float-3d float-3d--{{ float_speed }} parallax"
-                data-parallax="{{ block.settings.parallax_speed | default: 0.2 }}"
+                {%- assign parallax_value = block.settings.parallax_speed | default: 20 | times: 0.01 -%}
+                data-parallax="{{ parallax_value }}"
                 style="--float-y: {{ block.settings.float_offset | default: -12 }}px; --float-rotate: {{ block.settings.float_rotate | default: 4 }}deg;"
                 {{ block.shopify_attributes }}
               >
@@ -321,11 +328,12 @@
         {
           "type": "range",
           "id": "parallax_speed",
-          "label": "Parallax speed",
+          "label": "Parallax intensity",
           "min": 0,
-          "max": 0.5,
-          "step": 0.05,
-          "default": 0.2
+          "max": 50,
+          "step": 5,
+          "default": 20,
+          "info": "Higher = stronger mouse parallax"
         },
         {
           "type": "range",
