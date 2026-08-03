@@ -460,13 +460,123 @@
 .site-footer {
   background: var(--color-charcoal);
   color: rgba(255, 255, 255, 0.85);
-  padding-block: var(--space-8);
+  padding-block: 0 var(--space-8);
 }
 
 [data-theme="dark"] .site-footer {
   background: var(--color-bg);
   border-top: 1px solid var(--color-border);
   color: var(--color-text-muted);
+}
+
+.site-footer__newsletter-band {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, rgba(122, 31, 61, 0.22) 0%, transparent 100%);
+  padding-block: var(--space-7);
+  margin-bottom: var(--space-8);
+}
+
+[data-theme="dark"] .site-footer__newsletter-band {
+  border-bottom-color: var(--color-border);
+  background: linear-gradient(180deg, rgba(168, 50, 86, 0.16) 0%, transparent 100%);
+}
+
+.site-footer__newsletter-band-inner {
+  display: grid;
+  gap: var(--space-5);
+  align-items: center;
+}
+
+@media (min-width: 990px) {
+  .site-footer__newsletter-band-inner {
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, 32rem);
+    gap: var(--space-8);
+  }
+}
+
+.site-footer__newsletter-title {
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-2);
+}
+
+[data-theme="dark"] .site-footer__newsletter-title {
+  color: var(--color-text);
+}
+
+.site-footer__newsletter-text {
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+  opacity: 0.75;
+  max-width: 36rem;
+}
+
+.site-footer__newsletter-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.site-footer__newsletter-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+@media (min-width: 600px) {
+  .site-footer__newsletter-fields {
+    flex-direction: row;
+    align-items: stretch;
+  }
+}
+
+.site-footer__newsletter-input {
+  flex: 1;
+  min-height: 3.25rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.site-footer__newsletter-input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+[data-theme="dark"] .site-footer__newsletter-input {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.site-footer__newsletter-submit {
+  min-width: 8.5rem;
+  white-space: nowrap;
+}
+
+.site-footer__consent {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--fs-xs);
+  opacity: 0.75;
+  cursor: pointer;
+}
+
+.site-footer__consent input {
+  margin-top: 0.15rem;
+  flex-shrink: 0;
+}
+
+.site-footer__form-success {
+  font-size: var(--fs-sm);
+  color: var(--color-success);
+}
+
+.site-footer__form-error {
+  font-size: var(--fs-sm);
+  color: var(--color-error);
 }
 
 .site-footer__grid {
@@ -477,13 +587,13 @@
 
 @media (min-width: 750px) {
   .site-footer__grid {
-    grid-template-columns: 1.5fr repeat(3, 1fr);
+    grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
   }
 }
 
 @media (min-width: 990px) {
   .site-footer__grid {
-    grid-template-columns: 2fr repeat(4, 1fr);
+    grid-template-columns: 1.6fr 1fr 1fr 1.3fr;
     gap: var(--space-8);
   }
 }
@@ -493,6 +603,7 @@
 }
 
 .site-footer__logo {
+  display: inline-block;
   font-size: var(--fs-xl);
   font-weight: 800;
   color: #fff;
@@ -565,6 +676,26 @@
   color: var(--color-gold);
 }
 
+.site-footer__contact-item {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.site-footer__contact-list .site-footer__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.site-footer__contact .icon {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.15rem;
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
 .site-footer__bottom {
   display: flex;
   flex-direction: column;
@@ -600,6 +731,19 @@
 .site-footer__payment-icon {
   height: 1.5rem;
   opacity: 0.7;
+}
+
+.site-footer__policy-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
+}
+
+@media (min-width: 750px) {
+  .site-footer__policy-links {
+    justify-content: flex-end;
+  }
 }
 
 /* -------------------------------------------------------------------------- */

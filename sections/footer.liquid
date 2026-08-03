@@ -1,19 +1,88 @@
+{%- liquid
+  assign newsletter_block = false
+  assign contact_block = false
+  for block in section.blocks
+    if block.type == 'newsletter'
+      assign newsletter_block = block
+    elsif block.type == 'contact'
+      assign contact_block = block
+    endif
+  endfor
+-%}
+
 <footer class="site-footer" role="contentinfo" {{ section.shopify_attributes }}>
+  {%- if newsletter_block -%}
+    <div class="site-footer__newsletter-band" {{ newsletter_block.shopify_attributes }}>
+      <div class="page-width site-footer__newsletter-band-inner">
+        <div class="site-footer__newsletter-copy">
+          {%- if newsletter_block.settings.heading != blank -%}
+            <h2 class="site-footer__newsletter-title">{{ newsletter_block.settings.heading | escape }}</h2>
+          {%- else -%}
+            <h2 class="site-footer__newsletter-title">{{ 'footer.newsletter_heading' | t }}</h2>
+          {%- endif -%}
+
+          {%- if newsletter_block.settings.text != blank -%}
+            <p class="site-footer__newsletter-text">{{ newsletter_block.settings.text | escape }}</p>
+          {%- else -%}
+            <p class="site-footer__newsletter-text">{{ 'footer.newsletter_text' | t }}</p>
+          {%- endif -%}
+        </div>
+
+        {%- form 'customer', class: 'site-footer__newsletter-form' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <div class="site-footer__newsletter-fields">
+            <label class="visually-hidden" for="FooterNewsletter-{{ section.id }}">
+              {{ 'footer.newsletter_placeholder' | t }}
+            </label>
+            <input
+              id="FooterNewsletter-{{ section.id }}"
+              type="email"
+              name="contact[email]"
+              class="field__input site-footer__newsletter-input"
+              value="{{ form.email }}"
+              placeholder="{{ 'footer.newsletter_placeholder' | t }}"
+              autocomplete="email"
+              autocorrect="off"
+              autocapitalize="off"
+              required
+              aria-required="true"
+            >
+            <button type="submit" class="btn btn--gold site-footer__newsletter-submit">
+              {{ 'footer.newsletter_button' | t }}
+            </button>
+          </div>
+          <label class="site-footer__consent">
+            <input type="checkbox" name="contact[accepts_marketing]" value="true" checked>
+            <span>
+              {%- if newsletter_block.settings.consent_text != blank -%}
+                {{ newsletter_block.settings.consent_text | escape }}
+              {%- else -%}
+                Send me training tips, drops, and exclusive offers
+              {%- endif -%}
+            </span>
+          </label>
+          {%- if form.posted_successfully? -%}
+            <p class="site-footer__form-success" role="status">{{ 'footer.newsletter_success' | t }}</p>
+          {%- endif -%}
+          {%- if form.errors -%}
+            <p class="site-footer__form-error" role="alert">{{ form.errors.messages.email }}</p>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    </div>
+  {%- endif -%}
+
   <div class="page-width">
     <div class="site-footer__grid">
-      {%- comment -%} Brand column {%- endcomment -%}
       <div class="site-footer__brand">
         <a href="{{ routes.root_url }}" class="site-footer__logo" aria-label="{{ shop.name | escape }}">
           {%- if settings.logo != blank -%}
-            {{
-              settings.logo
-              | image_url: width: settings.logo_width
-              | image_tag:
-                width: settings.logo_width,
-                height: 'auto',
-                alt: shop.name,
-                loading: 'lazy'
-            }}
+            <img
+              src="{{ settings.logo | image_url: width: settings.logo_width }}"
+              alt="{{ shop.name | escape }}"
+              width="{{ settings.logo_width }}"
+              loading="lazy"
+            >
           {%- else -%}
             {{ settings.brand_name | default: shop.name }}
           {%- endif -%}
@@ -26,102 +95,68 @@
         {% render 'social-icons' %}
       </div>
 
-      {%- comment -%} Link list blocks {%- endcomment -%}
       {%- for block in section.blocks -%}
-        {%- case block.type -%}
-          {%- when 'link_list' -%}
-            <div class="site-footer__column" {{ block.shopify_attributes }}>
+        {%- if block.type == 'link_list' -%}
+          {%- liquid
+            assign footer_menu = block.settings.menu
+            if footer_menu != blank and footer_menu.links == blank
+              assign footer_menu = linklists[block.settings.menu]
+            endif
+          -%}
+          <div class="site-footer__column" {{ block.shopify_attributes }}>
+            {%- if block.settings.heading != blank -%}
               <p class="site-footer__column-title">{{ block.settings.heading | escape }}</p>
-              {%- if block.settings.menu != blank -%}
-                <ul class="site-footer__links" role="list">
-                  {%- for link in linklists[block.settings.menu].links -%}
-                    <li>
-                      <a href="{{ link.url }}" class="site-footer__link">{{ link.title | escape }}</a>
-                    </li>
-                  {%- endfor -%}
-                </ul>
-              {%- endif -%}
-            </div>
-
-          {%- when 'newsletter' -%}
-            <div class="site-footer__column site-footer__newsletter" {{ block.shopify_attributes }}>
-              <p class="site-footer__column-title">{{ block.settings.heading | default: 'footer.newsletter_heading' | t }}</p>
-              {%- if block.settings.text != blank -%}
-                <p class="site-footer__tagline">{{ block.settings.text | escape }}</p>
-              {%- else -%}
-                <p class="site-footer__tagline">{{ 'footer.newsletter_text' | t }}</p>
-              {%- endif -%}
-
-              {%- form 'customer', class: 'site-footer__newsletter-form' -%}
-                <input type="hidden" name="contact[tags]" value="newsletter">
-                <div class="field">
-                  <label class="visually-hidden" for="FooterNewsletter-{{ section.id }}">
-                    {{ 'footer.newsletter_placeholder' | t }}
-                  </label>
-                  <input
-                    id="FooterNewsletter-{{ section.id }}"
-                    type="email"
-                    name="contact[email]"
-                    class="field__input"
-                    value="{{ form.email }}"
-                    placeholder="{{ 'footer.newsletter_placeholder' | t }}"
-                    autocomplete="email"
-                    autocorrect="off"
-                    autocapitalize="off"
-                    required
-                    aria-required="true"
-                  >
-                  <label class="field field--checkbox">
-                    <input type="checkbox" name="contact[accepts_marketing]" value="true" checked>
-                    <span class="field__label">{{ block.settings.consent_text | default: 'Accept marketing emails' }}</span>
-                  </label>
-                  <button type="submit" class="btn btn--gold btn--full">
-                    {{ 'footer.newsletter_button' | t }}
-                  </button>
-                </div>
-                {%- if form.posted_successfully? -%}
-                  <p class="site-footer__form-success" role="status">{{ 'footer.newsletter_success' | t }}</p>
-                {%- endif -%}
-                {%- if form.errors -%}
-                  <p class="site-footer__form-error" role="alert">{{ form.errors.messages.email | default: 'newsletter.error' | t }}</p>
-                {%- endif -%}
-              {%- endform -%}
-            </div>
-
-          {%- when 'contact' -%}
-            <div class="site-footer__column site-footer__contact" {{ block.shopify_attributes }}>
-              <p class="site-footer__column-title">{{ block.settings.heading | default: 'footer.contact' | t }}</p>
-              <ul class="site-footer__links site-footer__contact-list" role="list">
-                {%- assign wa_number = settings.whatsapp_number | remove: '+' | remove: ' ' | remove: '-' -%}
-                {%- if wa_number != blank -%}
+            {%- endif -%}
+            {%- if footer_menu != blank and footer_menu.links.size > 0 -%}
+              <ul class="site-footer__links" role="list">
+                {%- for link in footer_menu.links -%}
                   <li>
-                    <a
-                      href="https://wa.me/{{ wa_number }}"
-                      class="site-footer__link site-footer__contact-item"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {% render 'icon', icon: 'whatsapp', size: 16 %}
-                      <span>{{ 'footer.whatsapp' | t }}: {{ settings.whatsapp_number | escape }}</span>
-                    </a>
+                    <a href="{{ link.url }}" class="site-footer__link">{{ link.title | escape }}</a>
                   </li>
-                {%- endif -%}
-                {%- if settings.business_location != blank -%}
-                  <li class="site-footer__contact-item">
-                    {% render 'icon', icon: 'map-pin', size: 16 %}
-                    <span>{{ 'footer.location' | t }}: {{ settings.business_location | escape }}</span>
-                  </li>
-                {%- endif -%}
-                {%- if settings.business_hours != blank -%}
-                  <li class="site-footer__contact-item">
-                    {% render 'icon', icon: 'clock', size: 16 %}
-                    <span>{{ 'footer.hours' | t }}: {{ settings.business_hours | escape }}</span>
-                  </li>
-                {%- endif -%}
+                {%- endfor -%}
               </ul>
-            </div>
-        {%- endcase -%}
+            {%- endif -%}
+          </div>
+        {%- endif -%}
       {%- endfor -%}
+
+      {%- if contact_block -%}
+        <div class="site-footer__column site-footer__contact" {{ contact_block.shopify_attributes }}>
+          {%- if contact_block.settings.heading != blank -%}
+            <p class="site-footer__column-title">{{ contact_block.settings.heading | escape }}</p>
+          {%- else -%}
+            <p class="site-footer__column-title">{{ 'footer.contact' | t }}</p>
+          {%- endif -%}
+          <ul class="site-footer__links site-footer__contact-list" role="list">
+            {%- assign wa_number = settings.whatsapp_number | remove: '+' | remove: ' ' | remove: '-' -%}
+            {%- if wa_number != blank -%}
+              <li>
+                <a
+                  href="https://wa.me/{{ wa_number }}"
+                  class="site-footer__link site-footer__contact-item"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {% render 'icon', icon: 'whatsapp' %}
+                  <span>{{ 'footer.whatsapp' | t }}: {{ settings.whatsapp_number | escape }}</span>
+                </a>
+              </li>
+            {%- endif -%}
+            {%- if settings.business_location != blank -%}
+              <li class="site-footer__contact-item">
+                {% render 'icon', icon: 'map-pin' %}
+                <span>{{ 'footer.location' | t }}: {{ settings.business_location | escape }}</span>
+              </li>
+            {%- endif -%}
+            {%- if settings.business_hours != blank -%}
+              <li class="site-footer__contact-item">
+                {% render 'icon', icon: 'clock' %}
+                <span>{{ 'footer.hours' | t }}: {{ settings.business_hours | escape }}</span>
+              </li>
+            {%- endif -%}
+          </ul>
+        </div>
+      {%- endif -%}
     </div>
 
     <div class="site-footer__bottom">
@@ -155,51 +190,9 @@
   </div>
 </footer>
 
-{% stylesheet %}
-  .site-footer__newsletter-form .field { gap: var(--space-3); }
-  .field--checkbox {
-    flex-direction: row;
-    align-items: flex-start;
-    gap: var(--space-2);
-    font-size: var(--fs-xs);
-    opacity: 0.85;
-  }
-  .field--checkbox input { margin-top: 0.2rem; }
-  .site-footer__form-success {
-    margin-top: var(--space-3);
-    font-size: var(--fs-sm);
-    color: var(--color-success);
-  }
-  .site-footer__form-error {
-    margin-top: var(--space-3);
-    font-size: var(--fs-sm);
-    color: var(--color-error);
-  }
-  .site-footer__contact-item {
-    display: inline-flex;
-    align-items: flex-start;
-    gap: var(--space-2);
-  }
-  .site-footer__contact-list .site-footer__link {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-  }
-  .site-footer__policy-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-    justify-content: center;
-  }
-  @media (min-width: 750px) {
-    .site-footer__policy-links { justify-content: flex-end; }
-  }
-{% endstylesheet %}
-
 {% schema %}
 {
   "name": "Footer",
-  "tag": "section",
   "class": "section-footer",
   "settings": [
     {

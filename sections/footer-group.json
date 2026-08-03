@@ -5,6 +5,14 @@
     "footer": {
       "type": "footer",
       "blocks": {
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "Join the elite",
+            "text": "Training tips, drops, and exclusive member offers.",
+            "consent_text": "Send me training tips, drops, and exclusive offers"
+          }
+        },
         "quick_links": {
           "type": "link_list",
           "settings": {
@@ -19,19 +27,6 @@
             "menu": "main-menu"
           }
         },
-        "policies": {
-          "type": "link_list",
-          "settings": {
-            "heading": "Support",
-            "menu": "footer"
-          }
-        },
-        "newsletter": {
-          "type": "newsletter",
-          "settings": {
-            "heading": "Join the elite"
-          }
-        },
         "contact": {
           "type": "contact",
           "settings": {
@@ -39,11 +34,9 @@
           }
         }
       },
-      "block_order": ["quick_links", "categories", "policies", "newsletter", "contact"],
+      "block_order": ["newsletter", "quick_links", "categories", "contact"],
       "settings": {
-        "show_newsletter": true,
-        "show_whatsapp": true,
-        "show_location": true,
+        "brand_text": "Luxury performance fitness. Engineered for athletes who demand excellence.",
         "show_payment_icons": true,
         "show_policy_links": true
       }
