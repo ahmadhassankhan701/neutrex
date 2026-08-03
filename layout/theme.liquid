@@ -112,7 +112,7 @@
 
     {%- comment -%} Header inlined so Shopify Git sync cannot miss a separate header file {%- endcomment -%}
     <div
-      class="site-header{% if is_transparent %} site-header--transparent{% endif %}{% unless settings.header_sticky %} site-header--static{% endif %}"
+      class="site-header{% if is_transparent %} site-header--transparent{% endif %}{% unless settings.header_sticky %} site-header--static{% endunless %}"
       data-site-header
       role="banner"
     >
