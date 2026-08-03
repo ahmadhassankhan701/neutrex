@@ -15,8 +15,6 @@
       assign load_product_assets = true
     when 'collection', 'search', 'list-collections'
       assign load_collection_assets = true
-    when 'cart'
-      assign load_collection_assets = false
   endcase
 
   if template.name == 'page'
@@ -30,6 +28,27 @@
 
   if template.directory == 'customers'
     assign load_account_assets = true
+  endif
+
+  assign main_menu = linklists[settings.menu]
+  if main_menu == blank
+    assign main_menu = linklists['main-menu']
+  endif
+  assign logo_width = settings.logo_width | default: 140
+  assign is_transparent = false
+  if settings.header_transparent and template.name == 'index'
+    assign is_transparent = true
+  endif
+  assign book_label = settings.book_cta_label
+  if book_label == blank
+    assign book_label = 'Book Training'
+  endif
+  assign book_link = settings.book_cta_link
+  if book_link == blank
+    assign book_link = settings.booking_form_url
+  endif
+  if book_link == blank
+    assign book_link = '/pages/personal-training'
   endif
 -%}
 <html
@@ -47,14 +66,10 @@
     <script>
       (function () {
         var stored = null;
-        try {
-          stored = localStorage.getItem('neutrex-theme');
-        } catch (e) {}
+        try { stored = localStorage.getItem('neutrex-theme'); } catch (e) {}
         var def = document.documentElement.dataset.colorSchemeDefault || 'system';
         var pref = stored || def;
-        var dark =
-          pref === 'dark' ||
-          (pref === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        var dark = pref === 'dark' || (pref === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
         document.documentElement.dataset.theme = dark ? 'dark' : 'light';
         document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
       })();
@@ -67,15 +82,7 @@
     {%- render 'css-variables' -%}
 
     {%- if settings.favicon != blank -%}
-      <link
-        rel="icon"
-        type="image/png"
-        href="{{ settings.favicon | image_url: width: 32, height: 32 }}"
-      >
-      <link
-        rel="apple-touch-icon"
-        href="{{ settings.favicon | image_url: width: 180, height: 180 }}"
-      >
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
     {%- endif -%}
 
     {{ content_for_header }}
@@ -86,36 +93,178 @@
     {{ 'animations.css' | asset_url | stylesheet_tag }}
     {{ 'sections.css' | asset_url | stylesheet_tag }}
 
-    {%- if load_product_assets -%}
-      {{ 'product.css' | asset_url | stylesheet_tag }}
-    {%- endif -%}
-    {%- if load_collection_assets -%}
-      {{ 'collection.css' | asset_url | stylesheet_tag }}
-    {%- endif -%}
-    {%- if load_appointments_assets -%}
-      {{ 'appointments.css' | asset_url | stylesheet_tag }}
-    {%- endif -%}
-    {%- if load_account_assets -%}
-      {{ 'account.css' | asset_url | stylesheet_tag }}
-    {%- endif -%}
+    {%- if load_product_assets -%}{{ 'product.css' | asset_url | stylesheet_tag }}{%- endif -%}
+    {%- if load_collection_assets -%}{{ 'collection.css' | asset_url | stylesheet_tag }}{%- endif -%}
+    {%- if load_appointments_assets -%}{{ 'appointments.css' | asset_url | stylesheet_tag }}{%- endif -%}
+    {%- if load_account_assets -%}{{ 'account.css' | asset_url | stylesheet_tag }}{%- endif -%}
 
     {%- render 'schema-organization' -%}
-
-    <script>
-      document.documentElement.classList.replace('no-js', 'js');
-    </script>
+    <script>document.documentElement.classList.replace('no-js', 'js');</script>
   </head>
 
   <body
-    class="template-{{ template.name | handle }} {% if template.suffix %}template-{{ template.name | handle }}-{{ template.suffix | handle }}{% endif %}"
+    class="template-{{ template.name | handle }}{% if template.suffix %} template-{{ template.name | handle }}-{{ template.suffix | handle }}{% endif %}"
     {% if is_rtl %}data-locale-rtl="true"{% endif %}
   >
-    <a class="skip-link" href="#MainContent">
-      {{ 'general.accessibility.skip_to_content' | t }}
-    </a>
+    <a class="skip-link" href="#MainContent">{{ 'general.accessibility.skip_to_content' | t }}</a>
 
     {%- section 'announcement-bar' -%}
-    {% render 'site-header' %}
+
+    {%- comment -%} Header inlined so Shopify Git sync cannot miss a separate header file {%- endcomment -%}
+    <div
+      class="site-header{% if is_transparent %} site-header--transparent{% endif %}{% unless settings.header_sticky %} site-header--static{% endif %}"
+      data-site-header
+      role="banner"
+    >
+      <div class="site-header__inner page-width">
+        <button
+          type="button"
+          class="site-header__icon-btn site-header__menu-toggle"
+          data-mobile-nav-open
+          aria-expanded="false"
+          aria-controls="MobileNav"
+          aria-label="Menu"
+        >
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+
+        <a href="{{ routes.root_url }}" class="site-header__logo">
+          {%- if settings.logo != blank -%}
+            <img
+              class="site-header__logo-img site-header__logo-img--light"
+              src="{{ settings.logo | image_url: width: logo_width }}"
+              alt="{{ shop.name | escape }}"
+              width="{{ logo_width }}"
+              loading="eager"
+            >
+          {%- endif -%}
+          {%- if settings.logo_dark != blank -%}
+            <img
+              class="site-header__logo-img site-header__logo-img--dark"
+              src="{{ settings.logo_dark | image_url: width: logo_width }}"
+              alt="{{ shop.name | escape }}"
+              width="{{ logo_width }}"
+              loading="eager"
+            >
+          {%- endif -%}
+          {%- if settings.logo == blank and settings.logo_dark == blank -%}
+            <span>{{ settings.brand_name | default: shop.name | escape }}</span>
+          {%- endif -%}
+        </a>
+
+        {%- if main_menu != blank and main_menu.links.size > 0 -%}
+          <nav class="site-nav" aria-label="Menu">
+            <ul class="site-nav__list" role="list">
+              {%- for link in main_menu.links -%}
+                <li class="site-nav__item">
+                  {%- if link.links.size > 0 -%}
+                    <details class="site-nav__details">
+                      <summary class="site-nav__link">{{ link.title | escape }}</summary>
+                      <ul class="site-nav__dropdown" role="list">
+                        {%- for child in link.links -%}
+                          <li><a href="{{ child.url }}" class="mega-menu__link">{{ child.title | escape }}</a></li>
+                        {%- endfor -%}
+                      </ul>
+                    </details>
+                  {%- else -%}
+                    <a href="{{ link.url }}" class="site-nav__link"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </nav>
+        {%- endif -%}
+
+        <div class="site-header__actions">
+          {%- if settings.show_book_cta -%}
+            <a href="{{ book_link }}" class="btn btn--primary btn--sm site-header__cta hide-mobile">{{ book_label | escape }}</a>
+          {%- endif -%}
+
+          <button type="button" class="site-header__icon-btn" data-predictive-search-open aria-label="Search">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          </button>
+
+          <a href="{{ routes.account_url }}" class="site-header__icon-btn hide-mobile" aria-label="Account">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 12.5-4 16 0"/></svg>
+          </a>
+
+          {%- if settings.enable_wishlist -%}
+            <a href="/pages/wishlist" class="site-header__icon-btn hide-mobile" aria-label="Wishlist">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M12 20.5s-7-4.6-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10.5c0 5.4-7 10-7 10z"/></svg>
+            </a>
+          {%- endif -%}
+
+          <div class="hide-mobile">{% render 'theme-switcher' %}</div>
+          <div class="hide-mobile">{% render 'locale-selectors' %}</div>
+
+          <button type="button" class="site-header__icon-btn" data-cart-open aria-label="Cart">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M6 6h15l-1.5 9H7.5L6 6z"/><path d="M6 6L5 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+            <span class="site-header__cart-count" data-cart-count>{{ cart.item_count }}</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="mobile-nav" id="MobileNav" data-mobile-nav hidden>
+        <div class="mobile-nav__overlay" data-mobile-nav-close tabindex="-1"></div>
+        <div class="mobile-nav__panel" role="dialog" aria-modal="true" aria-label="Menu">
+          <div class="mobile-nav__header">
+            <p class="mobile-nav__title">Menu</p>
+            <button type="button" class="site-header__icon-btn" data-mobile-nav-close aria-label="Close">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+          </div>
+
+          {%- if main_menu != blank and main_menu.links.size > 0 -%}
+            <nav class="mobile-nav__nav" aria-label="Menu">
+              <ul class="mobile-nav__list" role="list">
+                {%- for link in main_menu.links -%}
+                  <li class="mobile-nav__item">
+                    {%- if link.links.size > 0 -%}
+                      <details class="mobile-nav__details">
+                        <summary class="mobile-nav__link"><span>{{ link.title | escape }}</span></summary>
+                        <ul class="mobile-nav__sublist" role="list">
+                          {%- for child in link.links -%}
+                            <li><a href="{{ child.url }}" class="mobile-nav__sublink">{{ child.title | escape }}</a></li>
+                          {%- endfor -%}
+                        </ul>
+                      </details>
+                    {%- else -%}
+                      <a href="{{ link.url }}" class="mobile-nav__link">{{ link.title | escape }}</a>
+                    {%- endif -%}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </nav>
+          {%- endif -%}
+
+          <div class="mobile-nav__footer">
+            {%- if settings.show_book_cta -%}
+              <a href="{{ book_link }}" class="btn btn--primary btn--full">{{ book_label | escape }}</a>
+            {%- endif -%}
+            <div class="mobile-nav__footer-links">
+              <a href="{{ routes.account_url }}" class="mobile-nav__footer-link">Account</a>
+              {%- if settings.enable_wishlist -%}
+                <a href="/pages/wishlist" class="mobile-nav__footer-link">Wishlist</a>
+              {%- endif -%}
+            </div>
+            <div class="mobile-nav__switchers">
+              {% render 'theme-switcher' %}
+              {% render 'locale-selectors' %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        var el = document.querySelector('[data-site-header]');
+        if (!el) return;
+        var onScroll = function () { el.classList.toggle('is-scrolled', window.scrollY > 24); };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+      })();
+    </script>
 
     <main id="MainContent" class="main-content" role="main" tabindex="-1">
       {{ content_for_layout }}
@@ -130,15 +279,8 @@
     <script src="{{ 'animations.js' | asset_url }}" defer></script>
     <script src="{{ 'predictive-search.js' | asset_url }}" defer></script>
     <script src="{{ 'cart-drawer.js' | asset_url }}" defer></script>
-
-    {%- if load_product_assets -%}
-      <script src="{{ 'product.js' | asset_url }}" defer></script>
-    {%- endif -%}
-    {%- if load_collection_assets -%}
-      <script src="{{ 'collection.js' | asset_url }}" defer></script>
-    {%- endif -%}
-    {%- if load_appointments_assets -%}
-      <script src="{{ 'appointments.js' | asset_url }}" defer></script>
-    {%- endif -%}
+    {%- if load_product_assets -%}<script src="{{ 'product.js' | asset_url }}" defer></script>{%- endif -%}
+    {%- if load_collection_assets -%}<script src="{{ 'collection.js' | asset_url }}" defer></script>{%- endif -%}
+    {%- if load_appointments_assets -%}<script src="{{ 'appointments.js' | asset_url }}" defer></script>{%- endif -%}
   </body>
 </html>
