@@ -10,6 +10,7 @@
 {
   "current": {
     "brand_name": "Neutrex",
+    "logo": "shopify://shop_images/ntlogo.png",
     "logo_width": 140,
     "color_primary": "#7A1F3D",
     "color_gold": "#D4AF37",
