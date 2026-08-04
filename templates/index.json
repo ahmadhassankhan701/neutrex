@@ -184,7 +184,7 @@
     "product_carousel_bestsellers": {
       "type": "product-carousel",
       "settings": {
-        "eyebrow": "",
+        "eyebrow": "01",
         "heading": "Best sellers",
         "subtitle": "What the community is training with",
         "collection": "",
@@ -244,6 +244,7 @@
         "ach_4"
       ],
       "settings": {
+        "image": "shopify://shop_images/bbd.png",
         "eyebrow": "Featured coach",
         "name": "Marcus Reid",
         "role": "Head Performance Coach · IFBB Pro",
@@ -387,81 +388,6 @@
         "title": "What athletes say",
         "subtitle": "Trusted by professionals and beginners alike"
       }
-    },
-    "instagram_feed": {
-      "type": "instagram-feed",
-      "blocks": {
-        "post_1": {
-          "type": "post",
-          "settings": {
-            "alt": "",
-            "link": "",
-            "likes": "2.4k",
-            "comments": "86"
-          }
-        },
-        "post_2": {
-          "type": "post",
-          "settings": {
-            "alt": "",
-            "link": "",
-            "likes": "1.8k",
-            "comments": "52"
-          }
-        },
-        "post_3": {
-          "type": "post",
-          "settings": {
-            "alt": "",
-            "link": "",
-            "likes": "3.1k",
-            "comments": "124"
-          }
-        },
-        "post_4": {
-          "type": "post",
-          "settings": {
-            "alt": "",
-            "link": "",
-            "likes": "956",
-            "comments": "31"
-          }
-        },
-        "post_5": {
-          "type": "post",
-          "settings": {
-            "alt": "",
-            "link": "",
-            "likes": "1.5k",
-            "comments": "67"
-          }
-        },
-        "post_6": {
-          "type": "post",
-          "settings": {
-            "alt": "",
-            "link": "",
-            "likes": "2.2k",
-            "comments": "93"
-          }
-        }
-      },
-      "block_order": [
-        "post_1",
-        "post_2",
-        "post_3",
-        "post_4",
-        "post_5",
-        "post_6"
-      ],
-      "settings": {
-        "heading": "Follow the movement",
-        "subtitle": "Daily training, nutrition tips, and behind-the-scenes from the Neutrex community.",
-        "handle": "@neutrex",
-        "instagram_url": "",
-        "columns": "6",
-        "background_style": "default"
-      }
     }
   },
   "order": [
@@ -473,7 +399,6 @@
     "featured_coach",
     "appointment_cta",
     "transformation_gallery",
-    "testimonials",
-    "instagram_feed"
+    "testimonials"
   ]
 }
