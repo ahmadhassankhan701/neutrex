@@ -116,8 +116,8 @@
             "image": "shopify://shop_images/gtrain.jpg",
             "title": "تدريب",
             "description": "حقق أهدافك الرياضية من خلال برامج تدريب شخصية مصممة لبناء القوة، وتحسين الأداء، وإحداث تحول حقيقي في نمط حياتك.",
-            "product_count": "12 services",
-            "link": "shopify://collections/all",
+            "product_count": "4 services",
+            "link": "shopify://collections/تدريب",
             "link_label": "Scehdule"
           }
         },
@@ -127,8 +127,8 @@
             "image": "shopify://shop_images/proteins.png",
             "title": "البروتين",
             "description": "مجموعة متنوعة من مساحيق البروتين والمشروبات عالية الجودة لدعم بناء العضلات، وتسريع التعافي، وتحسين الأداء الرياضي.",
-            "product_count": "64 products",
-            "link": "shopify://collections/supplements",
+            "product_count": "",
+            "link": "shopify://collections/البروتين",
             "link_label": "Shop now"
           }
         },
@@ -138,8 +138,8 @@
             "image": "shopify://shop_images/vitamins.png",
             "title": "الفيتامينات",
             "description": "فيتامينات ومعادن أساسية لدعم المناعة، وتعزيز الصحة العامة، والحفاظ على نشاطك اليومي.",
-            "product_count": "86 products",
-            "link": "shopify://collections/clothing",
+            "product_count": "",
+            "link": "shopify://collections/الفيتامينات",
             "link_label": "Shop now"
           }
         },
@@ -149,8 +149,8 @@
             "image": "shopify://shop_images/food.png",
             "title": "المكملات الغذائية",
             "description": "مكملات غذائية مختارة بعناية لتعزيز القوة، والطاقة، والأداء الرياضي، وتحقيق أفضل النتائج.",
-            "product_count": "32 products",
-            "link": "shopify://collections/accessories",
+            "product_count": "",
+            "link": "shopify://collections/المكملات-الغذائية",
             "link_label": "Shop now"
           }
         },
@@ -160,8 +160,8 @@
             "image": "shopify://shop_images/rtd.png",
             "title": "RTD + GUMS",
             "description": "مشروبات جاهزة وعلكات وظيفية تمنحك طاقة وانتعاشاً سريعاً قبل التمرين أو خلال يومك.",
-            "product_count": "18 plans",
-            "link": "shopify://collections/nutrition-plans",
+            "product_count": "",
+            "link": "shopify://collections/rtd-gums",
             "link_label": "Shop now"
           }
         }
