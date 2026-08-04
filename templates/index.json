@@ -47,7 +47,7 @@
         "cta_secondary_url": "shopify://collections/all",
         "background_image": "shopify://shop_images/gym.jpg",
         "video_url": "",
-        "athlete_image": "shopify://shop_images/neutrex_hero.png",
+        "athlete_image": "shopify://shop_images/hero-image.png",
         "full_viewport": true,
         "text_alignment": "start",
         "show_scroll_hint": true,
