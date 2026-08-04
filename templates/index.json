@@ -135,8 +135,9 @@
         "cat_clothing": {
           "type": "category",
           "settings": {
-            "title": "Clothing",
-            "description": "Compression wear, hoodies, and performance layers",
+            "image": "shopify://shop_images/vitamins.png",
+            "title": "الفيتامينات",
+            "description": "فيتامينات ومعادن أساسية لدعم المناعة، وتعزيز الصحة العامة، والحفاظ على نشاطك اليومي.",
             "product_count": "86 products",
             "link": "shopify://collections/clothing",
             "link_label": "Shop now"
