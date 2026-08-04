@@ -25,7 +25,14 @@
 
     assign current_variant = product.selected_or_first_available_variant
     assign featured_media = product.featured_media
-    assign secondary_media = product.media[1]
+    assign secondary_media = blank
+    if product.media.size > 1
+      assign secondary_media = product.media[1]
+    endif
+
+    if secondary_media != blank
+      assign card_class = card_class | append: ' product-card--has-hover'
+    endif
 
     assign on_sale = false
     if current_variant.compare_at_price > current_variant.price
@@ -64,10 +71,14 @@
         href="{{ product.url }}"
         aria-label="{{ product.title | escape }}"
       >
-        {%- if featured_media -%}
+        {%- if featured_media != blank -%}
+          {%- liquid
+            assign primary_image = featured_media.preview_image | default: featured_media
+            assign primary_alt = featured_media.alt | default: product.title
+          -%}
           {%- render 'media',
-            image: featured_media.preview_image,
-            alt: featured_media.alt | default: product.title,
+            image: primary_image,
+            alt: primary_alt,
             class: 'product-card__img product-card__img--primary',
             loading: image_loading,
             widths: '360,540,720,900',
@@ -77,17 +88,18 @@
           {{ 'product-1' | placeholder_svg_tag: 'product-card__img product-card__img--primary placeholder' }}
         {%- endif -%}
 
-        {%- if secondary_media -%}
+        {%- if secondary_media != blank -%}
+          {%- assign secondary_image = secondary_media.preview_image | default: secondary_media -%}
+          {%- assign secondary_alt = secondary_media.alt | default: product.title -%}
           {{
-            secondary_media.preview_image
+            secondary_image
             | image_url: width: 900
             | image_tag:
               class: 'product-card__img product-card__img--secondary',
               loading: 'lazy',
               widths: '360,540,720,900',
               sizes: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw',
-              alt: secondary_media.alt | default: product.title,
-              data-product-image-secondary: ''
+              alt: secondary_alt
           }}
         {%- endif -%}
       </a>

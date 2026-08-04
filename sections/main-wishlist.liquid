@@ -1,65 +1,119 @@
-<div class="account page-width" {{ section.shopify_attributes }}>
-  <header class="account__header" style="text-align: center; max-width: 36rem; margin-inline: auto;">
-    <h1 class="account__greeting">{{ 'account.wishlist' | t }}</h1>
-    <p class="account__subtitle">{{ section.settings.subtitle | default: 'Products you save appear here.' | escape }}</p>
-  </header>
+{{ 'account.css' | asset_url | stylesheet_tag }}
 
-  <div data-wishlist-page>
-    <div class="wishlist-grid" data-wishlist-grid hidden></div>
+<section class="wishlist-page section" {{ section.shopify_attributes }}>
+  <div class="page-width">
+    <header class="section__header">
+      <h1 class="section__title">{{ 'account.wishlist' | t }}</h1>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="section__subtitle">{{ section.settings.subtitle | escape }}</p>
+      {%- endif -%}
+    </header>
 
-    <div class="auth__panel" style="max-width: 28rem; margin-inline: auto; text-align: center;" data-wishlist-empty>
-      <span class="dashboard-card__icon" style="margin-inline: auto;" aria-hidden="true">
-        {%- render 'icon', icon: 'heart', size: 28 -%}
-      </span>
-      <h2 class="auth__title" style="font-size: var(--fs-xl);">{{ section.settings.empty_title | default: 'Your wishlist is empty' | escape }}</h2>
-      <p class="auth__subtitle">{{ section.settings.empty_text | default: 'Save products you love and come back anytime.' | escape }}</p>
-      {%- liquid
-        assign shop_label = 'header.shop_now' | t
-      -%}
-      {%- render 'button', label: shop_label, url: routes.all_products_collection_url, style: 'primary' -%}
+    <div data-wishlist-page>
+      <div class="wishlist-grid" data-wishlist-grid hidden></div>
+
+      <div class="wishlist-empty" data-wishlist-empty>
+        <span class="wishlist-empty__icon" aria-hidden="true">
+          {%- render 'icon', icon: 'heart' -%}
+        </span>
+        <h2 class="wishlist-empty__title">
+          {{ section.settings.empty_title | default: 'Your wishlist is empty' | escape }}
+        </h2>
+        <p class="wishlist-empty__text">
+          {{ section.settings.empty_text | default: 'Save products you love and come back anytime.' | escape }}
+        </p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">
+          {{ 'header.shop_now' | t }}
+        </a>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
 <script>
-  (function () {
+  document.addEventListener('DOMContentLoaded', function () {
     var root = document.querySelector('[data-wishlist-page]');
-    if (!root || !window.NeutrexTheme?.Wishlist) return;
+    if (!root) return;
 
     var grid = root.querySelector('[data-wishlist-grid]');
     var empty = root.querySelector('[data-wishlist-empty]');
-    var moneyFormat = window.theme?.moneyFormat || '{{ shop.money_format | escape }}';
+    var moneyFormat = {{ shop.money_format | json }};
 
     function formatMoney(cents) {
-      if (window.Shopify?.formatMoney) return window.Shopify.formatMoney(cents, moneyFormat);
-      return (cents / 100).toFixed(2);
+      if (window.Shopify && typeof Shopify.formatMoney === 'function') {
+        return Shopify.formatMoney(cents, moneyFormat);
+      }
+      try {
+        return (Number(cents) / 100).toLocaleString(undefined, {
+          style: 'currency',
+          currency: {{ cart.currency.iso_code | default: shop.currency | json }}
+        });
+      } catch (e) {
+        return (Number(cents) / 100).toFixed(2);
+      }
+    }
+
+    function getItems() {
+      if (window.NeutrexTheme && NeutrexTheme.Wishlist) {
+        return NeutrexTheme.Wishlist.getItems();
+      }
+      try {
+        return JSON.parse(localStorage.getItem('neutrex-wishlist') || '[]');
+      } catch (e) {
+        return [];
+      }
     }
 
     function renderItem(product, handle) {
-      var item = document.createElement('article');
-      item.className = 'wishlist-item product-card';
-      item.dataset.handle = handle;
+      var article = document.createElement('article');
+      article.className = 'wishlist-item product-card';
+      article.dataset.handle = handle;
 
-      var image = product.featured_image || (product.images && product.images[0]);
-      var variant = product.variants && product.variants[0];
-      var price = variant ? variant.price : 0;
+      var image = product.featured_image;
+      if (!image && product.images && product.images.length) image = product.images[0];
+      if (image && image.indexOf('//') === 0) image = 'https:' + image;
 
-      item.innerHTML =
-        '<button type="button" class="wishlist-item__remove" data-wishlist-toggle data-product-handle="' + handle + '" data-product-id="' + (variant ? variant.id : '') + '" aria-label="Remove from wishlist">' +
-        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>' +
-        '<a href="/products/' + handle + '" class="product-card__link">' +
+      var variant = (product.variants && product.variants[0]) || {};
+      var title = product.title || handle;
+      var removeLabel = {{ 'products.wishlist_remove' | t | json }};
+
+      article.innerHTML =
+        '<button type="button" class="wishlist-item__remove" data-wishlist-toggle data-product-handle="' +
+        handle +
+        '" data-product-id="' +
+        (product.id || '') +
+        '" aria-label="' +
+        removeLabel +
+        '">' +
+        '<svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>' +
+        '</button>' +
+        '<a class="product-card__media-link" href="' +
+        (product.url || '/products/' + handle) +
+        '">' +
         '<div class="product-card__media">' +
-        (image ? '<img src="' + image + '" alt="' + (product.title || '') + '" loading="lazy" width="400" height="400">' : '') +
-        '</div><div class="product-card__body">' +
-        '<h3 class="product-card__title">' + (product.title || '') + '</h3>' +
-        '<p class="product-card__price">' + formatMoney(price) + '</p>' +
-        '</div></a>';
+        (image
+          ? '<img class="product-card__img product-card__img--primary" src="' +
+            image +
+            '" alt="' +
+            title.replace(/"/g, '&quot;') +
+            '" loading="lazy" width="720" height="900">'
+          : '<div class="product-card__img product-card__img--primary" style="background:var(--color-surface)"></div>') +
+        '</div></a>' +
+        '<div class="product-card__body">' +
+        '<h3 class="product-card__title"><a href="' +
+        (product.url || '/products/' + handle) +
+        '">' +
+        title +
+        '</a></h3>' +
+        '<div class="product-card__footer"><div class="price"><span class="price__regular">' +
+        formatMoney(variant.price || 0) +
+        '</span></div></div></div>';
 
-      grid.appendChild(item);
+      grid.appendChild(article);
     }
 
     function load() {
-      var items = window.NeutrexTheme.Wishlist.getItems();
+      var items = getItems();
       grid.innerHTML = '';
 
       if (!items.length) {
@@ -73,9 +127,12 @@
 
       items.forEach(function (entry) {
         var handle = entry.handle || entry.id;
-        if (!handle) return;
-        fetch('/products/' + handle + '.js')
-          .then(function (res) { return res.ok ? res.json() : null; })
+        if (!handle || typeof handle !== 'string') return;
+
+        fetch(((window.Shopify && Shopify.routes && Shopify.routes.root) || '/') + 'products/' + encodeURIComponent(handle) + '.js')
+          .then(function (res) {
+            return res.ok ? res.json() : null;
+          })
           .then(function (product) {
             if (product) renderItem(product, handle);
           })
@@ -84,13 +141,53 @@
     }
 
     load();
-    if (window.NeutrexTheme?.subscribe) {
-      window.NeutrexTheme.subscribe('neutrex:wishlist:updated', load);
-    } else {
-      document.addEventListener('neutrex:wishlist:updated', load);
-    }
-  })();
+    document.addEventListener('neutrex:wishlist:updated', load);
+  });
 </script>
+
+<style>
+  .wishlist-page .section__header {
+    margin-bottom: var(--space-7);
+  }
+  .wishlist-empty {
+    max-width: 28rem;
+    margin: 0 auto;
+    text-align: center;
+    padding: var(--space-8) var(--space-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-2xl);
+    background: var(--color-bg-elevated);
+  }
+  .wishlist-empty__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    margin-bottom: var(--space-4);
+    border-radius: var(--radius-full);
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+  }
+  .wishlist-empty__icon .icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  .wishlist-empty__title {
+    font-size: var(--fs-xl);
+    margin-bottom: var(--space-2);
+  }
+  .wishlist-empty__text {
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-5);
+  }
+  .wishlist-item .product-card__media {
+    aspect-ratio: 4 / 5;
+  }
+  .wishlist-item .product-card__media-link {
+    display: block;
+  }
+</style>
 
 {% schema %}
 {
