@@ -146,8 +146,9 @@
         "cat_accessories": {
           "type": "category",
           "settings": {
-            "title": "Accessories",
-            "description": "Shakers, straps, belts, and training essentials",
+            "image": "shopify://shop_images/food.png",
+            "title": "المكملات الغذائية",
+            "description": "مكملات غذائية مختارة بعناية لتعزيز القوة، والطاقة، والأداء الرياضي، وتحقيق أفضل النتائج.",
             "product_count": "32 products",
             "link": "shopify://collections/accessories",
             "link_label": "Shop now"
@@ -156,8 +157,9 @@
         "cat_nutrition": {
           "type": "category",
           "settings": {
-            "title": "Nutrition",
-            "description": "Meal plans and macro-optimized nutrition programs",
+            "image": "shopify://shop_images/rtd.png",
+            "title": "RTD + GUMS",
+            "description": "مشروبات جاهزة وعلكات وظيفية تمنحك طاقة وانتعاشاً سريعاً قبل التمرين أو خلال يومك.",
             "product_count": "18 plans",
             "link": "shopify://collections/nutrition-plans",
             "link_label": "Shop now"
