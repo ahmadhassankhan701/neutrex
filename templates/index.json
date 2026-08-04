@@ -185,9 +185,9 @@
       "type": "product-carousel",
       "settings": {
         "eyebrow": "01",
-        "heading": "Best sellers",
-        "subtitle": "What the community is training with",
-        "collection": "",
+        "heading": "Training Modules",
+        "subtitle": "Best Training Options",
+        "collection": "تدريب",
         "products_to_show": 8,
         "columns": 4,
         "background_style": "default",
@@ -198,10 +198,10 @@
     "product_carousel_trending": {
       "type": "product-carousel",
       "settings": {
-        "eyebrow": "",
+        "eyebrow": "02",
         "heading": "Trending now",
         "subtitle": "Fresh drops. Peak performance.",
-        "collection": "",
+        "collection": "rtd-gums",
         "products_to_show": 8,
         "columns": 4,
         "background_style": "surface",
