@@ -124,8 +124,9 @@
         "cat_supplements": {
           "type": "category",
           "settings": {
-            "title": "Supplements",
-            "description": "Protein, creatine, pre-workout, and recovery",
+            "image": "shopify://shop_images/proteins.png",
+            "title": "البروتين",
+            "description": "مجموعة متنوعة من مساحيق البروتين والمشروبات عالية الجودة لدعم بناء العضلات، وتسريع التعافي، وتحسين الأداء الرياضي.",
             "product_count": "64 products",
             "link": "shopify://collections/supplements",
             "link_label": "Shop now"
