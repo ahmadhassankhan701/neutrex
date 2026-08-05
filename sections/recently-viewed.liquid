@@ -5,8 +5,8 @@
   else
     assign heading = heading_raw
   endif
-  assign limit = section.settings.products_to_show | default: 5
-  assign columns = section.settings.columns | default: 5
+  assign limit = section.settings.products_to_show | default: 4
+  assign columns = section.settings.columns | default: 4
 -%}
 
 <section
@@ -16,19 +16,15 @@
   data-columns="{{ columns }}"
   data-money-format="{{ shop.money_format | escape }}"
   data-empty-hidden="{% if section.settings.hide_when_empty %}true{% else %}false{% endif %}"
+  style="--recently-viewed-cols: {{ columns }};"
   {{ section.shopify_attributes }}
 >
   <div class="pdp-recently-viewed__header">
     <h2 class="pdp-recently-viewed__title">{{ heading | escape }}</h2>
   </div>
 
-  {%- comment -%}
-    Populated client-side by theme.js RecentlyViewed + fetch /products/HANDLE.js
-    data-recently-viewed-grid: target grid container
-    data-recently-viewed-item: each rendered product card shell
-  {%- endcomment -%}
   <div
-    class="pdp-recently-viewed__grid collection-grid"
+    class="pdp-recently-viewed__grid"
     data-recently-viewed-grid
     role="list"
     aria-live="polite"
@@ -36,12 +32,28 @@
   ></div>
 
   <template data-recently-viewed-template>
-    <article class="pdp-recently-viewed__item" data-recently-viewed-item role="listitem">
-      <a class="pdp-recently-viewed__image" data-recently-viewed-link href="{{ routes.root_url }}">
-        <img data-recently-viewed-img src="" alt="" loading="lazy" width="400" height="400">
-      </a>
-      <a class="pdp-recently-viewed__name" data-recently-viewed-title href="{{ routes.root_url }}"></a>
-      <span class="price price--sm" data-recently-viewed-price hidden></span>
+    <article class="pdp-recently-viewed__item product-card" data-recently-viewed-item role="listitem">
+      <div class="product-card__media pdp-recently-viewed__media">
+        <a class="product-card__media-link pdp-recently-viewed__image" data-recently-viewed-link href="{{ routes.root_url }}">
+          <img
+            class="product-card__img product-card__img--primary"
+            data-recently-viewed-img
+            src=""
+            alt=""
+            loading="lazy"
+            width="400"
+            height="400"
+          >
+        </a>
+      </div>
+      <div class="product-card__body pdp-recently-viewed__body">
+        <h3 class="product-card__title pdp-recently-viewed__name">
+          <a data-recently-viewed-title href="{{ routes.root_url }}"></a>
+        </h3>
+        <div class="product-card__footer">
+          <span class="price price--sm" data-recently-viewed-price hidden></span>
+        </div>
+      </div>
     </article>
   </template>
 </section>
@@ -56,22 +68,42 @@
 
     const grid = root.querySelector('[data-recently-viewed-grid]');
     const template = root.querySelector('[data-recently-viewed-template]');
-    const limit = parseInt(root.dataset.limit || '5', 10);
+    const limit = parseInt(root.dataset.limit || '4', 10);
     const hideWhenEmpty = root.dataset.emptyHidden === 'true';
     const routes = window.Shopify?.routes?.root || '/';
     const currentHandle = {{ product.handle | default: '' | json }};
 
     function formatMoney(cents) {
+      if (cents == null || cents === '') return '';
+      const value = Number(cents);
+      if (Number.isNaN(value)) return '';
       if (window.Shopify?.formatMoney) {
-        return window.Shopify.formatMoney(cents, root.dataset.moneyFormat);
+        return window.Shopify.formatMoney(value, root.dataset.moneyFormat || window.theme?.moneyFormat);
       }
-      return (cents / 100).toFixed(2);
+      return (value / 100).toFixed(2);
     }
 
     async function fetchProduct(handle) {
       const response = await fetch(`${routes}products/${handle}.js`);
       if (!response.ok) throw new Error('Product fetch failed');
       return response.json();
+    }
+
+    function resolvePrice(product, stored) {
+      if (product.price != null) return product.price;
+      if (product.price_min != null) return product.price_min;
+      if (product.variants?.[0]?.price != null) return product.variants[0].price;
+      if (stored?.price != null) return stored.price;
+      return null;
+    }
+
+    function resolveImage(product, stored) {
+      const image = product.featured_image || product.images?.[0] || stored?.image;
+      if (!image) return '';
+      if (typeof image === 'string') {
+        return image.startsWith('//') ? `https:${image}` : image;
+      }
+      return image.src || image.url || '';
     }
 
     function renderItem(product, stored) {
@@ -81,31 +113,35 @@
       const img = node.querySelector('[data-recently-viewed-img]');
       const priceEl = node.querySelector('[data-recently-viewed-price]');
 
-      const url = stored.url || `${routes}products/${product.handle}`;
-      const image = product.featured_image || stored.image;
-      const title = product.title || stored.title;
+      const url = product.url || stored.url || `${routes}products/${product.handle || stored.handle}`;
+      const title = product.title || stored.title || '';
+      const image = resolveImage(product, stored);
+      const price = resolvePrice(product, stored);
 
       link.href = url;
       titleLink.href = url;
       titleLink.textContent = title;
 
       if (image) {
-        img.src = image;
+        img.src = image.includes('?') ? `${image}&width=600` : `${image}?width=600`;
         img.alt = title;
+      } else {
+        img.remove();
       }
 
-      if (product.price) {
-        priceEl.textContent = formatMoney(product.price);
+      if (price != null) {
+        priceEl.textContent = formatMoney(price);
         priceEl.hidden = false;
+        priceEl.removeAttribute('hidden');
       }
 
       return node;
     }
 
     async function populate() {
-      const items = (window.NeutrexTheme?.RecentlyViewed?.getItems?.() || []).filter(
-        (item) => item.handle && item.handle !== currentHandle
-      ).slice(0, limit);
+      const items = (window.NeutrexTheme?.RecentlyViewed?.getItems?.() || [])
+        .filter((item) => item.handle && item.handle !== currentHandle)
+        .slice(0, limit);
 
       grid.innerHTML = '';
       grid.removeAttribute('aria-busy');
@@ -123,6 +159,18 @@
             const product = await fetchProduct(stored.handle);
             return renderItem(product, stored);
           } catch {
+            if (stored.title) {
+              return renderItem(
+                {
+                  handle: stored.handle,
+                  title: stored.title,
+                  url: stored.url,
+                  featured_image: stored.image,
+                  price: stored.price,
+                },
+                stored
+              );
+            }
             return null;
           }
         })
@@ -144,6 +192,57 @@
   })();
 </script>
 
+{% stylesheet %}
+  .pdp-recently-viewed__grid {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  @media (min-width: 750px) {
+    .pdp-recently-viewed__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-5);
+    }
+  }
+
+  @media (min-width: 990px) {
+    .pdp-recently-viewed__grid {
+      grid-template-columns: repeat(var(--recently-viewed-cols, 4), minmax(0, 1fr));
+    }
+  }
+
+  .pdp-recently-viewed__item {
+    height: 100%;
+  }
+
+  .pdp-recently-viewed__media {
+    aspect-ratio: 1;
+  }
+
+  .pdp-recently-viewed__body {
+    text-align: start;
+  }
+
+  .pdp-recently-viewed__name {
+    text-align: start;
+  }
+
+  .pdp-recently-viewed__name a {
+    color: inherit;
+  }
+
+  .pdp-recently-viewed__item .product-card__footer {
+    justify-content: flex-start;
+  }
+
+  .pdp-recently-viewed__item .price {
+    font-weight: 600;
+    color: var(--color-text);
+  }
+{% endstylesheet %}
+
 {% schema %}
 {
   "name": "Recently viewed",
@@ -163,7 +262,7 @@
       "min": 2,
       "max": 12,
       "step": 1,
-      "default": 5
+      "default": 4
     },
     {
       "type": "range",
@@ -172,7 +271,7 @@
       "min": 2,
       "max": 6,
       "step": 1,
-      "default": 5
+      "default": 4
     },
     {
       "type": "checkbox",

@@ -185,9 +185,7 @@
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
           </button>
 
-          <a href="{{ routes.account_url }}" class="site-header__icon-btn hide-mobile" aria-label="Account">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 12.5-4 16 0"/></svg>
-          </a>
+          {% render 'language-switcher' %}
 
           {%- if settings.enable_wishlist -%}
             <a
@@ -202,7 +200,6 @@
           {%- endif -%}
 
           <div class="hide-mobile">{% render 'theme-switcher' %}</div>
-          <div class="hide-mobile">{% render 'locale-selectors' %}</div>
 
           <button type="button" class="site-header__icon-btn" data-cart-open aria-label="Cart">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M6 6h15l-1.5 9H7.5L6 6z"/><path d="M6 6L5 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
@@ -256,7 +253,7 @@
             </div>
             <div class="mobile-nav__switchers">
               {% render 'theme-switcher' %}
-              {% render 'locale-selectors' %}
+              {% render 'language-switcher' %}
             </div>
           </div>
         </div>

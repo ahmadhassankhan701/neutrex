@@ -130,15 +130,26 @@
   class LoadMore {
     constructor(button) {
       this.button = button;
-      this.grid = document.querySelector('#ProductGridContainer') ||
-        document.querySelector('[data-product-grid]');
+      this.grid = this.resolveGrid();
       this.nextPage = parseInt(button.dataset.nextPage || '2', 10);
       this.loading = false;
 
       button.addEventListener('click', () => this.load());
     }
 
+    resolveGrid(root) {
+      const scope = root || document;
+      return (
+        scope.querySelector('#ProductGridContainer .collection-grid') ||
+        scope.querySelector('[data-product-grid] .collection-grid') ||
+        scope.querySelector('.collection-grid') ||
+        scope.querySelector('#ProductGridContainer') ||
+        scope.querySelector('[data-product-grid]')
+      );
+    }
+
     async load() {
+      this.grid = this.resolveGrid();
       if (this.loading || !this.grid) return;
       this.loading = true;
       this.button.setAttribute('aria-busy', 'true');
@@ -149,15 +160,19 @@
         const response = await fetch(url.toString());
         const html = await response.text();
         const doc = new DOMParser().parseFromString(html, 'text/html');
-        const newGrid = doc.querySelector('#ProductGridContainer') ||
-          doc.querySelector('[data-product-grid]');
-        const items = newGrid?.querySelectorAll('[data-product-card]') || [];
+        const newGrid = this.resolveGrid(doc);
+        const items = newGrid
+          ? Array.from(newGrid.querySelectorAll('[data-product-card]'))
+          : [];
 
         if (items.length) {
-          items.forEach((item) => this.grid.appendChild(item));
+          const fragment = document.createDocumentFragment();
+          items.forEach((item) => fragment.appendChild(item));
+          this.grid.appendChild(fragment);
           this.nextPage += 1;
           this.button.dataset.nextPage = this.nextPage;
           initCollectionFeatures(this.grid);
+          NeutrexTheme.Wishlist?.syncUI?.();
         } else {
           this.button.hidden = true;
         }

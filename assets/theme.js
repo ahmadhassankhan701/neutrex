@@ -577,6 +577,48 @@
   NeutrexTheme.RecentlyViewed = RecentlyViewed;
 
   /* -------------------------------------------------------------------------- */
+  /* Language switcher                                                           */
+  /* -------------------------------------------------------------------------- */
+
+  function initLanguageSwitcher(root) {
+    (root || document).querySelectorAll('[data-language-switcher]').forEach((switcher) => {
+      if (switcher.dataset.bound) return;
+      switcher.dataset.bound = 'true';
+
+      const toggle = switcher.querySelector('[data-language-toggle]');
+      const menu = switcher.querySelector('.language-switcher__menu');
+      if (!toggle || !menu) return;
+
+      const close = () => {
+        menu.hidden = true;
+        toggle.setAttribute('aria-expanded', 'false');
+      };
+
+      const open = () => {
+        menu.hidden = false;
+        toggle.setAttribute('aria-expanded', 'true');
+      };
+
+      toggle.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (menu.hidden) open();
+        else close();
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!switcher.contains(event.target)) close();
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') close();
+      });
+    });
+  }
+
+  NeutrexTheme.initLanguageSwitcher = initLanguageSwitcher;
+
+  /* -------------------------------------------------------------------------- */
   /* Navigation — Mega menu & Mobile                                             */
   /* -------------------------------------------------------------------------- */
 
@@ -749,6 +791,7 @@
     Cart.init();
     Wishlist.init();
     RecentlyViewed.initFromPage();
+    initLanguageSwitcher(document);
     initSection(document);
   }
 
@@ -763,6 +806,7 @@
 
   document.addEventListener('shopify:section:load', (event) => {
     initSection(event.target);
+    initLanguageSwitcher(event.target);
     NeutrexTheme.publish('neutrex:section:load', { section: event.target });
   });
 
