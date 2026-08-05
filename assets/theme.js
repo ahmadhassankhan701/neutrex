@@ -708,11 +708,14 @@
     },
 
     initMobileNav(container) {
-      const nav = container.querySelector('[data-mobile-nav]') || container;
+      const nav = container.matches?.('[data-mobile-nav]')
+        ? container
+        : container.querySelector('[data-mobile-nav]') || container;
       const openBtn = document.querySelector('[data-mobile-nav-open]');
       let focusTrap = null;
 
       const open = () => {
+        nav.hidden = false;
         nav.classList.add('is-open');
         nav.setAttribute('aria-hidden', 'false');
         openBtn?.setAttribute('aria-expanded', 'true');
@@ -724,6 +727,7 @@
       const close = () => {
         if (!nav.classList.contains('is-open')) return;
         nav.classList.remove('is-open');
+        nav.hidden = true;
         nav.setAttribute('aria-hidden', 'true');
         openBtn?.setAttribute('aria-expanded', 'false');
         NeutrexTheme.unlockBodyScroll();
@@ -734,7 +738,9 @@
 
       openBtn?.addEventListener('click', (event) => {
         event.preventDefault();
-        open();
+        event.stopPropagation();
+        if (nav.classList.contains('is-open')) close();
+        else open();
       });
 
       nav.querySelectorAll('[data-mobile-nav-close]').forEach((btn) => {

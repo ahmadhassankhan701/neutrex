@@ -19,7 +19,13 @@
       {% render 'icon', icon: 'whatsapp', size: 24 %}
     </a>
     {%- if section.settings.show_label -%}
-      <span class="whatsapp-float__label">{{ section.settings.label | default: 'footer.whatsapp' | t }}</span>
+      {%- liquid
+        assign wa_label = section.settings.label | strip
+        if wa_label == blank or wa_label == 'Chat with us'
+          assign wa_label = 'footer.whatsapp_chat' | t
+        endif
+      -%}
+      <span class="whatsapp-float__label">{{ wa_label | escape }}</span>
     {%- endif -%}
   </div>
 {%- endif -%}

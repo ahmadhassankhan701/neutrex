@@ -136,7 +136,7 @@
           data-mobile-nav-open
           aria-expanded="false"
           aria-controls="MobileNav"
-          aria-label="Menu"
+          aria-label="{{ 'header.menu' | t }}"
         >
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
         </button>
@@ -166,7 +166,7 @@
         </a>
 
         {%- if main_menu != blank and main_menu.links.size > 0 -%}
-          <nav class="site-nav" aria-label="Menu">
+          <nav class="site-nav" aria-label="{{ 'header.menu' | t }}">
             <ul class="site-nav__list" role="list">
               {%- for link in main_menu.links -%}
                 <li class="site-nav__item">
@@ -193,7 +193,7 @@
             <a href="{{ book_link }}" class="btn btn--primary btn--sm site-header__cta hide-mobile">{{ book_label | escape }}</a>
           {%- endif -%}
 
-          <button type="button" class="site-header__icon-btn" data-predictive-search-open aria-label="Search">
+          <button type="button" class="site-header__icon-btn" data-predictive-search-open aria-label="{{ 'general.accessibility.search' | t }}">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
           </button>
 
@@ -213,60 +213,61 @@
 
           <div class="hide-mobile">{% render 'theme-switcher' %}</div>
 
-          <button type="button" class="site-header__icon-btn" data-cart-open aria-label="Cart">
+          <button type="button" class="site-header__icon-btn" data-cart-open aria-label="{{ 'header.cart' | t }}">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M6 6h15l-1.5 9H7.5L6 6z"/><path d="M6 6L5 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
             <span class="site-header__cart-count" data-cart-count>{{ cart.item_count }}</span>
           </button>
         </div>
       </div>
+    </div>
 
-      <div class="mobile-nav" id="MobileNav" data-mobile-nav hidden>
-        <div class="mobile-nav__overlay" data-mobile-nav-close tabindex="-1"></div>
-        <div class="mobile-nav__panel" role="dialog" aria-modal="true" aria-label="Menu">
-          <div class="mobile-nav__header">
-            <p class="mobile-nav__title">Menu</p>
-            <button type="button" class="site-header__icon-btn" data-mobile-nav-close aria-label="Close">
-              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
-            </button>
-          </div>
+    {%- comment -%} Outside sticky header so fixed drawer covers the full viewport {%- endcomment -%}
+    <div class="mobile-nav" id="MobileNav" data-mobile-nav hidden aria-hidden="true">
+      <div class="mobile-nav__overlay" data-mobile-nav-close tabindex="-1"></div>
+      <div class="mobile-nav__panel" role="dialog" aria-modal="true" aria-label="{{ 'header.menu' | t }}">
+        <div class="mobile-nav__header">
+          <p class="mobile-nav__title">{{ 'header.menu' | t }}</p>
+          <button type="button" class="site-header__icon-btn" data-mobile-nav-close aria-label="{{ 'general.accessibility.close' | t }}">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </div>
 
-          {%- if main_menu != blank and main_menu.links.size > 0 -%}
-            <nav class="mobile-nav__nav" aria-label="Menu">
-              <ul class="mobile-nav__list" role="list">
-                {%- for link in main_menu.links -%}
-                  <li class="mobile-nav__item">
-                    {%- if link.links.size > 0 -%}
-                      <details class="mobile-nav__details">
-                        <summary class="mobile-nav__link"><span>{{ link.title | escape }}</span></summary>
-                        <ul class="mobile-nav__sublist" role="list">
-                          {%- for child in link.links -%}
-                            <li><a href="{{ child.url }}" class="mobile-nav__sublink">{{ child.title | escape }}</a></li>
-                          {%- endfor -%}
-                        </ul>
-                      </details>
-                    {%- else -%}
-                      <a href="{{ link.url }}" class="mobile-nav__link">{{ link.title | escape }}</a>
-                    {%- endif -%}
-                  </li>
-                {%- endfor -%}
-              </ul>
-            </nav>
+        {%- if main_menu != blank and main_menu.links.size > 0 -%}
+          <nav class="mobile-nav__nav" aria-label="{{ 'header.menu' | t }}">
+            <ul class="mobile-nav__list" role="list">
+              {%- for link in main_menu.links -%}
+                <li class="mobile-nav__item">
+                  {%- if link.links.size > 0 -%}
+                    <details class="mobile-nav__details">
+                      <summary class="mobile-nav__link"><span>{{ link.title | escape }}</span></summary>
+                      <ul class="mobile-nav__sublist" role="list">
+                        {%- for child in link.links -%}
+                          <li><a href="{{ child.url }}" class="mobile-nav__sublink">{{ child.title | escape }}</a></li>
+                        {%- endfor -%}
+                      </ul>
+                    </details>
+                  {%- else -%}
+                    <a href="{{ link.url }}" class="mobile-nav__link">{{ link.title | escape }}</a>
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </nav>
+        {%- endif -%}
+
+        <div class="mobile-nav__footer">
+          {%- if settings.show_book_cta -%}
+            <a href="{{ book_link }}" class="btn btn--primary btn--full">{{ book_label | escape }}</a>
           {%- endif -%}
-
-          <div class="mobile-nav__footer">
-            {%- if settings.show_book_cta -%}
-              <a href="{{ book_link }}" class="btn btn--primary btn--full">{{ book_label | escape }}</a>
+          <div class="mobile-nav__footer-links">
+            <a href="{{ routes.account_url }}" class="mobile-nav__footer-link">{{ 'header.account' | t }}</a>
+            {%- if settings.enable_wishlist -%}
+              <a href="/pages/wishlist" class="mobile-nav__footer-link">{{ 'header.wishlist' | t }}</a>
             {%- endif -%}
-            <div class="mobile-nav__footer-links">
-              <a href="{{ routes.account_url }}" class="mobile-nav__footer-link">Account</a>
-              {%- if settings.enable_wishlist -%}
-                <a href="/pages/wishlist" class="mobile-nav__footer-link">Wishlist</a>
-              {%- endif -%}
-            </div>
-            <div class="mobile-nav__switchers">
-              {% render 'theme-switcher' %}
-              {% render 'language-switcher' %}
-            </div>
+          </div>
+          <div class="mobile-nav__switchers">
+            {% render 'theme-switcher' %}
+            {% render 'language-switcher' %}
           </div>
         </div>
       </div>

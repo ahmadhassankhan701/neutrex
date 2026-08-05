@@ -256,7 +256,8 @@
       this.modal.setAttribute('aria-hidden', 'false');
       NeutrexTheme.lockBodyScroll?.();
       this.content.setAttribute('aria-busy', 'true');
-      this.content.innerHTML = '<p class="quick-view__loading">Loading…</p>';
+      const loadingLabel = this.modal.dataset.loadingLabel || 'Loading';
+      this.content.innerHTML = `<p class="quick-view__loading">${loadingLabel}</p>`;
 
       try {
         const url = new URL(productUrl, window.location.origin);
@@ -275,7 +276,10 @@
         NeutrexTheme.Wishlist?.syncUI?.();
       } catch (error) {
         console.error('[Neutrex] Quick view failed', error);
-        this.content.innerHTML = '<p role="alert">Unable to load product. <a href="' + productUrl + '">View product</a></p>';
+        const errorLabel = this.modal.dataset.errorLabel || 'Unable to load product.';
+        const viewLabel = this.modal.dataset.viewProductLabel || 'View details';
+        this.content.innerHTML =
+          `<p role="alert">${errorLabel} <a href="${productUrl}">${viewLabel}</a></p>`;
       } finally {
         this.content.removeAttribute('aria-busy');
         this.focusTrap = NeutrexTheme.createFocusTrap?.(this.modal);

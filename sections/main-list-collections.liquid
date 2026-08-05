@@ -10,7 +10,11 @@
 
   <header class="list-collections__header">
     <h1 class="list-collections__title">
-      {{ section.settings.heading | default: 'collections.all_collections' | t }}
+      {%- if section.settings.heading != blank -%}
+        {{ section.settings.heading | escape }}
+      {%- else -%}
+        {{ 'collections.all_collections' | t }}
+      {%- endif -%}
     </h1>
     {%- if section.settings.description != blank -%}
       <p class="list-collections__description">{{ section.settings.description | escape }}</p>

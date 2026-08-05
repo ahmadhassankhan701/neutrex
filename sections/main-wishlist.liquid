@@ -16,12 +16,18 @@
         <span class="wishlist-empty__icon" aria-hidden="true">
           {%- render 'icon', icon: 'heart' -%}
         </span>
-        <h2 class="wishlist-empty__title">
-          {{ section.settings.empty_title | default: 'Your wishlist is empty' | escape }}
-        </h2>
-        <p class="wishlist-empty__text">
-          {{ section.settings.empty_text | default: 'Save products you love and come back anytime.' | escape }}
-        </p>
+        {%- liquid
+          assign empty_title = section.settings.empty_title | strip
+          if empty_title == blank or empty_title == 'Your wishlist is empty'
+            assign empty_title = 'account.wishlist_empty_title' | t
+          endif
+          assign empty_text = section.settings.empty_text | strip
+          if empty_text == blank or empty_text == 'Save products you love and come back anytime.'
+            assign empty_text = 'account.wishlist_empty_text' | t
+          endif
+        -%}
+        <h2 class="wishlist-empty__title">{{ empty_title | escape }}</h2>
+        <p class="wishlist-empty__text">{{ empty_text | escape }}</p>
         <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">
           {{ 'header.shop_now' | t }}
         </a>

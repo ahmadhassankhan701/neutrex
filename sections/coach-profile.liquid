@@ -48,8 +48,15 @@
     </div>
 
     <div class="coach-profile__actions">
+      {%- liquid
+        if section.settings.book_label != blank
+          assign coach_book_label = section.settings.book_label
+        else
+          assign coach_book_label = 'coach.book_session' | t
+        endif
+      -%}
       {%- render 'button',
-        label: section.settings.book_label | default: 'coach.book_session' | t,
+        label: coach_book_label,
         url: book_url,
         style: 'primary',
         size: 'lg'

@@ -1,12 +1,29 @@
 <div class="error-page page-width" {{ section.shopify_attributes }}>
   <div class="error-page__inner">
     <p class="error-page__code" aria-hidden="true">404</p>
-    <h1 class="error-page__title">{{ section.settings.heading | default: 'general.404.title' | t }}</h1>
-    <p class="error-page__text">{{ section.settings.text | default: 'general.404.text' | t }}</p>
+    {%- liquid
+      if section.settings.heading != blank
+        assign error_heading = section.settings.heading
+      else
+        assign error_heading = 'general.404.title' | t
+      endif
+      if section.settings.text != blank
+        assign error_text = section.settings.text
+      else
+        assign error_text = 'general.404.text' | t
+      endif
+      if section.settings.button_label != blank
+        assign error_button = section.settings.button_label
+      else
+        assign error_button = 'general.404.button' | t
+      endif
+    -%}
+    <h1 class="error-page__title">{{ error_heading | escape }}</h1>
+    <p class="error-page__text">{{ error_text | escape }}</p>
 
     <div class="error-page__actions">
       <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="btn btn--primary">
-        {{ section.settings.button_label | default: 'general.404.button' | t }}
+        {{ error_button | escape }}
       </a>
       {%- if section.settings.secondary_link != blank -%}
         <a href="{{ section.settings.secondary_link }}" class="btn btn--secondary">

@@ -1,5 +1,14 @@
 {%- liquid
-  assign trending_lines = section.settings.trending_searches | newline_to_br | split: '<br />'
+  assign search_placeholder = section.settings.placeholder | strip
+  if search_placeholder == blank or search_placeholder == 'Search Neutrex…' or search_placeholder == 'Search Neutrex...'
+    assign search_placeholder = 'header.search_placeholder' | t
+  endif
+
+  assign trending_raw = section.settings.trending_searches | strip
+  if trending_raw == blank or trending_raw contains 'Pre-workout'
+    assign trending_raw = 'search.trending_defaults' | t
+  endif
+  assign trending_lines = trending_raw | newline_to_br | split: '<br />'
 -%}
 {%- capture trending_json -%}[{%- assign trending_first = true -%}{%- for line in trending_lines -%}{%- assign term = line | strip -%}{%- if term != blank -%}{%- unless trending_first -%},{%- endunless -%}{{ term | json }}{%- assign trending_first = false -%}{%- endif -%}{%- endfor -%}]{%- endcapture -%}
 
@@ -29,7 +38,7 @@
         name="q"
         class="search-overlay__input"
         data-predictive-search-input
-        placeholder="{{ section.settings.placeholder | default: 'header.search_placeholder' | t }}"
+        placeholder="{{ search_placeholder | escape }}"
         autocomplete="off"
         autocorrect="off"
         autocapitalize="off"
