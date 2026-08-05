@@ -571,6 +571,26 @@
   text-underline-offset: 3px;
 }
 
+.pdp-related .collection-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+@media (min-width: 750px) {
+  .pdp-related .collection-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+  }
+}
+
+@media (min-width: 990px) {
+  .pdp-related .collection-grid,
+  .pdp-related .collection-grid--4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 .pdp-recently-viewed__grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

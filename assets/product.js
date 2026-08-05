@@ -47,23 +47,30 @@
         input.addEventListener('change', () => this.updateFromOptions());
       });
 
-      this.form.querySelectorAll('[data-option-value]').forEach((btn) => {
+      this.form.querySelectorAll('[data-option-select]').forEach((btn) => {
         btn.addEventListener('click', (event) => {
           event.preventDefault();
+          event.stopPropagation();
           const name = btn.dataset.optionName;
           const value = btn.dataset.optionValue;
+          if (!name || value == null || value === '') return;
+
           const input = this.form.querySelector(`[data-option-input][name="${name}"]`);
           if (input) {
             input.value = value;
-            input.dispatchEvent(new Event('change', { bubbles: true }));
           }
+
+          const groupLabel = btn.closest('[data-variant-option]')?.querySelector('[data-option-label]');
+          if (groupLabel) groupLabel.textContent = value;
+
           this.syncOptionButtons(name, value);
+          this.updateFromOptions();
         });
       });
     }
 
     syncOptionButtons(name, value) {
-      this.form.querySelectorAll(`[data-option-name="${name}"]`).forEach((btn) => {
+      this.form.querySelectorAll(`[data-option-select][data-option-name="${name}"]`).forEach((btn) => {
         const selected = btn.dataset.optionValue === value;
         btn.classList.toggle('is-selected', selected);
         btn.setAttribute('aria-pressed', String(selected));

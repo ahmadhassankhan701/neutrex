@@ -44,7 +44,7 @@
     "product-recommendations": {
       "type": "product-recommendations",
       "settings": {
-        "heading": "You may also like",
+        "heading": "",
         "products_to_show": 4,
         "intent": "related"
       }

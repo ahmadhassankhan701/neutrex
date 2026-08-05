@@ -409,13 +409,19 @@
       return index < 0;
     },
 
+    syncButton(btn, active) {
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-pressed', String(active));
+      const removeIcon = btn.querySelector('.wishlist-btn__icon--remove');
+      if (removeIcon) removeIcon.hidden = !active;
+    },
+
     syncUI() {
       const items = this.getItems();
       document.querySelectorAll('[data-wishlist-toggle]').forEach((btn) => {
         const handle = btn.dataset.productHandle || btn.dataset.handle;
         const active = items.some((item) => item.handle === handle);
-        btn.classList.toggle('is-active', active);
-        btn.setAttribute('aria-pressed', String(active));
+        this.syncButton(btn, active);
       });
       document.querySelectorAll('[data-wishlist-count]').forEach((el) => {
         el.textContent = items.length;
@@ -427,11 +433,12 @@
         const btn = event.target.closest('[data-wishlist-toggle]');
         if (!btn) return;
         event.preventDefault();
+        event.stopPropagation();
         const handle = btn.dataset.productHandle || btn.dataset.handle;
         const id = btn.dataset.productId;
+        if (!handle && !id) return;
         const added = this.toggle(handle, id);
-        btn.classList.toggle('is-active', added);
-        btn.setAttribute('aria-pressed', String(added));
+        this.syncButton(btn, added);
       });
     },
 
@@ -442,6 +449,35 @@
   };
 
   NeutrexTheme.Wishlist = Wishlist;
+
+  /* -------------------------------------------------------------------------- */
+  /* Quick add (product cards — works on all templates)                          */
+  /* -------------------------------------------------------------------------- */
+
+  document.addEventListener('click', async (event) => {
+    const btn = event.target.closest('[data-quick-add]');
+    if (!btn) return;
+    event.preventDefault();
+    event.stopPropagation();
+
+    const variantId = btn.dataset.variantId;
+    if (!variantId || btn.getAttribute('aria-busy') === 'true') return;
+
+    btn.setAttribute('aria-busy', 'true');
+    btn.classList.add('is-loading');
+
+    try {
+      await Cart.add({ items: [{ id: Number(variantId), quantity: 1 }] });
+      btn.classList.add('is-added');
+      Cart.open();
+      setTimeout(() => btn.classList.remove('is-added'), 2000);
+    } catch (error) {
+      console.error('[Neutrex] Quick add failed', error);
+    } finally {
+      btn.removeAttribute('aria-busy');
+      btn.classList.remove('is-loading');
+    }
+  });
 
   /* -------------------------------------------------------------------------- */
   /* Recently viewed                                                             */

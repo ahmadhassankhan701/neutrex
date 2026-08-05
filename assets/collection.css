@@ -24,6 +24,25 @@
   }
 }
 
+.collection-banner--compact {
+  min-height: 0;
+  align-items: flex-start;
+  background: transparent;
+}
+
+.collection-banner--compact .collection-banner__content {
+  padding-block: var(--space-6) var(--space-4);
+  color: var(--color-text);
+}
+
+.collection-banner--compact .collection-banner__title {
+  color: var(--color-text);
+}
+
+.collection-banner--compact .collection-banner__count {
+  opacity: 0.7;
+}
+
 .collection-banner__media {
   position: absolute;
   inset: 0;
@@ -397,7 +416,7 @@
   }
 
   .collection-grid--4 {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 

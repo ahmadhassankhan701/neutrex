@@ -186,29 +186,8 @@
   /* Quick add                                                                   */
   /* -------------------------------------------------------------------------- */
 
-  function initQuickAdd(container) {
-    container.addEventListener('click', async (event) => {
-      const btn = event.target.closest('[data-quick-add]');
-      if (!btn) return;
-      event.preventDefault();
-
-      const variantId = btn.dataset.variantId;
-      if (!variantId) return;
-
-      btn.setAttribute('aria-busy', 'true');
-      btn.classList.add('is-loading');
-
-      try {
-        await NeutrexTheme.Cart?.add({ id: variantId, quantity: 1 });
-        btn.classList.add('is-added');
-        setTimeout(() => btn.classList.remove('is-added'), 2000);
-      } catch (error) {
-        console.error('[Neutrex] Quick add failed', error);
-      } finally {
-        btn.removeAttribute('aria-busy');
-        btn.classList.remove('is-loading');
-      }
-    });
+  function initQuickAdd() {
+    /* Quick add is handled globally in theme.js */
   }
 
   /* -------------------------------------------------------------------------- */

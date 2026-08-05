@@ -27,7 +27,6 @@
   assign rating_count = product.metafields.reviews.rating_count.value
 -%}
 
-{%- render 'breadcrumb', class: 'pdp__breadcrumb' -%}
 {%- render 'schema-breadcrumb' -%}
 {%- render 'schema-product', product: product -%}
 
@@ -36,6 +35,7 @@
   data-product-main
   {{ section.shopify_attributes }}
 >
+  {%- render 'breadcrumb', class: 'pdp__breadcrumb' -%}
   <div class="pdp__grid">
     {%- comment -%} Media gallery {%- endcomment -%}
     <div
@@ -257,7 +257,7 @@
                       <button
                         type="button"
                         class="swatch{% unless option_name_lower contains 'color' or option_name_lower contains 'colour' or option_name_lower contains 'لون' %} swatch--text{% endunless %}{% if is_selected %} is-selected{% endif %}"
-                        data-option-value
+                        data-option-select
                         data-option-name="{{ option_input_name }}"
                         data-option-value="{{ value | escape }}"
                         aria-pressed="{% if is_selected %}true{% else %}false{% endif %}"
@@ -286,7 +286,7 @@
                       <button
                         type="button"
                         class="swatch swatch--text{% if is_selected %} is-selected{% endif %}"
-                        data-option-value
+                        data-option-select
                         data-option-name="{{ option_input_name }}"
                         data-option-value="{{ value | escape }}"
                         aria-pressed="{% if is_selected %}true{% else %}false{% endif %}"
@@ -521,11 +521,11 @@
       </div>
     </div>
   {%- endif -%}
-</div>
 
-<script type="application/json" data-product-json>
-  {{ product | json }}
-</script>
+  <script type="application/json" data-product-json>
+    {{ product | json }}
+  </script>
+</div>
 
 <script type="application/json" data-recently-viewed-source>
   {
@@ -564,7 +564,8 @@
     color: var(--color-error);
   }
   .pdp__breadcrumb {
-    margin-bottom: var(--space-5);
+    margin: 0 0 var(--space-5);
+    padding-block: var(--space-3) var(--space-2);
   }
 {% endstylesheet %}
 

@@ -1,5 +1,10 @@
 {%- liquid
-  assign heading = section.settings.heading | default: 'products.recently_viewed' | t
+  assign heading_raw = section.settings.heading | strip
+  if heading_raw == blank or heading_raw == 'products.recently_viewed'
+    assign heading = 'products.recently_viewed' | t
+  else
+    assign heading = heading_raw
+  endif
   assign limit = section.settings.products_to_show | default: 5
   assign columns = section.settings.columns | default: 5
 -%}

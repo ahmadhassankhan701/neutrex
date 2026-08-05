@@ -24,10 +24,10 @@
   aria-pressed="false"
   aria-label="{{ 'products.wishlist_add' | t }}"
 >
-  <span class="wishlist-btn__icon wishlist-btn__icon--add">
+  <span class="wishlist-btn__icon wishlist-btn__icon--add" aria-hidden="true">
     {%- render 'icon', icon: 'heart' -%}
   </span>
-  <span class="wishlist-btn__icon wishlist-btn__icon--remove visually-hidden">
+  <span class="wishlist-btn__icon wishlist-btn__icon--remove" aria-hidden="true" hidden>
     {%- render 'icon', icon: 'heart-filled' -%}
   </span>
   <span class="visually-hidden">{{ 'products.wishlist_add' | t }}</span>

@@ -82,14 +82,15 @@
 
 .product-card__actions {
   position: absolute;
-  inset-block-end: var(--space-3);
+  inset-block-start: var(--space-3);
   inset-inline-end: var(--space-3);
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  z-index: 3;
+  z-index: 5;
   opacity: 0;
-  transform: translateY(8px);
+  pointer-events: none;
+  transform: translateY(-6px);
   transition:
     opacity var(--duration) var(--ease-out),
     transform var(--duration) var(--ease-out);
@@ -98,6 +99,7 @@
 .product-card:hover .product-card__actions,
 .product-card:focus-within .product-card__actions {
   opacity: 1;
+  pointer-events: auto;
   transform: none;
 }
 
@@ -131,12 +133,25 @@
   color: #fff;
 }
 
+.wishlist-btn .wishlist-btn__icon--remove[hidden] {
+  display: none !important;
+}
+
+.wishlist-btn.is-active .wishlist-btn__icon--add {
+  display: none;
+}
+
+.wishlist-btn.is-active .wishlist-btn__icon--remove {
+  display: flex !important;
+}
+
 .product-card__quick-add {
   position: absolute;
   inset-inline: var(--space-3);
   inset-block-end: var(--space-3);
   z-index: 4;
   opacity: 0;
+  pointer-events: none;
   transform: translateY(12px);
   transition:
     opacity var(--duration) var(--ease-out),
@@ -146,13 +161,31 @@
 .product-card:hover .product-card__quick-add,
 .product-card:focus-within .product-card__quick-add {
   opacity: 1;
+  pointer-events: auto;
   transform: none;
 }
 
 .product-card__quick-add .btn {
   width: 100%;
+  --btn-bg: rgba(15, 13, 14, 0.92);
+  --btn-color: #fff;
+  --btn-border: transparent;
+  background: rgba(15, 13, 14, 0.92);
+  color: #fff;
+  border-color: transparent;
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+.product-card__quick-add .btn--primary {
+  --btn-bg: var(--gradient-cta);
+  background: var(--gradient-cta);
+}
+
+.product-card__quick-add .btn:hover {
+  --btn-color: #fff;
+  color: #fff;
+  border-color: transparent;
 }
 
 .product-card__body {
@@ -746,6 +779,18 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+}
+
+button.swatch:focus-visible .swatch__label {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
 }
 
 .swatch__input {

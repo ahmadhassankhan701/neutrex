@@ -13,7 +13,8 @@
   case template.name
     when 'product'
       assign load_product_assets = true
-    when 'collection', 'search', 'list-collections'
+      assign load_collection_assets = true
+    when 'collection', 'search', 'list-collections', 'index'
       assign load_collection_assets = true
   endcase
 
