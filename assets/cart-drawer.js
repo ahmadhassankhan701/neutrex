@@ -24,6 +24,7 @@
       this.footerEl = this.querySelector('[data-cart-footer]');
 
       this.threshold = parseFloat(this.dataset.freeShippingThreshold || '0') * 100;
+      this.moneyFormat = this.dataset.moneyFormat || window.theme?.moneyFormat || window.Shopify?.money_format || '{{amount}}';
       this.focusTrap = null;
       this.noteDebounce = NeutrexTheme.debounce((note) => this.updateNote(note), 500);
 
@@ -142,15 +143,29 @@
         this.subtotalEl.textContent = this.formatMoney(cart.total_price);
       }
 
-      this.emptyEl?.toggleAttribute('hidden', !isEmpty);
-      this.footerEl?.toggleAttribute('hidden', isEmpty);
-      this.itemsContainer?.toggleAttribute('hidden', isEmpty);
+      this.setHidden(this.emptyEl, !isEmpty);
+      this.setHidden(this.footerEl, isEmpty);
+      this.setHidden(this.itemsContainer, isEmpty);
+
+      const noteWrap = this.querySelector('[data-cart-note-wrap]');
+      if (noteWrap) {
+        noteWrap.classList.toggle('visually-hidden', isEmpty);
+      }
 
       if (this.itemsContainer && cart.items) {
         this.itemsContainer.innerHTML = cart.items.map((item, index) => this.renderItem(item, index + 1)).join('');
       }
 
       this.updateShippingBar(cart.total_price);
+    }
+
+    setHidden(el, hidden) {
+      if (!el) return;
+      if (hidden) {
+        el.setAttribute('hidden', '');
+      } else {
+        el.removeAttribute('hidden');
+      }
     }
 
     renderItem(item, line) {
@@ -196,21 +211,41 @@
 
       if (message) {
         if (remaining <= 0) {
-          message.textContent = this.shippingBar.dataset.qualifiedMessage || 'You qualify for free shipping!';
+          message.textContent = this.decodeEntities(
+            this.shippingBar.dataset.qualifiedMessage || "You've unlocked free shipping"
+          );
         } else {
-          const template = this.shippingBar.dataset.remainingMessage || 'Add {{ amount }} more for free shipping';
-          message.textContent = template.replace('{{ amount }}', this.formatMoney(remaining));
+          const template = this.decodeEntities(
+            this.shippingBar.dataset.remainingMessage || 'Spend {{ amount }} more for free shipping'
+          );
+          message.textContent = template.replace(/\{\{\s*amount\s*\}\}/g, this.formatMoney(remaining));
         }
       }
 
       this.shippingBar.classList.toggle('is-qualified', remaining <= 0);
+      this.shippingBar.classList.toggle('is-complete', remaining <= 0);
     }
 
     formatMoney(cents) {
-      if (window.Shopify?.formatMoney) {
-        return window.Shopify.formatMoney(cents, window.theme?.moneyFormat);
+      const format = this.moneyFormat || window.theme?.moneyFormat || window.Shopify?.money_format;
+      if (window.Shopify?.formatMoney && format) {
+        return window.Shopify.formatMoney(cents, format);
       }
-      return (cents / 100).toFixed(2);
+      if (format) {
+        const amount = (Number(cents) / 100).toFixed(2);
+        return format
+          .replace(/\{\{\s*amount\s*\}\}/g, amount)
+          .replace(/\{\{\s*amount_no_decimals\s*\}\}/g, String(Math.round(Number(cents) / 100)))
+          .replace(/\{\{\s*amount_with_comma_separator\s*\}\}/g, amount.replace('.', ','));
+      }
+      return (Number(cents) / 100).toFixed(2);
+    }
+
+    decodeEntities(value) {
+      if (!value || !/[&][#a-zA-Z0-9]+;/.test(value)) return value || '';
+      const textarea = document.createElement('textarea');
+      textarea.innerHTML = value;
+      return textarea.value;
     }
 
     escape(str) {

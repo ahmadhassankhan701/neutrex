@@ -21,6 +21,7 @@
   class="drawer cart-drawer"
   aria-hidden="true"
   data-free-shipping-threshold="{{ threshold }}"
+  data-money-format="{{ shop.money_format | escape }}"
   {{ section.shopify_attributes }}
 >
   <div class="drawer__overlay" data-cart-drawer-overlay data-cart-close tabindex="-1" aria-hidden="true"></div>
@@ -41,8 +42,8 @@
         <div
           class="shipping-bar{% if shipping_qualified %} is-complete is-qualified{% endif %}"
           data-free-shipping-bar
-          data-qualified-message="{{ 'cart.free_shipping_complete' | t | escape }}"
-          data-remaining-message="{{ 'cart.free_shipping_remaining' | t | escape }}"
+          data-qualified-message={{ 'cart.free_shipping_complete' | t | json }}
+          data-remaining-message={{ 'cart.free_shipping_remaining' | t | json }}
           role="progressbar"
           aria-valuemin="0"
           aria-valuemax="100"
@@ -179,6 +180,12 @@
     gap: var(--space-4);
     padding: var(--space-8) 0;
     text-align: center;
+  }
+  .cart-drawer__empty[hidden],
+  .cart-drawer__items[hidden],
+  .drawer__footer[hidden],
+  [data-cart-footer][hidden] {
+    display: none !important;
   }
   .cart-item {
     display: grid;

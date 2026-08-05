@@ -282,6 +282,49 @@
     {%- section 'predictive-search' -%}
     {%- section 'whatsapp-float' -%}
 
+    <script>
+      window.theme = window.theme || {};
+      window.theme.moneyFormat = {{ shop.money_format | json }};
+      window.Shopify = window.Shopify || {};
+      if (!window.Shopify.formatMoney) {
+        window.Shopify.formatMoney = function (cents, format) {
+          if (typeof cents === 'string') cents = cents.replace('.', '');
+          var value = (parseFloat(cents || 0) / 100).toFixed(2);
+          var placeholder = /\{\{\s*(\w+)\s*\}\}/;
+          var fmt = format || window.theme.moneyFormat || '{{amount}}';
+          function formatWithDelimiters(number, precision, thousands, decimal) {
+            precision = precision == null ? 2 : precision;
+            thousands = thousands || ',';
+            decimal = decimal || '.';
+            if (isNaN(number) || number == null) return '0';
+            number = (number / 100).toFixed(precision);
+            var parts = number.split('.');
+            var dollars = parts[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1' + thousands);
+            var centsPart = parts[1] ? decimal + parts[1] : '';
+            return dollars + centsPart;
+          }
+          var match = fmt.match(placeholder);
+          if (!match) return value;
+          switch (match[1]) {
+            case 'amount':
+              value = formatWithDelimiters(cents, 2);
+              break;
+            case 'amount_no_decimals':
+              value = formatWithDelimiters(cents, 0);
+              break;
+            case 'amount_with_comma_separator':
+              value = formatWithDelimiters(cents, 2, '.', ',');
+              break;
+            case 'amount_no_decimals_with_comma_separator':
+              value = formatWithDelimiters(cents, 0, '.', ',');
+              break;
+            default:
+              value = formatWithDelimiters(cents, 2);
+          }
+          return fmt.replace(placeholder, value);
+        };
+      }
+    </script>
     <script src="{{ 'theme.js' | asset_url }}" defer></script>
     <script src="{{ 'animations.js' | asset_url }}" defer></script>
     <script src="{{ 'predictive-search.js' | asset_url }}" defer></script>

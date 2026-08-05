@@ -117,7 +117,7 @@
     "update": "Update",
     "note": "Order note",
     "note_placeholder": "Special instructions…",
-    "free_shipping_complete": "You've unlocked free shipping",
+    "free_shipping_complete": "You have unlocked free shipping",
     "free_shipping_remaining": "Spend {{ amount }} more for free shipping",
     "taxes": "Taxes and shipping calculated at checkout"
   },
