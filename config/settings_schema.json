@@ -246,19 +246,20 @@
       {
         "type": "checkbox",
         "id": "show_book_cta",
-        "label": "Show book training button",
+        "label": "t:settings_schema.header.show_book_cta",
         "default": true
       },
       {
         "type": "text",
         "id": "book_cta_label",
-        "label": "Book training label",
+        "label": "t:settings_schema.header.book_cta_label",
         "default": "Book Training"
       },
       {
         "type": "url",
         "id": "book_cta_link",
-        "label": "Book training link"
+        "label": "t:settings_schema.header.book_cta_link",
+        "info": "Defaults to the تدريب collection when left blank"
       }
     ]
   },

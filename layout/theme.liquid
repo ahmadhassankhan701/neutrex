@@ -42,14 +42,26 @@
   endif
   assign book_label = settings.book_cta_label
   if book_label == blank
-    assign book_label = 'Book Training'
+    assign book_label = 'header.book_training' | t
   endif
+
+  assign book_collection = collections['تدريب']
+  if book_collection == blank
+    assign book_collection = collections['tdryb']
+  endif
+  if book_collection == blank
+    assign book_collection = collections['training']
+  endif
+
   assign book_link = settings.book_cta_link
+  if book_link == blank and book_collection != blank
+    assign book_link = book_collection.url
+  endif
   if book_link == blank
     assign book_link = settings.booking_form_url
   endif
   if book_link == blank
-    assign book_link = '/pages/personal-training'
+    assign book_link = routes.collections_url | append: '/تدريب'
   endif
 -%}
 <html

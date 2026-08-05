@@ -1,0 +1,90 @@
+{
+  "settings_schema": {
+    "brand": {
+      "name": "Brand",
+      "brand_name": "Brand name",
+      "logo": "Logo (light)",
+      "logo_dark": "Logo (dark)",
+      "favicon": "Favicon",
+      "logo_width": "Logo width"
+    },
+    "colors": {
+      "name": "Colors",
+      "light_mode": "Light mode",
+      "dark_mode": "Dark mode",
+      "primary": "Primary",
+      "gold": "Luxury gold",
+      "charcoal": "Charcoal",
+      "background": "Background",
+      "surface": "Surface",
+      "text": "Text",
+      "text_muted": "Muted text",
+      "border": "Border",
+      "default_scheme": "Default color scheme",
+      "system": "System preference",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "typography": {
+      "name": "Typography",
+      "font_scale": "Font scale",
+      "heading_weight": "Heading weight"
+    },
+    "layout": {
+      "name": "Layout",
+      "page_width": "Page width",
+      "section_spacing": "Section spacing",
+      "border_radius": "Border radius"
+    },
+    "header": {
+      "name": "Header",
+      "sticky": "Sticky header",
+      "transparent": "Transparent on homepage",
+      "menu": "Main menu",
+      "mega_menu": "Enable mega menu",
+      "show_book_cta": "Show book training button",
+      "book_cta_label": "Book training label",
+      "book_cta_link": "Book training link"
+    },
+    "cart": {
+      "name": "Cart",
+      "type": "Cart type",
+      "drawer": "Drawer",
+      "page": "Page",
+      "free_shipping_bar": "Show free shipping bar",
+      "free_shipping_threshold": "Free shipping threshold",
+      "free_shipping_info": "Amount in shop currency (number only)"
+    },
+    "appointments": {
+      "name": "Appointments",
+      "enabled": "Enable appointments",
+      "whatsapp": "WhatsApp number",
+      "whatsapp_info": "Include country code",
+      "booking_url": "External booking URL",
+      "hours": "Business hours",
+      "location": "Location"
+    },
+    "social": {
+      "name": "Social media"
+    },
+    "product": {
+      "name": "Products",
+      "wishlist": "Enable wishlist",
+      "quick_add": "Enable quick add",
+      "quick_view": "Enable quick view",
+      "vendor": "Show vendor",
+      "image_ratio": "Card image ratio"
+    },
+    "performance": {
+      "name": "Performance",
+      "animations": "Enable animations",
+      "lazy_load": "Lazy load images"
+    },
+    "seo": {
+      "name": "SEO & Schema",
+      "org_name": "Organization name",
+      "phone": "Business phone",
+      "address": "Business address"
+    }
+  }
+}

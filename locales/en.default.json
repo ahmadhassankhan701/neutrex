@@ -310,7 +310,10 @@
       "sticky": "Sticky header",
       "transparent": "Transparent on homepage",
       "menu": "Main menu",
-      "mega_menu": "Enable mega menu"
+      "mega_menu": "Enable mega menu",
+      "show_book_cta": "Show book training button",
+      "book_cta_label": "Book training label",
+      "book_cta_link": "Book training link"
     },
     "cart": {
       "name": "Cart",

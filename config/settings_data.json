@@ -40,6 +40,7 @@
     "enable_mega_menu": true,
     "show_book_cta": true,
     "book_cta_label": "Book Training",
+    "book_cta_link": "/collections/تدريب",
     "cart_type": "drawer",
     "show_free_shipping_bar": true,
     "free_shipping_threshold": "150",
