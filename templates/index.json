@@ -254,7 +254,7 @@
         "instagram_url": "",
         "cta_primary_label": "Book session",
         "cta_primary_url": "shopify://collections/تدريب",
-        "cta_secondary_label": "View profile",
+        "cta_secondary_label": "",
         "cta_secondary_url": "shopify://pages/coach-marcus-reid",
         "background_style": "default"
       }
@@ -294,9 +294,9 @@
         "title": "Ready to level up?",
         "text": "Book a session with Neutrex elite coaches. Personal training, online coaching, and competition prep — tailored to your goals.",
         "primary_label": "Book appointment",
-        "primary_url": "shopify://pages/personal-training",
+        "primary_url": "shopify://collections/تدريب",
         "secondary_label": "View services",
-        "secondary_url": "shopify://pages/personal-training"
+        "secondary_url": "shopify://collections/تدريب"
       }
     },
     "transformation_gallery": {
