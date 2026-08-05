@@ -190,8 +190,14 @@
           </a>
 
           {%- if settings.enable_wishlist -%}
-            <a href="/pages/wishlist" class="site-header__icon-btn hide-mobile" aria-label="Wishlist">
+            <a
+              href="/pages/wishlist"
+              class="site-header__icon-btn hide-mobile"
+              aria-label="{{ 'header.wishlist' | t }}"
+              data-wishlist-link
+            >
               <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M12 20.5s-7-4.6-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10.5c0 5.4-7 10-7 10z"/></svg>
+              <span class="site-header__cart-count site-header__wishlist-count" data-wishlist-count aria-hidden="true">0</span>
             </a>
           {%- endif -%}
 

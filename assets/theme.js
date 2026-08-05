@@ -414,32 +414,59 @@
       btn.setAttribute('aria-pressed', String(active));
       const removeIcon = btn.querySelector('.wishlist-btn__icon--remove');
       if (removeIcon) removeIcon.hidden = !active;
+      const label = active
+        ? btn.dataset.labelRemove || 'Remove from wishlist'
+        : btn.dataset.labelAdd || 'Add to wishlist';
+      btn.setAttribute('aria-label', label);
     },
 
     syncUI() {
       const items = this.getItems();
+      const count = items.length;
+
       document.querySelectorAll('[data-wishlist-toggle]').forEach((btn) => {
         const handle = btn.dataset.productHandle || btn.dataset.handle;
-        const active = items.some((item) => item.handle === handle);
+        const active = items.some((item) => item.handle === handle || String(item.id) === String(btn.dataset.productId));
         this.syncButton(btn, active);
       });
+
       document.querySelectorAll('[data-wishlist-count]').forEach((el) => {
-        el.textContent = items.length;
+        el.textContent = String(count);
+        el.classList.toggle('is-empty', count === 0);
+        el.toggleAttribute('hidden', count === 0 && el.dataset.hideEmpty === 'true');
+      });
+
+      document.querySelectorAll('[data-wishlist-link]').forEach((link) => {
+        const base = link.dataset.label || link.getAttribute('aria-label') || 'Wishlist';
+        link.dataset.label = base.replace(/\s*\(\d+\)\s*$/, '') || 'Wishlist';
+        link.setAttribute('aria-label', count > 0 ? `${link.dataset.label} (${count})` : link.dataset.label);
       });
     },
 
     bind() {
-      document.addEventListener('click', (event) => {
+      const onWishlistIntent = (event) => {
         const btn = event.target.closest('[data-wishlist-toggle]');
         if (!btn) return;
         event.preventDefault();
         event.stopPropagation();
+        if (typeof event.stopImmediatePropagation === 'function') {
+          event.stopImmediatePropagation();
+        }
+      };
+
+      document.addEventListener('click', (event) => {
+        const btn = event.target.closest('[data-wishlist-toggle]');
+        if (!btn) return;
+        onWishlistIntent(event);
         const handle = btn.dataset.productHandle || btn.dataset.handle;
         const id = btn.dataset.productId;
         if (!handle && !id) return;
         const added = this.toggle(handle, id);
         this.syncButton(btn, added);
-      });
+      }, true);
+
+      document.addEventListener('mousedown', onWishlistIntent, true);
+      document.addEventListener('touchstart', onWishlistIntent, { capture: true, passive: false });
     },
 
     init() {

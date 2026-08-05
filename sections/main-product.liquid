@@ -347,8 +347,6 @@
                 {{ 'products.sold_out' | t }}
               {%- endif -%}
             </button>
-
-            {%- render 'wishlist-button', product: product, class: 'pdp-actions__wishlist btn btn--ghost' -%}
           </div>
 
           {%- if show_buy_now and current_variant.available -%}
@@ -358,6 +356,13 @@
           {%- endif -%}
         </div>
       {%- endform -%}
+
+      {%- if settings.enable_wishlist -%}
+        <div class="pdp-actions__wishlist-wrap">
+          {%- render 'wishlist-button', product: product, class: 'pdp-actions__wishlist btn btn--ghost' -%}
+          <span class="pdp-actions__wishlist-label">{{ 'header.wishlist' | t }}</span>
+        </div>
+      {%- endif -%}
 
       {%- render 'share-buttons', url: shop.url | append: product.url, title: product.title, class: 'pdp-info__share' -%}
 

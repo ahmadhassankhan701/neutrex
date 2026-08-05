@@ -96,11 +96,24 @@
     transform var(--duration) var(--ease-out);
 }
 
+.product-card__actions .product-card__action-btn,
+.product-card__actions .wishlist-btn {
+  pointer-events: auto;
+}
+
 .product-card:hover .product-card__actions,
 .product-card:focus-within .product-card__actions {
   opacity: 1;
   pointer-events: auto;
   transform: none;
+}
+
+@media (hover: none) {
+  .product-card__actions {
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+  }
 }
 
 .product-card__action-btn {

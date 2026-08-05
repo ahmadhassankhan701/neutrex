@@ -245,8 +245,26 @@
   flex: 1;
 }
 
+.pdp-actions__wishlist-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
 .pdp-actions__wishlist {
   flex-shrink: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0;
+  border-radius: var(--radius-full);
+}
+
+.pdp-actions__wishlist-label {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
 }
 
 .pdp-trust {

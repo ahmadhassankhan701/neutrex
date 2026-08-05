@@ -176,7 +176,8 @@
   color: var(--color-primary);
 }
 
-.site-header__cart-count {
+.site-header__cart-count,
+.site-header__wishlist-count {
   position: absolute;
   inset-block-start: 0.25rem;
   inset-inline-end: 0.25rem;
