@@ -305,28 +305,28 @@
         "trans_1": {
           "type": "transformation",
           "settings": {
-            "name": "Alex M.",
-            "story": "12-week cut with Neutrex coaching and nutrition plan.",
-            "stat_1": "<strong>-18kg</strong> body fat",
-            "stat_2": "<strong>12</strong> weeks"
+            "name": "أحمد العتيبي",
+            "story": "برنامج تنشيف لمدة 12 أسبوعًا مع متابعة وتغذية خاصة من نيوتريكس.",
+            "stat_1": "<strong>-18 كجم</strong> دهون الجسم",
+            "stat_2": "12 أسبوعًا"
           }
         },
         "trans_2": {
           "type": "transformation",
           "settings": {
-            "name": "Sarah K.",
-            "story": "Competition prep and stage-ready conditioning.",
-            "stat_1": "<strong>1st</strong> place",
-            "stat_2": "<strong>16</strong> weeks"
+            "name": "سارة الشمري",
+            "story": "تحضير شامل للمسابقات وتحقيق أفضل جاهزية للمسرح.",
+            "stat_1": "المركز الأول",
+            "stat_2": "16 أسبوعًا"
           }
         },
         "trans_3": {
           "type": "transformation",
           "settings": {
-            "name": "James T.",
-            "story": "Lean bulk and strength gain program.",
-            "stat_1": "<strong>+8kg</strong> lean mass",
-            "stat_2": "<strong>20</strong> weeks"
+            "name": "طارق الغامدي",
+            "story": "برنامج تضخيم عضل صافي وزيادة القوة البدنية.",
+            "stat_1": "<strong>+8 كجم</strong> كتلة عضلية صافية",
+            "stat_2": "20 أسبوعًا"
           }
         }
       },
@@ -351,9 +351,9 @@
         "test_1": {
           "type": "testimonial",
           "settings": {
-            "quote": "Neutrex changed how I train. The supplements are elite and Marcus pushed me beyond what I thought possible.",
-            "name": "Jordan Ellis",
-            "meta": "Amateur Bodybuilder",
+            "quote": "نيوتريكس غيرت أسلوب تدريبي بالكامل. المكملات جودتها ممتازة، والمدرب ساعدني أتعدى حدودي وأوصل لمستوى ما كنت أتخيله.",
+            "name": "يوسف الدوسري",
+            "meta": "لاعب كمال أجسام",
             "rating": 5,
             "featured": true
           }
@@ -361,9 +361,9 @@
         "test_2": {
           "type": "testimonial",
           "settings": {
-            "quote": "Best protein I've ever used. Clean ingredients, mixes perfectly, and the results speak for themselves.",
-            "name": "Priya Sharma",
-            "meta": "CrossFit Athlete",
+            "quote": "أفضل بروتين جربته بدون منازع. المكونات نظيفة، يذوب بسهولة، والنتائج واضحة من أول شهر.",
+            "name": "مريم الكواري",
+            "meta": "لاعبة كروس فيت",
             "rating": 5,
             "featured": false
           }
@@ -371,9 +371,9 @@
         "test_3": {
           "type": "testimonial",
           "settings": {
-            "quote": "The compression wear is next level. Feels like a second skin during heavy sessions.",
-            "name": "David Chen",
-            "meta": "Powerlifter",
+            "quote": "الملابس الضاغطة خرافية. مريحة جدًا وتعطي دعم ممتاز للظهر والعضلات في أوزان السكوات والتمرين الثقيل.",
+            "name": "خالد المنصوري",
+            "meta": "لاعب رفعة قوة (Powerlifter)",
             "rating": 5,
             "featured": false
           }
