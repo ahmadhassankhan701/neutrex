@@ -121,6 +121,14 @@
       {%- endfor -%}
 
       {%- if contact_block -%}
+        {%- liquid
+          assign contact_whatsapp = contact_block.settings.whatsapp_number | default: settings.whatsapp_number
+          assign contact_location = contact_block.settings.location | default: settings.business_location
+          assign contact_hours = contact_block.settings.hours | default: settings.business_hours
+          assign contact_email = contact_block.settings.email
+          assign contact_phone = contact_block.settings.phone
+          assign wa_digits = contact_whatsapp | remove: '+' | remove: ' ' | remove: '-' | remove: '(' | remove: ')'
+        -%}
         <div class="site-footer__column site-footer__contact" {{ contact_block.shopify_attributes }}>
           {%- if contact_block.settings.heading != blank -%}
             <p class="site-footer__column-title">{{ contact_block.settings.heading | escape }}</p>
@@ -128,30 +136,51 @@
             <p class="site-footer__column-title">{{ 'footer.contact' | t }}</p>
           {%- endif -%}
           <ul class="site-footer__links site-footer__contact-list" role="list">
-            {%- assign wa_number = settings.whatsapp_number | remove: '+' | remove: ' ' | remove: '-' -%}
-            {%- if wa_number != blank -%}
+            {%- if contact_whatsapp != blank -%}
               <li>
                 <a
-                  href="https://wa.me/{{ wa_number }}"
+                  href="https://wa.me/{{ wa_digits }}"
                   class="site-footer__link site-footer__contact-item"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   {% render 'icon', icon: 'whatsapp' %}
-                  <span>{{ 'footer.whatsapp' | t }}: {{ settings.whatsapp_number | escape }}</span>
+                  <span>{{ 'footer.whatsapp' | t }}: {{ contact_whatsapp | escape }}</span>
                 </a>
               </li>
             {%- endif -%}
-            {%- if settings.business_location != blank -%}
-              <li class="site-footer__contact-item">
-                {% render 'icon', icon: 'map-pin' %}
-                <span>{{ 'footer.location' | t }}: {{ settings.business_location | escape }}</span>
+            {%- if contact_phone != blank -%}
+              <li>
+                <a
+                  href="tel:{{ contact_phone | remove: ' ' | remove: '-' | remove: '(' | remove: ')' }}"
+                  class="site-footer__link site-footer__contact-item"
+                >
+                  {% render 'icon', icon: 'phone' %}
+                  <span>{{ contact_phone | escape }}</span>
+                </a>
               </li>
             {%- endif -%}
-            {%- if settings.business_hours != blank -%}
+            {%- if contact_email != blank -%}
+              <li>
+                <a
+                  href="mailto:{{ contact_email | escape }}"
+                  class="site-footer__link site-footer__contact-item"
+                >
+                  {% render 'icon', icon: 'mail' %}
+                  <span>{{ contact_email | escape }}</span>
+                </a>
+              </li>
+            {%- endif -%}
+            {%- if contact_location != blank -%}
+              <li class="site-footer__contact-item">
+                {% render 'icon', icon: 'map-pin' %}
+                <span>{{ 'footer.location' | t }}: {{ contact_location | escape }}</span>
+              </li>
+            {%- endif -%}
+            {%- if contact_hours != blank -%}
               <li class="site-footer__contact-item">
                 {% render 'icon', icon: 'clock' %}
-                <span>{{ 'footer.hours' | t }}: {{ settings.business_hours | escape }}</span>
+                <span>{{ 'footer.hours' | t }}: {{ contact_hours | escape }}</span>
               </li>
             {%- endif -%}
           </ul>
@@ -267,6 +296,39 @@
           "id": "heading",
           "label": "Heading",
           "default": "Contact"
+        },
+        {
+          "type": "text",
+          "id": "whatsapp_number",
+          "label": "WhatsApp number",
+          "default": "+971500000000",
+          "info": "Shown in the footer and used for the WhatsApp link. Leave blank to use Theme settings → Appointments."
+        },
+        {
+          "type": "text",
+          "id": "phone",
+          "label": "Phone number",
+          "info": "Optional. Shown as a clickable phone link."
+        },
+        {
+          "type": "text",
+          "id": "email",
+          "label": "Email",
+          "info": "Optional. Shown as a clickable email link."
+        },
+        {
+          "type": "text",
+          "id": "location",
+          "label": "Location",
+          "default": "Dubai, UAE",
+          "info": "Leave blank to use Theme settings → Appointments."
+        },
+        {
+          "type": "text",
+          "id": "hours",
+          "label": "Business hours",
+          "default": "Sun–Thu · 6:00 AM – 10:00 PM",
+          "info": "Leave blank to use Theme settings → Appointments."
         }
       ]
     }
