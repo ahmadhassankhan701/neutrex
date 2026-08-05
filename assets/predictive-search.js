@@ -79,6 +79,7 @@
     }
 
     close() {
+      if (!this.classList.contains('is-open')) return;
       this.classList.remove('is-open');
       this.setAttribute('aria-hidden', 'true');
       this.activeIndex = -1;

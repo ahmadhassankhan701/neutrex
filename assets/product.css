@@ -306,10 +306,14 @@
   transform: translateY(100%);
   transition: transform var(--duration-slow) var(--ease-out);
   padding: var(--space-3) var(--page-gutter);
+  pointer-events: none;
+  visibility: hidden;
 }
 
 .sticky-atc.is-visible {
   transform: none;
+  pointer-events: auto;
+  visibility: visible;
 }
 
 .sticky-atc__inner {

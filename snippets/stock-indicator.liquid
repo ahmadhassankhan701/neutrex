@@ -35,6 +35,10 @@
     class="{{ stock_class }} stock-indicator--{{ stock_status }}"
     data-stock-indicator
     data-variant-id="{{ variant.id }}"
+    data-low-stock-threshold="{{ threshold }}"
+    data-in-stock="{{ 'products.in_stock' | t | escape }}"
+    data-out-of-stock="{{ 'products.out_of_stock' | t | escape }}"
+    data-low-stock="{{ 'products.low_stock' | t: count: '___' | escape }}"
   >
     <span class="stock-indicator__dot" aria-hidden="true"></span>
     <span class="stock-indicator__text">{{ stock_message }}</span>

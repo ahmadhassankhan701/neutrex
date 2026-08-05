@@ -117,8 +117,10 @@
   };
 
   NeutrexTheme.unlockBodyScroll = function unlockBodyScroll() {
-    scrollLockCount = Math.max(0, scrollLockCount - 1);
+    if (scrollLockCount === 0) return;
+    scrollLockCount -= 1;
     if (scrollLockCount > 0) return;
+    const offset = scrollLockOffset;
     document.body.classList.remove('is-scroll-locked');
     document.body.style.overflow = '';
     document.body.style.position = '';
@@ -126,8 +128,8 @@
     document.body.style.insetInline = '';
     document.body.style.width = '';
     document.body.style.removeProperty('--scroll-lock-offset');
-    window.scrollTo(0, scrollLockOffset);
     scrollLockOffset = 0;
+    window.scrollTo(0, offset);
   };
 
   NeutrexTheme.publish = function publish(name, detail) {
@@ -299,11 +301,14 @@
     close() {
       const drawer = this.getDrawer();
       if (!drawer) return;
+      const isOpen = drawer.classList?.contains('is-open') || drawer.hasAttribute('open');
+      if (!isOpen) return;
       if (typeof drawer.close === 'function') {
         drawer.close();
         return;
       }
       drawer.classList.remove('is-open');
+      drawer.removeAttribute('open');
       drawer.setAttribute('aria-hidden', 'true');
       NeutrexTheme.unlockBodyScroll();
       if (this.focusTrap) {
@@ -444,29 +449,17 @@
     },
 
     bind() {
-      const onWishlistIntent = (event) => {
+      document.addEventListener('click', (event) => {
         const btn = event.target.closest('[data-wishlist-toggle]');
         if (!btn) return;
         event.preventDefault();
         event.stopPropagation();
-        if (typeof event.stopImmediatePropagation === 'function') {
-          event.stopImmediatePropagation();
-        }
-      };
-
-      document.addEventListener('click', (event) => {
-        const btn = event.target.closest('[data-wishlist-toggle]');
-        if (!btn) return;
-        onWishlistIntent(event);
         const handle = btn.dataset.productHandle || btn.dataset.handle;
         const id = btn.dataset.productId;
         if (!handle && !id) return;
         const added = this.toggle(handle, id);
         this.syncButton(btn, added);
-      }, true);
-
-      document.addEventListener('mousedown', onWishlistIntent, true);
-      document.addEventListener('touchstart', onWishlistIntent, { capture: true, passive: false });
+      });
     },
 
     init() {
@@ -658,7 +651,6 @@
     initMobileNav(container) {
       const nav = container.querySelector('[data-mobile-nav]') || container;
       const openBtn = document.querySelector('[data-mobile-nav-open]');
-      const closeBtn = nav.querySelector('[data-mobile-nav-close]');
       let focusTrap = null;
 
       const open = () => {
@@ -671,13 +663,14 @@
       };
 
       const close = () => {
+        if (!nav.classList.contains('is-open')) return;
         nav.classList.remove('is-open');
         nav.setAttribute('aria-hidden', 'true');
         openBtn?.setAttribute('aria-expanded', 'false');
         NeutrexTheme.unlockBodyScroll();
         focusTrap?.deactivate();
         focusTrap = null;
-        openBtn?.focus();
+        openBtn?.focus({ preventScroll: true });
       };
 
       openBtn?.addEventListener('click', (event) => {
@@ -685,9 +678,11 @@
         open();
       });
 
-      closeBtn?.addEventListener('click', (event) => {
-        event.preventDefault();
-        close();
+      nav.querySelectorAll('[data-mobile-nav-close]').forEach((btn) => {
+        btn.addEventListener('click', (event) => {
+          event.preventDefault();
+          close();
+        });
       });
 
       nav.querySelectorAll('[data-mobile-nav-submenu-toggle]').forEach((toggle) => {

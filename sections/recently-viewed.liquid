@@ -37,10 +37,10 @@
 
   <template data-recently-viewed-template>
     <article class="pdp-recently-viewed__item" data-recently-viewed-item role="listitem">
-      <a class="pdp-recently-viewed__image" data-recently-viewed-link href="#">
+      <a class="pdp-recently-viewed__image" data-recently-viewed-link href="{{ routes.root_url }}">
         <img data-recently-viewed-img src="" alt="" loading="lazy" width="400" height="400">
       </a>
-      <a class="pdp-recently-viewed__name" data-recently-viewed-title href="#"></a>
+      <a class="pdp-recently-viewed__name" data-recently-viewed-title href="{{ routes.root_url }}"></a>
       <span class="price price--sm" data-recently-viewed-price hidden></span>
     </article>
   </template>

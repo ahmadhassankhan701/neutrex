@@ -436,6 +436,27 @@
   transform: none;
 }
 
+.quick-view .modal__dialog {
+  max-width: 56rem;
+}
+
+.quick-view__loading {
+  padding: var(--space-8);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.quick-view__product {
+  padding: var(--space-4);
+}
+
+.quick-view__product .pdp__breadcrumb,
+.quick-view__product .sticky-atc,
+.quick-view__product .pdp-related,
+.quick-view__product [data-recently-viewed-source] {
+  display: none !important;
+}
+
 .modal__dialog--lg {
   max-width: 56rem;
 }

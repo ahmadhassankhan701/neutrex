@@ -199,49 +199,68 @@
       this.modal = document.querySelector('[data-quick-view-modal]');
       this.content = this.modal?.querySelector('[data-quick-view-content]');
       this.focusTrap = null;
+      this.isOpen = false;
       this.bind();
     }
 
     bind() {
       document.addEventListener('click', async (event) => {
-        const btn = event.target.closest('[data-quick-view]');
-        if (!btn || !this.modal) return;
-        event.preventDefault();
-        await this.open(btn.dataset.productUrl || btn.href);
-      });
+        const closeBtn = event.target.closest('[data-quick-view-close]');
+        if (closeBtn && this.isOpen) {
+          event.preventDefault();
+          this.close();
+          return;
+        }
 
-      this.modal?.querySelectorAll('[data-quick-view-close]').forEach((btn) => {
-        btn.addEventListener('click', () => this.close());
+        const btn = event.target.closest('[data-quick-view]');
+        if (!btn) return;
+        event.preventDefault();
+        event.stopPropagation();
+        const productUrl = btn.dataset.productUrl || btn.getAttribute('href');
+        if (!productUrl) return;
+        await this.open(productUrl);
       });
 
       document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && this.modal?.classList.contains('is-open')) {
+        if (event.key === 'Escape' && this.isOpen) {
           this.close();
         }
       });
     }
 
     async open(productUrl) {
-      if (!this.modal || !this.content) return;
+      this.modal = document.querySelector('[data-quick-view-modal]');
+      this.content = this.modal?.querySelector('[data-quick-view-content]');
+      if (!this.modal || !this.content) {
+        window.location.href = productUrl;
+        return;
+      }
 
+      this.isOpen = true;
       this.modal.classList.add('is-open');
       this.modal.setAttribute('aria-hidden', 'false');
       NeutrexTheme.lockBodyScroll?.();
       this.content.setAttribute('aria-busy', 'true');
-      this.content.innerHTML = '';
+      this.content.innerHTML = '<p class="quick-view__loading">Loading…</p>';
 
       try {
         const url = new URL(productUrl, window.location.origin);
         url.searchParams.set('section_id', this.modal.dataset.sectionId || 'main-product');
         const response = await fetch(url.toString());
+        if (!response.ok) throw new Error('Quick view fetch failed');
         const html = await response.text();
         const doc = new DOMParser().parseFromString(html, 'text/html');
-        const section = doc.querySelector('[data-product-main]') || doc.body.firstElementChild;
-        this.content.innerHTML = section?.innerHTML || html;
-        NeutrexTheme.Product?.init(this.content);
+        const section = doc.querySelector('[data-product-main]') || doc.querySelector('.pdp') || doc.body;
+        this.content.innerHTML = '';
+        const wrap = document.createElement('div');
+        wrap.className = 'quick-view__product';
+        wrap.innerHTML = section.innerHTML;
+        this.content.appendChild(wrap);
+        NeutrexTheme.Product?.init(wrap);
+        NeutrexTheme.Wishlist?.syncUI?.();
       } catch (error) {
         console.error('[Neutrex] Quick view failed', error);
-        this.content.innerHTML = '<p role="alert">Unable to load product.</p>';
+        this.content.innerHTML = '<p role="alert">Unable to load product. <a href="' + productUrl + '">View product</a></p>';
       } finally {
         this.content.removeAttribute('aria-busy');
         this.focusTrap = NeutrexTheme.createFocusTrap?.(this.modal);
@@ -250,13 +269,14 @@
     }
 
     close() {
-      if (!this.modal) return;
+      if (!this.modal || !this.isOpen) return;
+      this.isOpen = false;
       this.modal.classList.remove('is-open');
       this.modal.setAttribute('aria-hidden', 'true');
       NeutrexTheme.unlockBodyScroll?.();
       this.focusTrap?.deactivate();
       this.focusTrap = null;
-      this.content.innerHTML = '';
+      if (this.content) this.content.innerHTML = '';
     }
   }
 

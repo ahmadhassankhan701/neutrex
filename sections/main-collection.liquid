@@ -297,28 +297,6 @@
   </div>
 </div>
 
-{%- comment -%} Quick view modal shell {%- endcomment -%}
-<div
-  class="modal quick-view"
-  data-quick-view-modal
-  data-section-id="main-product"
-  aria-hidden="true"
-  role="dialog"
-  aria-modal="true"
-  aria-label="{{ 'products.quick_view' | t }}"
->
-  <div class="modal__overlay" data-quick-view-close tabindex="-1" aria-hidden="true"></div>
-  <div class="modal__dialog modal__dialog--lg">
-    <div class="modal__header">
-      <h2 class="modal__title">{{ 'products.quick_view' | t }}</h2>
-      <button type="button" class="modal__close" data-quick-view-close aria-label="{{ 'general.accessibility.close' | t }}">
-        {%- render 'icon', icon: 'close' -%}
-      </button>
-    </div>
-    <div class="modal__body" data-quick-view-content aria-live="polite"></div>
-  </div>
-</div>
-
 <script>
   (function () {
     'use strict';

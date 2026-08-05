@@ -84,6 +84,7 @@
     }
 
     close() {
+      if (!this.classList.contains('is-open') && !this.hasAttribute('open')) return;
       this.classList.remove('is-open');
       this.removeAttribute('open');
       this.setAttribute('aria-hidden', 'true');
