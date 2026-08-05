@@ -1,20 +1,78 @@
 {%- comment -%}
-  Compact EN/AR language switcher for the header.
-  Uses Shopify localization form when multiple languages are enabled.
+  One-click English ↔ Arabic language switcher.
+  Requires both languages published in Settings → Languages.
 {%- endcomment -%}
 
 {%- liquid
   assign current_lang = localization.language.iso_code | default: request.locale.iso_code | downcase
+  assign current_is_ar = false
+  if current_lang == 'ar' or current_lang contains 'ar-'
+    assign current_is_ar = true
+  endif
+
   assign current_label = 'EN'
-  if current_lang contains 'ar'
+  if current_is_ar
     assign current_label = 'ع'
+  endif
+
+  assign english_language = false
+  assign arabic_language = false
+  assign target_language = false
+
+  for language in localization.available_languages
+    assign code = language.iso_code | downcase
+    if code == 'en' or code contains 'en-'
+      assign english_language = language
+    endif
+    if code == 'ar' or code contains 'ar-'
+      assign arabic_language = language
+    endif
+  endfor
+
+  if current_is_ar and english_language
+    assign target_language = english_language
+  elsif current_is_ar == false and arabic_language
+    assign target_language = arabic_language
+  endif
+
+  if target_language == false
+    for language in localization.available_languages
+      if language.iso_code != localization.language.iso_code
+        assign target_language = language
+        break
+      endif
+    endfor
   endif
 -%}
 
-{%- if localization.available_languages.size > 1 -%}
+{%- if target_language -%}
   <div class="language-switcher" data-language-switcher>
     {%- form 'localization', class: 'language-switcher__form' -%}
       <input type="hidden" name="country_code" value="{{ localization.country.iso_code }}">
+      <input type="hidden" name="language_code" value="{{ target_language.iso_code }}">
+      <input type="hidden" name="return_to" value="{{ request.path }}">
+
+      <button
+        type="submit"
+        class="site-header__icon-btn language-switcher__toggle"
+        aria-label="{{ 'header.language' | t }}: {{ target_language.endonym_name | escape }}"
+        title="Switch to {{ target_language.endonym_name | capitalize | escape }}"
+      >
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M3 12h18M12 3c2.5 2.8 4 6.2 4 9s-1.5 6.2-4 9M12 3c-2.5 2.8-4 6.2-4 9s1.5 6.2 4 9"/>
+        </svg>
+        <span class="language-switcher__code" aria-hidden="true">{{ current_label }}</span>
+      </button>
+    {%- endform -%}
+  </div>
+{%- elsif localization.available_languages.size > 1 -%}
+  <div class="language-switcher" data-language-switcher>
+    {%- form 'localization', class: 'language-switcher__form' -%}
+      <input type="hidden" name="country_code" value="{{ localization.country.iso_code }}">
+      <input type="hidden" name="language_code" value="{{ localization.language.iso_code }}" data-language-code-input>
+      <input type="hidden" name="return_to" value="{{ request.path }}">
+
       <button
         type="button"
         class="site-header__icon-btn language-switcher__toggle"
@@ -31,13 +89,7 @@
         <span class="language-switcher__code" aria-hidden="true">{{ current_label }}</span>
       </button>
 
-      <ul
-        id="LanguageSwitcherMenu"
-        class="language-switcher__menu"
-        role="listbox"
-        aria-label="{{ 'header.language' | t }}"
-        hidden
-      >
+      <ul id="LanguageSwitcherMenu" class="language-switcher__menu" role="listbox" hidden>
         {%- for language in localization.available_languages -%}
           {%- liquid
             assign lang_code = language.iso_code | downcase
@@ -54,10 +106,10 @@
           -%}
           <li role="option" aria-selected="{% if is_current %}true{% else %}false{% endif %}">
             <button
-              type="submit"
+              type="button"
               class="language-switcher__option{% if is_current %} is-active{% endif %}"
-              name="locale_code"
-              value="{{ language.iso_code }}"
+              data-language-option
+              data-value="{{ language.iso_code }}"
               lang="{{ language.iso_code }}"
               {% if is_current %}aria-current="true"{% endif %}
             >
@@ -70,8 +122,10 @@
     {%- endform -%}
   </div>
 {%- else -%}
-  {%- comment -%} Fallback when only one store language is published {%- endcomment -%}
-  <div class="language-switcher language-switcher--single" title="Add English and Arabic in Settings → Languages">
+  <div
+    class="language-switcher language-switcher--single"
+    title="Publish English and Arabic in Settings → Languages to enable switching"
+  >
     <span class="site-header__icon-btn language-switcher__toggle" aria-hidden="true">
       <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
         <circle cx="12" cy="12" r="9"/>

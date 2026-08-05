@@ -585,9 +585,13 @@
       if (switcher.dataset.bound) return;
       switcher.dataset.bound = 'true';
 
+      const form = switcher.querySelector('form');
+      const input = switcher.querySelector('[data-language-code-input]');
       const toggle = switcher.querySelector('[data-language-toggle]');
       const menu = switcher.querySelector('.language-switcher__menu');
-      if (!toggle || !menu) return;
+
+      // Simple submit toggle needs no JS; dropdown path uses options below.
+      if (!toggle || !menu || !form || !input) return;
 
       const close = () => {
         menu.hidden = true;
@@ -604,6 +608,19 @@
         event.stopPropagation();
         if (menu.hidden) open();
         else close();
+      });
+
+      switcher.querySelectorAll('[data-language-option]').forEach((option) => {
+        option.addEventListener('click', (event) => {
+          event.preventDefault();
+          const value = option.dataset.value;
+          if (!value || value === input.value) {
+            close();
+            return;
+          }
+          input.value = value;
+          form.submit();
+        });
       });
 
       document.addEventListener('click', (event) => {
