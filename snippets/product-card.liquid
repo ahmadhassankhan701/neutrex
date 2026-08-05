@@ -23,6 +23,29 @@
     assign quick_add_enabled = enable_quick_add | default: settings.enable_quick_add
     assign quick_view_enabled = enable_quick_view | default: settings.enable_quick_view
 
+    assign is_training_product = false
+    for collection in product.collections
+      assign handle_down = collection.handle | downcase
+      if handle_down == 'training' or handle_down == 'tdryb' or collection.handle == 'تدريب' or collection.title == 'تدريب'
+        assign is_training_product = true
+        break
+      endif
+    endfor
+    unless is_training_product
+      for tag in product.tags
+        assign tag_down = tag | downcase
+        if tag_down == 'training' or tag == 'تدريب'
+          assign is_training_product = true
+          break
+        endif
+      endfor
+    endunless
+
+    if is_training_product
+      assign quick_add_enabled = false
+      assign quick_view_enabled = false
+    endif
+
     assign current_variant = product.selected_or_first_available_variant
     assign featured_media = product.featured_media
     assign secondary_media = blank
@@ -139,7 +162,17 @@
         {%- endif -%}
       </div>
 
-      {%- if quick_add_enabled -%}
+      {%- if is_training_product -%}
+        <div class="product-card__quick-add">
+          <a
+            href="{{ product.url }}"
+            class="btn btn--primary btn--sm btn--full"
+            aria-label="{{ 'training.view_details' | t }}: {{ product.title | escape }}"
+          >
+            {{ 'training.view_details' | t }}
+          </a>
+        </div>
+      {%- elsif quick_add_enabled -%}
         <div class="product-card__quick-add">
           {%- if product.available -%}
             {%- if product.variants.size == 1 -%}

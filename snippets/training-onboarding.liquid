@@ -1,0 +1,241 @@
+{%- comment -%}
+  Required training intake form for products in the تدريب / training collection.
+  Values are submitted as line item properties and appear on the order + emails.
+{%- endcomment -%}
+
+{%- liquid
+  assign is_training = false
+  for collection in product.collections
+    assign handle_down = collection.handle | downcase
+    if handle_down == 'training' or handle_down == 'tdryb' or collection.handle == 'تدريب' or collection.title == 'تدريب'
+      assign is_training = true
+      break
+    endif
+  endfor
+  unless is_training
+    for tag in product.tags
+      assign tag_down = tag | downcase
+      if tag_down == 'training' or tag == 'تدريب'
+        assign is_training = true
+        break
+      endif
+    endfor
+  endunless
+-%}
+
+{%- if is_training -%}
+  {%- liquid
+    assign l_age = 'training.fields.age' | t
+    assign l_gender = 'training.fields.gender' | t
+    assign l_height = 'training.fields.height' | t
+    assign l_weight_current = 'training.fields.weight_current' | t
+    assign l_weight_target = 'training.fields.weight_target' | t
+    assign l_work = 'training.fields.work_nature' | t
+    assign l_goals = 'training.fields.goals' | t
+    assign l_goal_other = 'training.fields.goal_other' | t
+    assign l_duration = 'training.fields.goal_duration' | t
+    assign l_trained = 'training.fields.trained_before' | t
+    assign l_prev = 'training.fields.prev_duration' | t
+    assign l_days = 'training.fields.weekly_days' | t
+    assign l_location = 'training.fields.location' | t
+    assign l_checkups = 'training.fields.checkups' | t
+    assign l_front = 'training.fields.image_front' | t
+    assign l_back = 'training.fields.image_back' | t
+  -%}
+
+  <div class="training-onboarding" data-training-onboarding>
+    <h3 class="training-onboarding__title">{{ 'training.title' | t }}</h3>
+    <p class="training-onboarding__hint">{{ 'training.required_hint' | t }}</p>
+
+    <div class="training-onboarding__grid">
+      <div class="field">
+        <label class="field__label" for="TrainAge-{{ product.id }}">{{ l_age }} *</label>
+        <input
+          id="TrainAge-{{ product.id }}"
+          class="field__input"
+          type="number"
+          name="properties[{{ l_age }}]"
+          min="10"
+          max="100"
+          required
+          inputmode="numeric"
+        >
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="TrainGender-{{ product.id }}">{{ l_gender }} *</label>
+        <select id="TrainGender-{{ product.id }}" class="field__input" name="properties[{{ l_gender }}]" required>
+          <option value="">{{ 'training.select' | t }}</option>
+          <option value="{{ 'training.options.male' | t }}">{{ 'training.options.male' | t }}</option>
+          <option value="{{ 'training.options.female' | t }}">{{ 'training.options.female' | t }}</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="TrainHeight-{{ product.id }}">{{ l_height }} *</label>
+        <input
+          id="TrainHeight-{{ product.id }}"
+          class="field__input"
+          type="number"
+          name="properties[{{ l_height }}]"
+          min="100"
+          max="250"
+          required
+          inputmode="numeric"
+        >
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="TrainWeightCurrent-{{ product.id }}">{{ l_weight_current }} *</label>
+        <input
+          id="TrainWeightCurrent-{{ product.id }}"
+          class="field__input"
+          type="number"
+          name="properties[{{ l_weight_current }}]"
+          min="20"
+          max="400"
+          step="0.1"
+          required
+          inputmode="decimal"
+        >
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="TrainWeightTarget-{{ product.id }}">{{ l_weight_target }} *</label>
+        <input
+          id="TrainWeightTarget-{{ product.id }}"
+          class="field__input"
+          type="number"
+          name="properties[{{ l_weight_target }}]"
+          min="20"
+          max="400"
+          step="0.1"
+          required
+          inputmode="decimal"
+        >
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="TrainWork-{{ product.id }}">{{ l_work }} *</label>
+        <select id="TrainWork-{{ product.id }}" class="field__input" name="properties[{{ l_work }}]" required>
+          <option value="">{{ 'training.select' | t }}</option>
+          <option value="{{ 'training.options.work_desk' | t }}">{{ 'training.options.work_desk' | t }}</option>
+          <option value="{{ 'training.options.work_moderate' | t }}">{{ 'training.options.work_moderate' | t }}</option>
+          <option value="{{ 'training.options.work_active' | t }}">{{ 'training.options.work_active' | t }}</option>
+        </select>
+      </div>
+
+      <div class="field field--full">
+        <label class="field__label" for="TrainGoals-{{ product.id }}">{{ l_goals }} *</label>
+        <textarea
+          id="TrainGoals-{{ product.id }}"
+          class="field__textarea"
+          name="properties[{{ l_goals }}]"
+          rows="3"
+          required
+          placeholder="{{ 'training.placeholders.goals' | t }}"
+        ></textarea>
+      </div>
+
+      <div class="field field--full">
+        <label class="field__label" for="TrainGoalOther-{{ product.id }}">{{ l_goal_other }}</label>
+        <input
+          id="TrainGoalOther-{{ product.id }}"
+          class="field__input"
+          type="text"
+          name="properties[{{ l_goal_other }}]"
+        >
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="TrainDuration-{{ product.id }}">{{ l_duration }} *</label>
+        <input
+          id="TrainDuration-{{ product.id }}"
+          class="field__input"
+          type="number"
+          name="properties[{{ l_duration }}]"
+          min="1"
+          max="36"
+          required
+          inputmode="numeric"
+        >
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="TrainBefore-{{ product.id }}">{{ l_trained }} *</label>
+        <select id="TrainBefore-{{ product.id }}" class="field__input" name="properties[{{ l_trained }}]" required>
+          <option value="">{{ 'training.select' | t }}</option>
+          <option value="{{ 'training.options.yes' | t }}">{{ 'training.options.yes' | t }}</option>
+          <option value="{{ 'training.options.no' | t }}">{{ 'training.options.no' | t }}</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="TrainPrev-{{ product.id }}">{{ l_prev }} *</label>
+        <input
+          id="TrainPrev-{{ product.id }}"
+          class="field__input"
+          type="text"
+          name="properties[{{ l_prev }}]"
+          required
+          placeholder="{{ 'training.placeholders.prev_duration' | t }}"
+        >
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="TrainDays-{{ product.id }}">{{ l_days }} *</label>
+        <select id="TrainDays-{{ product.id }}" class="field__input" name="properties[{{ l_days }}]" required>
+          <option value="">{{ 'training.select' | t }}</option>
+          <option value="{{ 'training.options.days_2_3' | t }}">{{ 'training.options.days_2_3' | t }}</option>
+          <option value="{{ 'training.options.days_3_4' | t }}">{{ 'training.options.days_3_4' | t }}</option>
+          <option value="{{ 'training.options.days_5' | t }}">{{ 'training.options.days_5' | t }}</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="TrainLocation-{{ product.id }}">{{ l_location }} *</label>
+        <select id="TrainLocation-{{ product.id }}" class="field__input" name="properties[{{ l_location }}]" required>
+          <option value="">{{ 'training.select' | t }}</option>
+          <option value="{{ 'training.options.gym' | t }}">{{ 'training.options.gym' | t }}</option>
+          <option value="{{ 'training.options.home' | t }}">{{ 'training.options.home' | t }}</option>
+        </select>
+      </div>
+
+      <div class="field field--full">
+        <label class="field__label" for="TrainCheckups-{{ product.id }}">{{ l_checkups }} *</label>
+        <textarea
+          id="TrainCheckups-{{ product.id }}"
+          class="field__textarea"
+          name="properties[{{ l_checkups }}]"
+          rows="3"
+          required
+          placeholder="{{ 'training.placeholders.checkups' | t }}"
+        ></textarea>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="TrainFront-{{ product.id }}">{{ l_front }} *</label>
+        <input
+          id="TrainFront-{{ product.id }}"
+          class="field__input field__input--file"
+          type="file"
+          name="properties[{{ l_front }}]"
+          accept="image/jpeg,image/png,image/webp"
+          required
+        >
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="TrainBack-{{ product.id }}">{{ l_back }} *</label>
+        <input
+          id="TrainBack-{{ product.id }}"
+          class="field__input field__input--file"
+          type="file"
+          name="properties[{{ l_back }}]"
+          accept="image/jpeg,image/png,image/webp"
+          required
+        >
+      </div>
+    </div>
+  </div>
+{%- endif -%}

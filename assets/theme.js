@@ -270,6 +270,42 @@
       return cart;
     },
 
+    async addFromForm(form) {
+      if (!form) throw new Error('Missing product form');
+      if (typeof form.checkValidity === 'function' && !form.checkValidity()) {
+        form.reportValidity();
+        const invalid = form.querySelector(':invalid');
+        invalid?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        throw new Error('Form invalid');
+      }
+
+      const formData = new FormData(form);
+      const root = window.Shopify?.routes?.root || '/';
+      const response = await fetch(`${root}cart/add.js`, {
+        method: 'POST',
+        body: formData,
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json' },
+      });
+
+      if (!response.ok) {
+        let message = `HTTP ${response.status}`;
+        try {
+          const err = await response.json();
+          message = err.description || err.message || message;
+        } catch {
+          /* ignore */
+        }
+        const error = new Error(message);
+        error.response = response;
+        throw error;
+      }
+
+      const cart = await response.json();
+      await this.refresh();
+      return cart;
+    },
+
     async change(line, quantity) {
       const cart = await NeutrexTheme.fetchJSON(`${window.Shopify?.routes?.root || '/'}cart/change.js`, {
         method: 'POST',
@@ -341,14 +377,13 @@
           submitBtn?.setAttribute('aria-busy', 'true');
           submitBtn?.classList.add('is-loading');
           try {
-            const formData = new FormData(addForm);
-            const id = formData.get('id');
-            const quantity = parseInt(formData.get('quantity') || '1', 10);
-            await this.add({ id, quantity });
+            await this.addFromForm(addForm);
             if (addForm.dataset.cartBehavior !== 'stay') this.open();
           } catch (error) {
-            console.error('[Neutrex] Add to cart failed', error);
-            NeutrexTheme.publish('neutrex:cart:error', { error });
+            if (error?.message !== 'Form invalid') {
+              console.error('[Neutrex] Add to cart failed', error);
+              NeutrexTheme.publish('neutrex:cart:error', { error });
+            }
           } finally {
             submitBtn?.removeAttribute('aria-busy');
             submitBtn?.classList.remove('is-loading');

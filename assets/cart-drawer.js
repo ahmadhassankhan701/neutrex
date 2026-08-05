@@ -23,6 +23,7 @@
       this.emptyEl = this.querySelector('[data-cart-empty]');
       this.footerEl = this.querySelector('[data-cart-footer]');
 
+      this.drawer = this;
       this.threshold = parseFloat(this.dataset.freeShippingThreshold || '0') * 100;
       this.moneyFormat = this.dataset.moneyFormat || window.theme?.moneyFormat || window.Shopify?.money_format || '{{amount}}';
       this.focusTrap = null;
@@ -169,12 +170,46 @@
       }
     }
 
+    renderProperties(item) {
+      const properties = item.properties;
+      if (!properties || typeof properties !== 'object') return '';
+
+      const viewImage = this.drawer?.dataset.viewImageLabel || 'View image';
+      const entries = Array.isArray(properties)
+        ? properties
+        : Object.entries(properties).map(([first, last]) => ({ first, last }));
+
+      const rows = entries
+        .filter((prop) => {
+          const key = prop.first ?? prop[0] ?? '';
+          const value = prop.last ?? prop[1] ?? '';
+          return value !== '' && value != null && !String(key).startsWith('_');
+        })
+        .map((prop) => {
+          const key = prop.first ?? prop[0] ?? '';
+          const value = String(prop.last ?? prop[1] ?? '');
+          const isFile =
+            /^https?:\/\//i.test(value) &&
+            (value.includes('cdn.shopify.com') ||
+              value.includes('/files/') ||
+              /\.(jpe?g|png|webp)(\?|$)/i.test(value));
+          const display = isFile
+            ? `<a class="cart-item__option-link" href="${this.escape(value)}" target="_blank" rel="noopener noreferrer">${this.escape(viewImage)}</a>`
+            : `<span class="cart-item__option-value">${this.escape(value)}</span>`;
+          return `<li class="cart-item__option"><span class="cart-item__option-label">${this.escape(key)}:</span> ${display}</li>`;
+        })
+        .join('');
+
+      return rows ? `<ul class="cart-item__properties" role="list">${rows}</ul>` : '';
+    }
+
     renderItem(item, line) {
       const img = item.image ? `<img src="${item.image}&width=120" alt="" width="72" height="72" loading="lazy">` : '';
       const options = item.options_with_values
         ?.filter((o) => o.value !== 'Default Title')
         .map((o) => `<span class="cart-item__option">${this.escape(o.name)}: ${this.escape(o.value)}</span>`)
         .join('') || '';
+      const properties = this.renderProperties(item);
 
       return `
         <div class="cart-item" data-cart-item data-line="${line}" data-key="${item.key}">
@@ -183,6 +218,7 @@
             <a href="${item.url}" class="cart-item__title">${this.escape(item.product_title)}</a>
             ${item.variant_title && item.variant_title !== 'Default Title' ? `<p class="cart-item__variant">${this.escape(item.variant_title)}</p>` : ''}
             ${options}
+            ${properties}
             <p class="cart-item__price">${this.formatMoney(item.final_line_price)}</p>
             <div class="cart-item__qty" data-quantity-stepper>
               <button type="button" class="cart-item__qty-btn" data-cart-qty-minus data-line="${line}" aria-label="Decrease quantity">−</button>

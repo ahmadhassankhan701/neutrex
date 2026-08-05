@@ -236,6 +236,82 @@
   padding-top: var(--space-2);
 }
 
+/* -------------------------------------------------------------------------- */
+/* Training onboarding form                                                    */
+/* -------------------------------------------------------------------------- */
+.training-onboarding {
+  margin-block: var(--space-5);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+[dir="rtl"] .training-onboarding {
+  text-align: right;
+}
+
+.training-onboarding__title {
+  margin: 0 0 var(--space-2);
+  font-size: var(--fs-md);
+  font-weight: 700;
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-primary);
+}
+
+.training-onboarding__hint {
+  margin: 0 0 var(--space-4);
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+.training-onboarding__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+@media (min-width: 750px) {
+  .training-onboarding__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .training-onboarding__grid .field--full {
+    grid-column: 1 / -1;
+  }
+}
+
+.training-onboarding .field__input--file {
+  padding: var(--space-3);
+  font-size: var(--fs-sm);
+}
+
+.cart-item__properties {
+  list-style: none;
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cart-item__option {
+  display: block;
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+.cart-item__option-label {
+  font-weight: 600;
+}
+
+.cart-item__option-link {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .pdp-actions__row {
   display: flex;
   gap: var(--space-3);

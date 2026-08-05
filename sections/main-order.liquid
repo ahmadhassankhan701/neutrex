@@ -48,7 +48,8 @@
                 {%- unless line_item.variant.title == 'Default Title' -%}
                   <p class="order-card__item-variant">{{ line_item.variant.title | escape }}</p>
                 {%- endunless -%}
-                <p class="order-card__item-variant">Qty: {{ line_item.quantity }}</p>
+                {%- render 'cart-item-properties', item: line_item -%}
+                <p class="order-card__item-variant">{{ 'products.quantity' | t }}: {{ line_item.quantity }}</p>
               </div>
               <p class="order-card__item-price">{{ line_item.final_line_price | money }}</p>
             </div>

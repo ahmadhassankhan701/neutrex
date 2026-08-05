@@ -201,6 +201,51 @@
     "view_order": "View order",
     "order_number": "Order {{ number }}"
   },
+  "training": {
+    "title": "Athletic intake form (required)",
+    "required_hint": "Please complete all required fields before adding this training package to your bag.",
+    "select": "Select an option",
+    "complete_form": "Complete form to add",
+    "view_details": "Fill intake form",
+    "view_image": "View image",
+    "fields": {
+      "age": "Age",
+      "gender": "Gender",
+      "height": "Height (cm)",
+      "weight_current": "Current weight (kg)",
+      "weight_target": "Target weight (kg)",
+      "work_nature": "Work nature",
+      "goals": "Primary goals",
+      "goal_other": "Other goal (optional)",
+      "goal_duration": "Goal timeline (months)",
+      "trained_before": "Have you trained before?",
+      "prev_duration": "Previous training duration",
+      "weekly_days": "Expected weekly training days",
+      "location": "Preferred training location",
+      "checkups": "Competition checks / medical notes",
+      "image_front": "Front body photo",
+      "image_back": "Back body photo"
+    },
+    "options": {
+      "male": "Male",
+      "female": "Female",
+      "yes": "Yes",
+      "no": "No",
+      "work_desk": "Desk / sedentary",
+      "work_moderate": "Moderate activity",
+      "work_active": "High physical activity",
+      "days_2_3": "2–3 days",
+      "days_3_4": "3–4 days",
+      "days_5": "5+ days",
+      "gym": "Gym",
+      "home": "Home"
+    },
+    "placeholders": {
+      "goals": "e.g. build muscle, improve fitness…",
+      "prev_duration": "e.g. none, 6 months…",
+      "checkups": "Injuries or health issues? List them here"
+    }
+  },
   "newsletter": {
     "success": "Thanks for joining Neutrex.",
     "error": "Please enter a valid email."

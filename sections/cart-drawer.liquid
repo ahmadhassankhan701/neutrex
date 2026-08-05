@@ -22,6 +22,7 @@
   aria-hidden="true"
   data-free-shipping-threshold="{{ threshold }}"
   data-money-format="{{ shop.money_format | escape }}"
+  data-view-image-label="{{ 'training.view_image' | t | escape }}"
   {{ section.shopify_attributes }}
 >
   <div class="drawer__overlay" data-cart-drawer-overlay data-cart-close tabindex="-1" aria-hidden="true"></div>
@@ -93,6 +94,7 @@
                   <span class="cart-item__option">{{ option.name }}: {{ option.value }}</span>
                 {%- endunless -%}
               {%- endfor -%}
+              {%- render 'cart-item-properties', item: item -%}
               <p class="cart-item__price">{{ item.final_line_price | money }}</p>
               <div class="cart-item__qty" data-quantity-stepper>
                 <button

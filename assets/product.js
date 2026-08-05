@@ -423,14 +423,20 @@
         event.preventDefault();
         const form = btn.closest('form') || document.querySelector('form[data-product-form]');
         if (!form) return;
-        const id = form.querySelector('[name="id"]')?.value;
-        const quantity = parseInt(form.querySelector('[name="quantity"]')?.value || '1', 10);
-        if (!id) return;
         try {
-          await NeutrexTheme.Cart?.add({ items: [{ id: Number(id), quantity }] });
+          if (typeof NeutrexTheme.Cart?.addFromForm === 'function') {
+            await NeutrexTheme.Cart.addFromForm(form);
+          } else {
+            const id = form.querySelector('[name="id"]')?.value;
+            const quantity = parseInt(form.querySelector('[name="quantity"]')?.value || '1', 10);
+            if (!id) return;
+            await NeutrexTheme.Cart?.add({ items: [{ id: Number(id), quantity }] });
+          }
           window.location.href = `${routes}checkout`;
         } catch (error) {
-          console.error('[Neutrex] Buy now failed', error);
+          if (error?.message !== 'Form invalid') {
+            console.error('[Neutrex] Buy now failed', error);
+          }
         }
       });
     });

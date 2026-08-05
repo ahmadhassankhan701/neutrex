@@ -1,0 +1,33 @@
+{%- comment -%}
+  Renders line item properties, with image URLs as clickable links.
+  @param {object} item - cart/order line item
+{%- endcomment -%}
+
+{%- if item.properties.size > 0 -%}
+  <ul class="cart-item__properties" role="list">
+    {%- for property in item.properties -%}
+      {%- assign property_first_char = property.first | slice: 0 -%}
+      {%- unless property.last == blank or property_first_char == '_' -%}
+        {%- liquid
+          assign prop_value = property.last | strip
+          assign is_file_prop = false
+          if prop_value contains 'https://' or prop_value contains 'http://'
+            if prop_value contains 'cdn.shopify.com' or prop_value contains '/files/' or prop_value contains '.jpg' or prop_value contains '.jpeg' or prop_value contains '.png' or prop_value contains '.webp'
+              assign is_file_prop = true
+            endif
+          endif
+        -%}
+        <li class="cart-item__option">
+          <span class="cart-item__option-label">{{ property.first | escape }}:</span>
+          {%- if is_file_prop -%}
+            <a href="{{ prop_value }}" target="_blank" rel="noopener noreferrer" class="cart-item__option-link">
+              {{ 'training.view_image' | t }}
+            </a>
+          {%- else -%}
+            <span class="cart-item__option-value">{{ prop_value | escape }}</span>
+          {%- endif -%}
+        </li>
+      {%- endunless -%}
+    {%- endfor -%}
+  </ul>
+{%- endif -%}

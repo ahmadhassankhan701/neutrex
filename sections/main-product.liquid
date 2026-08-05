@@ -7,6 +7,28 @@
   assign show_buy_now = section.settings.show_buy_now
   assign low_stock_threshold = section.settings.low_stock_threshold | default: 5
 
+  assign is_training_product = false
+  for collection in product.collections
+    assign handle_down = collection.handle | downcase
+    if handle_down == 'training' or handle_down == 'tdryb' or collection.handle == 'تدريب' or collection.title == 'تدريب'
+      assign is_training_product = true
+      break
+    endif
+  endfor
+  unless is_training_product
+    for tag in product.tags
+      assign tag_down = tag | downcase
+      if tag_down == 'training' or tag == 'تدريب'
+        assign is_training_product = true
+        break
+      endif
+    endfor
+  endunless
+
+  if is_training_product
+    assign show_buy_now = false
+  endif
+
   assign has_spin_360 = false
   assign spin_frames = null
   if product.metafields.custom.spin_360.value != blank
@@ -207,8 +229,10 @@
       {%- endif -%}
 
       {%- comment -%} Product form {%- endcomment -%}
-      {%- form 'product', product, class: 'pdp-form', data-product-form: true, data-add-to-cart: true -%}
+      {%- form 'product', product, class: 'pdp-form', data-product-form: true, data-add-to-cart: true, enctype: 'multipart/form-data' -%}
         <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+        {%- render 'training-onboarding', product: product -%}
 
         {%- unless product.has_only_default_variant -%}
           <div class="pdp-variants">
@@ -331,8 +355,12 @@
 
         <div class="pdp-actions" data-product-form-anchor>
           <div class="pdp-actions__row">
-            {%- assign qty_id = 'Quantity-' | append: section.id -%}
-            {%- render 'quantity-input', id: qty_id, min: 1 -%}
+            {%- if is_training_product -%}
+              <input type="hidden" name="quantity" value="1">
+            {%- else -%}
+              {%- assign qty_id = 'Quantity-' | append: section.id -%}
+              {%- render 'quantity-input', id: qty_id, min: 1 -%}
+            {%- endif -%}
 
             <button
               type="submit"
@@ -518,10 +546,16 @@
           </div>
         </div>
         <div class="sticky-atc__actions">
-          {%- assign sticky_qty_id = 'StickyQty-' | append: section.id -%}
-          {%- render 'quantity-input', id: sticky_qty_id, name: 'quantity', class: 'qty-selector--sm' -%}
+          {%- unless is_training_product -%}
+            {%- assign sticky_qty_id = 'StickyQty-' | append: section.id -%}
+            {%- render 'quantity-input', id: sticky_qty_id, name: 'quantity', class: 'qty-selector--sm' -%}
+          {%- endunless -%}
           <button type="button" class="btn btn--primary" data-sticky-atc-trigger>
-            {{ 'products.add_to_cart' | t }}
+            {%- if is_training_product -%}
+              {{ 'training.complete_form' | t }}
+            {%- else -%}
+              {{ 'products.add_to_cart' | t }}
+            {%- endif -%}
           </button>
         </div>
       </div>
