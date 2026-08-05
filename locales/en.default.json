@@ -133,6 +133,14 @@
     "trending": "Trending",
     "view_all": "View all results"
   },
+  "contact": {
+    "phone": "Phone",
+    "subject": "Subject",
+    "subject_placeholder": "Training inquiry",
+    "message": "Message",
+    "send": "Send message",
+    "map_placeholder": "Map embed"
+  },
   "appointments": {
     "book_now": "Book now",
     "book_session": "Book session",

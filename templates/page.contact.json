@@ -18,10 +18,11 @@
         "button_label": "Send message",
         "success_message": "",
         "info_heading": "Visit Neutrex",
-        "location": "",
-        "hours": "",
+        "whatsapp_number": "+971500000000",
+        "location": "Dubai, UAE",
+        "hours": "Sun–Thu · 6:00 AM – 10:00 PM",
         "map_embed": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3608.3340500909794!2d51.49738238725272!3d25.25934582009751!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e45cf97f3828ac1%3A0xa666bd111104b928!2sNew%20Salata!5e0!3m2!1sen!2sqa!4v1785953806792!5m2!1sen!2sqa\" width=\"600\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\"></iframe>",
-        "show_map_placeholder": true
+        "show_map_placeholder": false
       }
     }
   },

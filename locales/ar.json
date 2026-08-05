@@ -133,6 +133,14 @@
     "trending": "الأكثر بحثًا",
     "view_all": "عرض كل النتائج"
   },
+  "contact": {
+    "phone": "الهاتف",
+    "subject": "الموضوع",
+    "subject_placeholder": "استفسار تدريب",
+    "message": "الرسالة",
+    "send": "إرسال الرسالة",
+    "map_placeholder": "خريطة"
+  },
   "appointments": {
     "book_now": "احجز الآن",
     "book_session": "احجز جلسة",
