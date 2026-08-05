@@ -451,6 +451,33 @@
   NeutrexTheme.Wishlist = Wishlist;
 
   /* -------------------------------------------------------------------------- */
+  /* Share copy link                                                             */
+  /* -------------------------------------------------------------------------- */
+
+  document.addEventListener('click', async (event) => {
+    const btn = event.target.closest('[data-share-copy]');
+    if (!btn) return;
+    event.preventDefault();
+    const url = btn.dataset.shareUrl || window.location.href;
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+      } else {
+        const input = document.createElement('input');
+        input.value = url;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        input.remove();
+      }
+      btn.classList.add('is-copied');
+      setTimeout(() => btn.classList.remove('is-copied'), 2000);
+    } catch (error) {
+      console.error('[Neutrex] Share copy failed', error);
+    }
+  });
+
+  /* -------------------------------------------------------------------------- */
   /* Quick add (product cards — works on all templates)                          */
   /* -------------------------------------------------------------------------- */
 

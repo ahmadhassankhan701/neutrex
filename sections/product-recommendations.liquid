@@ -11,39 +11,23 @@
 -%}
 
 <product-recommendations
-  class="pdp-related page-width"
+  class="product-recommendations"
   data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ limit }}&intent={{ intent }}"
   data-fallback-collection="{{ fallback_collection.handle | default: '' }}"
   data-limit="{{ limit }}"
   {{ section.shopify_attributes }}
 >
-  {%- if recommendations.performed and recommendations.products_count > 0 -%}
-    <div class="pdp-related__header">
-      <h2 class="pdp-related__title">{{ heading | escape }}</h2>
-    </div>
-    <div class="collection-grid collection-grid--4" data-product-grid>
-      {%- for rec_product in recommendations.products limit: limit -%}
-        {%- render 'product-card', product: rec_product -%}
-      {%- endfor -%}
-    </div>
-  {%- elsif fallback_collection != blank and fallback_collection.products_count > 0 -%}
-    <div class="pdp-related__header">
-      <h2 class="pdp-related__title">{{ heading | escape }}</h2>
-      <a href="{{ fallback_collection.url }}" class="pdp-related__link">
-        {{ 'search.view_all' | t }}
-      </a>
-    </div>
-    <div class="collection-grid collection-grid--4" data-product-grid>
-      {%- for rec_product in fallback_collection.products limit: limit -%}
-        {%- unless rec_product.id == product.id -%}
+  <div class="pdp-related">
+    {%- if recommendations.performed and recommendations.products_count > 0 -%}
+      <div class="pdp-related__header">
+        <h2 class="pdp-related__title">{{ heading | escape }}</h2>
+      </div>
+      <div class="collection-grid collection-grid--4" data-product-grid>
+        {%- for rec_product in recommendations.products limit: limit -%}
           {%- render 'product-card', product: rec_product -%}
-        {%- endunless -%}
-      {%- endfor -%}
-    </div>
-  {%- endif -%}
-
-  {%- if fallback_collection != blank and fallback_collection.products_count > 0 -%}
-    <template data-recommendations-fallback hidden>
+        {%- endfor -%}
+      </div>
+    {%- elsif fallback_collection != blank and fallback_collection.products_count > 0 -%}
       <div class="pdp-related__header">
         <h2 class="pdp-related__title">{{ heading | escape }}</h2>
         <a href="{{ fallback_collection.url }}" class="pdp-related__link">
@@ -56,6 +40,26 @@
             {%- render 'product-card', product: rec_product -%}
           {%- endunless -%}
         {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- if fallback_collection != blank and fallback_collection.products_count > 0 -%}
+    <template data-recommendations-fallback hidden>
+      <div class="pdp-related">
+        <div class="pdp-related__header">
+          <h2 class="pdp-related__title">{{ heading | escape }}</h2>
+          <a href="{{ fallback_collection.url }}" class="pdp-related__link">
+            {{ 'search.view_all' | t }}
+          </a>
+        </div>
+        <div class="collection-grid collection-grid--4" data-product-grid>
+          {%- for rec_product in fallback_collection.products limit: limit -%}
+            {%- unless rec_product.id == product.id -%}
+              {%- render 'product-card', product: rec_product -%}
+            {%- endunless -%}
+          {%- endfor -%}
+        </div>
       </div>
     </template>
   {%- endif -%}

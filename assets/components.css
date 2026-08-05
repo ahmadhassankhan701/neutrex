@@ -916,25 +916,41 @@ button.swatch:focus-visible .swatch__label {
 /* -------------------------------------------------------------------------- */
 /* Share Buttons                                                               */
 /* -------------------------------------------------------------------------- */
-.share {
+.share,
+.share-buttons {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: var(--space-3);
 }
 
-.share__label {
+.share__label,
+.share-buttons__label {
   font-size: var(--fs-sm);
   font-weight: 600;
   color: var(--color-text-muted);
 }
 
-.share__buttons {
+.share__buttons,
+.share-buttons__list {
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.share__btn {
+.share-buttons__list > li {
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.share__btn,
+.share-buttons__link {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -943,7 +959,8 @@ button.swatch:focus-visible .swatch__label {
   border-radius: var(--radius-full);
   border: 1px solid var(--color-border);
   background: var(--color-bg-elevated);
-  color: var(--color-text-muted);
+  color: var(--color-text);
+  cursor: pointer;
   transition:
     background var(--duration) var(--ease-out),
     color var(--duration) var(--ease-out),
@@ -951,17 +968,23 @@ button.swatch:focus-visible .swatch__label {
     transform var(--duration) var(--ease-out);
 }
 
-.share__btn:hover {
+.share__btn:hover,
+.share-buttons__link:hover {
   background: var(--color-primary);
   color: #fff;
   border-color: var(--color-primary);
   transform: translateY(-2px);
 }
 
-.share__btn--copy.is-copied {
+.share__btn--copy.is-copied,
+.share-buttons__copy.is-copied {
   background: var(--color-success);
   color: #fff;
   border-color: var(--color-success);
+}
+
+.pdp-info__share {
+  margin-block: var(--space-5);
 }
 
 /* -------------------------------------------------------------------------- */
