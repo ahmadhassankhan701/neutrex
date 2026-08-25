@@ -181,34 +181,6 @@
         "hero_first_card": true
       }
     },
-    "product_carousel_bestsellers": {
-      "type": "product-carousel",
-      "settings": {
-        "eyebrow": "01",
-        "heading": "Training Modules",
-        "subtitle": "Best Training Options",
-        "collection": "تدريب",
-        "products_to_show": 8,
-        "columns": 4,
-        "background_style": "default",
-        "show_view_all": true,
-        "view_all_label": "View all"
-      }
-    },
-    "product_carousel_trending": {
-      "type": "product-carousel",
-      "settings": {
-        "eyebrow": "02",
-        "heading": "Trending now",
-        "subtitle": "Fresh drops. Peak performance.",
-        "collection": "rtd-gums",
-        "products_to_show": 8,
-        "columns": 4,
-        "background_style": "surface",
-        "show_view_all": true,
-        "view_all_label": "View all"
-      }
-    },
     "featured_coach": {
       "type": "featured-coach",
       "blocks": {
@@ -256,92 +228,6 @@
         "cta_primary_url": "shopify://collections/تدريب",
         "cta_secondary_label": "",
         "cta_secondary_url": "shopify://pages/coach-marcus-reid",
-        "background_style": "default"
-      }
-    },
-    "appointment_cta": {
-      "type": "appointment-cta",
-      "blocks": {
-        "svc_1": {
-          "type": "service",
-          "settings": {
-            "icon": "check",
-            "label": "Personal Training"
-          }
-        },
-        "svc_2": {
-          "type": "service",
-          "settings": {
-            "icon": "check",
-            "label": "Online Coaching"
-          }
-        },
-        "svc_3": {
-          "type": "service",
-          "settings": {
-            "icon": "check",
-            "label": "Competition Prep"
-          }
-        }
-      },
-      "block_order": [
-        "svc_1",
-        "svc_2",
-        "svc_3"
-      ],
-      "settings": {
-        "eyebrow": "Elite coaching",
-        "title": "Ready to level up?",
-        "text": "Book a session with Neutrex elite coaches. Personal training, online coaching, and competition prep — tailored to your goals.",
-        "primary_label": "Book appointment",
-        "primary_url": "shopify://collections/تدريب",
-        "secondary_label": "View services",
-        "secondary_url": "shopify://collections/تدريب"
-      }
-    },
-    "transformation_gallery": {
-      "type": "transformation-gallery",
-      "blocks": {
-        "trans_1": {
-          "type": "transformation",
-          "settings": {
-            "name": "أحمد العتيبي",
-            "story": "برنامج تنشيف لمدة 12 أسبوعًا مع متابعة وتغذية خاصة من نيوتريكس.",
-            "stat_1": "<strong>-18 كجم</strong> دهون الجسم",
-            "stat_2": "12 أسبوعًا"
-          }
-        },
-        "trans_2": {
-          "type": "transformation",
-          "settings": {
-            "name": "سارة الشمري",
-            "story": "تحضير شامل للمسابقات وتحقيق أفضل جاهزية للمسرح.",
-            "stat_1": "المركز الأول",
-            "stat_2": "16 أسبوعًا"
-          }
-        },
-        "trans_3": {
-          "type": "transformation",
-          "settings": {
-            "name": "طارق الغامدي",
-            "story": "برنامج تضخيم عضل صافي وزيادة القوة البدنية.",
-            "stat_1": "<strong>+8 كجم</strong> كتلة عضلية صافية",
-            "stat_2": "20 أسبوعًا"
-          }
-        }
-      },
-      "block_order": [
-        "trans_1",
-        "trans_2",
-        "trans_3"
-      ],
-      "settings": {
-        "eyebrow": "Results",
-        "heading": "Real transformations",
-        "subtitle": "Results speak louder than reps",
-        "layout": "slider",
-        "before_label": "Before",
-        "after_label": "After",
         "background_style": "default"
       }
     },
@@ -394,11 +280,7 @@
     "hero_premium",
     "stats_animated",
     "featured_categories",
-    "product_carousel_bestsellers",
-    "product_carousel_trending",
     "featured_coach",
-    "appointment_cta",
-    "transformation_gallery",
     "testimonials"
   ]
 }

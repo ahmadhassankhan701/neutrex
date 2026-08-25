@@ -1,0 +1,16 @@
+name = "neutrex-whatsapp-notifier"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+workers_dev = true
+
+# Non-secret config (safe to commit)
+[vars]
+WHATSAPP_PHONE_NUMBER_ID = "1335392636315748"
+ADMIN_WHATSAPP_NUMBER = "97452044520"
+ADMIN_TEMPLATE_NAME = "admin_order_notification"
+CUSTOMER_TEMPLATE_NAME = "customer_order_notification"
+TEMPLATE_LANGUAGE = "en_US"
+
+# Secrets (set with wrangler — never commit):
+#   npx wrangler secret put WHATSAPP_TOKEN
+#   npx wrangler secret put SHOPIFY_WEBHOOK_SECRET
