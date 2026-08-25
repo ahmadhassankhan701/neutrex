@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/health", "destination": "/api/health" },
+    { "source": "/webhooks/orders-create", "destination": "/api/webhooks/orders-create" }
+  ]
+}

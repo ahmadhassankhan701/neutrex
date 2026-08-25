@@ -1,34 +1,42 @@
-# Neutrex WhatsApp order notifications
+# Neutrex WhatsApp order notifications (Vercel Node)
 
-Sends Meta Cloud API WhatsApp templates when a Shopify order is created.
+Shopify `orders/create` webhook → Meta Cloud API templates.
 
-- Admin: `admin_order_notification` → `{{order}}`, `{{first_name}}`, `{{email}}`, `{{phone}}`
-- Customer: `customer_order_notification` → `{{first_name}}`, `{{order}}`
+- Admin (`admin_order_notification`): order, first name, email, phone → `+97452044520`
+- Customer (`customer_order_notification`): first name, order
 
-## Security
-
-**Do not put the WhatsApp permanent token in git, theme settings, or chat.**
-
-The token shared in Cursor chat should be **rotated now** in Meta Business Manager, then stored only as a Cloudflare secret.
-
-## 1. Deploy the worker
+## 1. Install & set env
 
 ```bash
 cd whatsapp-notifier
-npm install
-npx wrangler login
-npx wrangler secret put WHATSAPP_TOKEN
-# paste the NEW rotated Meta permanent token
-
-npx wrangler secret put SHOPIFY_WEBHOOK_SECRET
-# paste the signing secret from the Shopify webhook (step 2)
-
-npm run deploy
+cp .env.example .env
+# .env already can hold WHATSAPP_TOKEN + phone/templates
+# SHOPIFY_WEBHOOK_SECRET is filled after creating the Shopify webhook
 ```
 
-Copy the worker URL, e.g. `https://neutrex-whatsapp-notifier.<your-subdomain>.workers.dev`.
+## 2. Deploy to Vercel
 
-## 2. Create the Shopify webhook
+```bash
+npx vercel login
+npx vercel link   # create/link project in this folder
+npx vercel env add WHATSAPP_TOKEN production
+npx vercel env add SHOPIFY_WEBHOOK_SECRET production
+# optional (defaults already in code):
+npx vercel env add WHATSAPP_PHONE_NUMBER_ID production
+npx vercel env add ADMIN_WHATSAPP_NUMBER production
+
+npx vercel --prod
+```
+
+Or from the Vercel dashboard: import this folder / repo subdirectory `whatsapp-notifier`, then set Environment Variables, then Deploy.
+
+Your webhook URL will look like:
+
+`https://<project>.vercel.app/webhooks/orders-create`
+
+Health check: `https://<project>.vercel.app/health`
+
+## 3. Connect Shopify
 
 Shopify Admin → **Settings → Notifications → Webhooks** → Create webhook:
 
@@ -36,35 +44,32 @@ Shopify Admin → **Settings → Notifications → Webhooks** → Create webhook
 | --- | --- |
 | Event | Order creation |
 | Format | JSON |
-| URL | `https://neutrex-whatsapp-notifier.<your-subdomain>.workers.dev/webhooks/orders-create` |
-| API version | `2024-10` or latest |
+| URL | `https://<project>.vercel.app/webhooks/orders-create` |
+| API version | latest |
 
-Copy the **webhook signing secret** into `SHOPIFY_WEBHOOK_SECRET` (re-run `wrangler secret put` if you set a placeholder earlier).
+Copy the **webhook signing secret** → set as `SHOPIFY_WEBHOOK_SECRET` in Vercel (and local `.env`), then redeploy if needed.
 
-## 3. Test
+## 4. Test
 
-1. Place a test order with a phone number on the billing address.
-2. Confirm admin `+97452044520` gets `admin_order_notification`.
-3. Confirm the customer phone gets `customer_order_notification`.
-4. Watch logs: `npm run tail`
-
-Health check: `GET /health`
+1. Place a test order with a billing phone number.
+2. Admin WhatsApp `+97452044520` should receive `admin_order_notification`.
+3. Customer phone should receive `customer_order_notification`.
+4. Check Vercel → Project → Logs.
 
 ## Env vars
 
-| Name | Where | Example |
+| Name | Required | Value |
 | --- | --- | --- |
-| `WHATSAPP_TOKEN` | secret | Meta permanent token |
-| `SHOPIFY_WEBHOOK_SECRET` | secret | Shopify webhook HMAC secret |
-| `WHATSAPP_PHONE_NUMBER_ID` | wrangler.toml | `1335392636315748` |
-| `ADMIN_WHATSAPP_NUMBER` | wrangler.toml | `97452044520` |
-| `ADMIN_TEMPLATE_NAME` | wrangler.toml | `admin_order_notification` |
-| `CUSTOMER_TEMPLATE_NAME` | wrangler.toml | `customer_order_notification` |
-| `TEMPLATE_LANGUAGE` | wrangler.toml | `en_US` |
+| `WHATSAPP_TOKEN` | yes | Meta permanent token |
+| `SHOPIFY_WEBHOOK_SECRET` | yes | Shopify webhook HMAC secret |
+| `WHATSAPP_PHONE_NUMBER_ID` | no | `1335392636315748` |
+| `ADMIN_WHATSAPP_NUMBER` | no | `97452044520` |
+| `ADMIN_TEMPLATE_NAME` | no | `admin_order_notification` |
+| `CUSTOMER_TEMPLATE_NAME` | no | `customer_order_notification` |
+| `TEMPLATE_LANGUAGE` | no | `en_US` |
 
 ## Notes
 
-- Customer messages are skipped when the order has no phone number.
-- Phone numbers are normalized to digits only (no `+`).
-- Theme code cannot send WhatsApp; this worker is required.
-- Namespace `27676537628679891` is not needed for Cloud API template sends (template name + language is enough).
+- `.env` is gitignored — do not commit tokens.
+- Customer notify is skipped if the order has no phone.
+- Rotate the Meta token if it was ever pasted into chat or git.
