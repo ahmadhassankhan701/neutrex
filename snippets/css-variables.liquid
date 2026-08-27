@@ -6,10 +6,11 @@
 <style>
   :root {
     --color-primary: {{ settings.color_primary }};
-    --color-primary-hover: {{ settings.color_primary | color_darken: 12 }};
-    --color-primary-soft: {{ settings.color_primary | color_modify: 'alpha', 0.08 }};
+    --color-primary-hover: {{ settings.color_gold }};
+    --color-primary-soft: {{ settings.color_primary | color_modify: 'alpha', 0.14 }};
+    --color-on-primary: {{ settings.color_charcoal }};
     --color-gold: {{ settings.color_gold }};
-    --color-gold-soft: {{ settings.color_gold | color_modify: 'alpha', 0.14 }};
+    --color-gold-soft: {{ settings.color_gold | color_modify: 'alpha', 0.18 }};
     --color-charcoal: {{ settings.color_charcoal }};
 
     --color-bg: {{ settings.color_bg }};
@@ -21,6 +22,13 @@
     --color-border: {{ settings.color_border }};
     --color-border-strong: {{ settings.color_border | color_darken: 8 }};
     --color-focus: {{ settings.color_primary }};
+    --color-overlay: {{ settings.color_charcoal | color_modify: 'alpha', 0.55 }};
+
+    --gradient-hero: linear-gradient(135deg, {{ settings.color_charcoal }} 0%, {{ settings.color_surface | color_darken: 8 }} 42%, {{ settings.color_primary | color_darken: 28 }} 100%);
+    --gradient-gold: linear-gradient(135deg, {{ settings.color_gold }} 0%, {{ settings.color_primary }} 55%, {{ settings.color_gold | color_darken: 10 }} 100%);
+    --gradient-surface: linear-gradient(180deg, {{ settings.color_bg }} 0%, {{ settings.color_surface }} 100%);
+    --gradient-card: linear-gradient(160deg, {{ settings.color_surface | color_modify: 'alpha', 0.95 }} 0%, {{ settings.color_bg | color_modify: 'alpha', 0.8 }} 100%);
+    --gradient-cta: linear-gradient(120deg, {{ settings.color_primary }} 0%, {{ settings.color_gold }} 50%, {{ settings.color_primary }} 100%);
 
     --font-scale: {{ settings.font_scale | times: 0.01 }};
     --heading-weight: {{ settings.heading_weight }};
@@ -38,11 +46,12 @@
 
   [data-theme="dark"] {
     --color-primary: {{ settings.color_primary_dark }};
-    --color-primary-hover: {{ settings.color_primary_dark | color_lighten: 8 }};
+    --color-primary-hover: {{ settings.color_gold_dark }};
     --color-primary-soft: {{ settings.color_primary_dark | color_modify: 'alpha', 0.18 }};
+    --color-on-primary: {{ settings.color_bg_dark }};
     --color-gold: {{ settings.color_gold_dark }};
-    --color-gold-soft: {{ settings.color_gold_dark | color_modify: 'alpha', 0.16 }};
-    --color-charcoal: {{ settings.color_text_dark }};
+    --color-gold-soft: {{ settings.color_gold_dark | color_modify: 'alpha', 0.2 }};
+    --color-charcoal: {{ settings.color_bg_dark }};
 
     --color-bg: {{ settings.color_bg_dark }};
     --color-bg-elevated: {{ settings.color_surface_dark }};
@@ -51,7 +60,14 @@
     --color-text: {{ settings.color_text_dark }};
     --color-text-muted: {{ settings.color_text_muted_dark }};
     --color-border: {{ settings.color_border_dark }};
-    --color-border-strong: {{ settings.color_border_dark | color_lighten: 6 }};
+    --color-border-strong: {{ settings.color_border_dark | color_lighten: 8 }};
     --color-focus: {{ settings.color_primary_dark }};
+    --color-overlay: {{ settings.color_bg_dark | color_modify: 'alpha', 0.72 }};
+
+    --gradient-hero: linear-gradient(145deg, {{ settings.color_bg_dark }} 0%, {{ settings.color_surface_dark }} 45%, {{ settings.color_primary_dark | color_darken: 35 }} 100%);
+    --gradient-gold: linear-gradient(135deg, {{ settings.color_gold_dark }} 0%, {{ settings.color_primary_dark }} 55%, {{ settings.color_gold_dark | color_darken: 8 }} 100%);
+    --gradient-surface: linear-gradient(180deg, {{ settings.color_bg_dark }} 0%, {{ settings.color_surface_dark }} 100%);
+    --gradient-card: linear-gradient(160deg, {{ settings.color_surface_dark | color_modify: 'alpha', 0.95 }} 0%, {{ settings.color_bg_dark | color_modify: 'alpha', 0.75 }} 100%);
+    --gradient-cta: linear-gradient(120deg, {{ settings.color_primary_dark }} 0%, {{ settings.color_gold_dark }} 50%, {{ settings.color_primary_dark }} 100%);
   }
 </style>

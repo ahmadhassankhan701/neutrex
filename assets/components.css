@@ -192,13 +192,20 @@
 
 .product-card__quick-add .btn--primary {
   --btn-bg: var(--gradient-cta);
+  --btn-color: var(--color-on-primary, #0B0F12);
   background: var(--gradient-cta);
+  color: var(--color-on-primary, #0B0F12);
 }
 
 .product-card__quick-add .btn:hover {
-  --btn-color: #fff;
-  color: #fff;
+  --btn-color: var(--color-on-primary, #0B0F12);
+  color: var(--color-on-primary, #0B0F12);
   border-color: transparent;
+}
+
+.product-card__quick-add .btn--primary:hover {
+  --btn-color: var(--color-on-primary, #0B0F12);
+  color: var(--color-on-primary, #0B0F12);
 }
 
 .product-card__body {

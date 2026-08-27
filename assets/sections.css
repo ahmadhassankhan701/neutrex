@@ -32,9 +32,9 @@
   inset: 0;
   background: linear-gradient(
     135deg,
-    rgba(15, 13, 14, 0.75) 0%,
-    rgba(30, 30, 30, 0.4) 40%,
-    rgba(122, 31, 61, 0.35) 100%
+    rgba(11, 15, 18, 0.82) 0%,
+    rgba(23, 29, 33, 0.45) 40%,
+    rgba(49, 197, 244, 0.28) 100%
   );
 }
 
@@ -926,7 +926,7 @@
   width: 32rem;
   height: 32rem;
   border-radius: var(--radius-full);
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.2) 0%, transparent 65%);
+  background: radial-gradient(circle, rgba(49, 197, 244, 0.22) 0%, transparent 65%);
   inset-block-start: 50%;
   inset-inline-start: -10rem;
   transform: translateY(-50%);
@@ -1017,7 +1017,7 @@
   outline: none;
   border-color: var(--color-gold);
   background: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2);
+  box-shadow: 0 0 0 4px rgba(49, 197, 244, 0.22);
 }
 
 .newsletter-band__submit {
