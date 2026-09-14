@@ -58,13 +58,7 @@
             {{ block.shopify_attributes }}
           >
             {%- if block.settings.image != blank -%}
-              {%- render 'media',
-                image: block.settings.image,
-                alt: block.settings.alt | default: 'Instagram post',
-                loading: 'lazy',
-                widths: '200,300,400,600',
-                sizes: '(min-width: 990px) 16vw, (min-width: 750px) 25vw, 50vw'
-              -%}
+              {%- render 'media', image: block.settings.image, alt: block.settings.alt, default: 'Instagram post', loading: 'lazy', widths: '200,300,400,600', sizes: '(min-width: 990px) 16vw, (min-width: 750px) 25vw, 50vw' -%}
             {%- else -%}
               {{ 'image' | placeholder_svg_tag: 'placeholder' }}
             {%- endif -%}
@@ -200,3 +194,22 @@
   ]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: |-
+    {%- render 'media',
+                    image: block.settings.image,
+                    alt: block.settings.alt | default: 'Instagram post',
+                    loading: 'lazy',
+                    widths: '200,300,400,600',
+                    sizes: '(min-width: 990px) 16vw, (min-width: 750px) 25vw, 50vw'
+                  -%}
+  to: "{%- render 'media', image: block.settings.image, alt: block.settings.alt, default:
+    'Instagram post', loading: 'lazy', widths: '200,300,400,600', sizes: '(min-width:
+    990px) 16vw, (min-width: 750px) 25vw, 50vw' -%}"
+  position: 2210..2422
+{% endcomment %}

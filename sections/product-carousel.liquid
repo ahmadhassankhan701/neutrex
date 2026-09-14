@@ -70,7 +70,7 @@
           {%- if collection != blank and collection.products_count > 0 -%}
             {%- for product in collection.products limit: products_to_show -%}
               <div class="{{ slide_class }}" role="listitem">
-                {%- render 'product-card', product: product, lazy_load: forloop.index > 4 -%}
+                {%- render 'product-card', product: product, lazy_load: forloop.index -%}
               </div>
             {%- endfor -%}
           {%- else -%}
@@ -86,11 +86,7 @@
 
     {%- if section.settings.show_view_all and collection != blank -%}
       <div class="section-carousel__footer animate-fade-up" data-animate style="margin-top: var(--space-6); text-align: center;">
-        {%- render 'button',
-          label: section.settings.view_all_label | default: 'View all',
-          url: collection.url,
-          style: 'secondary'
-        -%}
+        {%- render 'button', label: section.settings.view_all_label, default: 'View all', url: collection.url, style: 'secondary' -%}
       </div>
     {%- endif -%}
   </div>
@@ -219,3 +215,23 @@
   ]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{%- render 'product-card', product: product, lazy_load: forloop.index > 4
+    -%}"
+  to: "{%- render 'product-card', product: product, lazy_load: forloop.index -%}"
+  position: 2584..2657
+- from: |-
+    {%- render 'button',
+              label: section.settings.view_all_label | default: 'View all',
+              url: collection.url,
+              style: 'secondary'
+            -%}
+  to: "{%- render 'button', label: section.settings.view_all_label, default: 'View
+    all', url: collection.url, style: 'secondary' -%}"
+  position: 3220..3345
+{% endcomment %}

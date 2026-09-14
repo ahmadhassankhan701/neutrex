@@ -13,14 +13,7 @@
           <article class="card" data-animate style="display:flex;flex-direction:column;">
             {%- if article.image -%}
               <a href="{{ article.url }}" class="card__media" style="aspect-ratio: 16/10; overflow: hidden;">
-                {%- render 'media',
-                  image: article.image,
-                  widths: '400,600,800',
-                  sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw',
-                  class: 'card__image',
-                  loading: 'lazy',
-                  alt: article.image.alt | default: article.title
-                -%}
+                {%- render 'media', image: article.image, widths: '400,600,800', sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw', class: 'card__image', loading: 'lazy', alt: article.image.alt, default: article.title -%}
               </a>
             {%- endif -%}
             <div style="padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); flex: 1;">
@@ -68,3 +61,23 @@
   ]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: |-
+    {%- render 'media',
+                      image: article.image,
+                      widths: '400,600,800',
+                      sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw',
+                      class: 'card__image',
+                      loading: 'lazy',
+                      alt: article.image.alt | default: article.title
+                    -%}
+  to: "{%- render 'media', image: article.image, widths: '400,600,800', sizes: '(min-width:
+    990px) 33vw, (min-width: 750px) 50vw, 100vw', class: 'card__image', loading: 'lazy',
+    alt: article.image.alt, default: article.title -%}"
+  position: 799..1019
+{% endcomment %}

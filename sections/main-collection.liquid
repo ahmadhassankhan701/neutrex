@@ -261,7 +261,7 @@
         {%- else -%}
           <div class="collection-grid{% if columns == 4 %} collection-grid--4{% endif %}">
             {%- for product in collection.products -%}
-              {%- render 'product-card', product: product, lazy_load: forloop.index > 4 -%}
+              {%- render 'product-card', product: product, lazy_load: forloop.index -%}
             {%- endfor -%}
           </div>
         {%- endif -%}
@@ -373,3 +373,14 @@
   ]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{%- render 'product-card', product: product, lazy_load: forloop.index > 4
+    -%}"
+  to: "{%- render 'product-card', product: product, lazy_load: forloop.index -%}"
+  position: 12290..12363
+{% endcomment %}

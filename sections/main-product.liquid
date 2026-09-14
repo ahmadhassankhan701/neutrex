@@ -96,13 +96,7 @@
               </script>
             {%- endif -%}
             {%- if featured_media -%}
-              {%- render 'media',
-                image: featured_media.preview_image,
-                alt: featured_media.alt | default: product.title,
-                loading: 'eager',
-                widths: '540,720,900,1080,1200',
-                sizes: '(min-width: 990px) 45vw, 100vw'
-              -%}
+              {%- render 'media', image: featured_media.preview_image, alt: featured_media.alt, default: product.title, loading: 'eager', widths: '540,720,900,1080,1200', sizes: '(min-width: 990px) 45vw, 100vw' -%}
             {%- endif -%}
           </div>
         {%- elsif featured_media -%}
@@ -113,14 +107,7 @@
           {%- elsif featured_media.media_type == 'model' -%}
             {{ featured_media | model_viewer_tag: image_size: '1200x', reveal: 'interaction', toggleable: true }}
           {%- else -%}
-            {%- render 'media',
-              image: featured_media.preview_image,
-              alt: featured_media.alt | default: product.title,
-              class: 'pdp-gallery__image',
-              loading: 'eager',
-              widths: '540,720,900,1080,1200',
-              sizes: '(min-width: 990px) 45vw, 100vw'
-            -%}
+            {%- render 'media', image: featured_media.preview_image, alt: featured_media.alt, default: product.title, class: 'pdp-gallery__image', loading: 'eager', widths: '540,720,900,1080,1200', sizes: '(min-width: 990px) 45vw, 100vw' -%}
           {%- endif -%}
         {%- else -%}
           {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
@@ -393,7 +380,7 @@
         </div>
       {%- endif -%}
 
-      {%- render 'share-buttons', url: shop.url | append: product.url, title: product.title, class: 'pdp-info__share' -%}
+      {%- render 'share-buttons', url: shop.url, append: product.url, title: product.title, class: 'pdp-info__share' -%}
 
       {%- if section.settings.show_trust_badges -%}
         <div class="pdp-trust">
@@ -800,3 +787,40 @@
   ]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: |-
+    {%- render 'media',
+                    image: featured_media.preview_image,
+                    alt: featured_media.alt | default: product.title,
+                    loading: 'eager',
+                    widths: '540,720,900,1080,1200',
+                    sizes: '(min-width: 990px) 45vw, 100vw'
+                  -%}
+  to: "{%- render 'media', image: featured_media.preview_image, alt: featured_media.alt,
+    default: product.title, loading: 'eager', widths: '540,720,900,1080,1200', sizes:
+    '(min-width: 990px) 45vw, 100vw' -%}"
+  position: 3489..3689
+- from: |-
+    {%- render 'media',
+                  image: featured_media.preview_image,
+                  alt: featured_media.alt | default: product.title,
+                  class: 'pdp-gallery__image',
+                  loading: 'eager',
+                  widths: '540,720,900,1080,1200',
+                  sizes: '(min-width: 990px) 45vw, 100vw'
+                -%}
+  to: "{%- render 'media', image: featured_media.preview_image, alt: featured_media.alt,
+    default: product.title, class: 'pdp-gallery__image', loading: 'eager', widths:
+    '540,720,900,1080,1200', sizes: '(min-width: 990px) 45vw, 100vw' -%}"
+  position: 4344..4573
+- from: "{%- render 'share-buttons', url: shop.url | append: product.url, title: product.title,
+    class: 'pdp-info__share' -%}"
+  to: "{%- render 'share-buttons', url: shop.url, append: product.url, title: product.title,
+    class: 'pdp-info__share' -%}"
+  position: 16623..16737
+{% endcomment %}

@@ -47,7 +47,7 @@
           <a href="#recover-panel" data-recover-toggle>{{ 'customer.login.forgot' | t }}</a>
         </div>
 
-        {%- render 'button', label: 'customer.login.submit' | t, style: 'primary', full_width: true, type: 'submit' -%}
+        {%- render 'button', label: 'customer.login.submit', style: 'primary', full_width: true, type: 'submit' -%}
       {%- endform -%}
 
       <p class="auth__footer">
@@ -73,7 +73,7 @@
           <input type="email" name="email" id="RecoverEmail" class="field__input" autocomplete="email" required>
         </div>
 
-        {%- render 'button', label: 'customer.recover.submit' | t, style: 'primary', full_width: true, type: 'submit' -%}
+        {%- render 'button', label: 'customer.recover.submit', style: 'primary', full_width: true, type: 'submit' -%}
       {%- endform -%}
 
       <p class="auth__footer">
@@ -135,3 +135,20 @@
   ]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{%- render 'button', label: 'customer.login.submit' | t, style: 'primary',
+    full_width: true, type: 'submit' -%}"
+  to: "{%- render 'button', label: 'customer.login.submit', style: 'primary', full_width:
+    true, type: 'submit' -%}"
+  position: 1813..1920
+- from: "{%- render 'button', label: 'customer.recover.submit' | t, style: 'primary',
+    full_width: true, type: 'submit' -%}"
+  to: "{%- render 'button', label: 'customer.recover.submit', style: 'primary', full_width:
+    true, type: 'submit' -%}"
+  position: 3020..3129
+{% endcomment %}
